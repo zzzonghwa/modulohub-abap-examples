@@ -1,2 +1,11 @@
 .DS_Store
 *.log
+
+# Internal working artifacts — never publish to this public repo.
+# Only example code, abapGit metadata, README and LICENSE belong here.
+# Spec/design/working docs stay in the ModuloHub project repo, never here.
+.claude/
+docs/
+specs/
+*.spec.md
+.env
