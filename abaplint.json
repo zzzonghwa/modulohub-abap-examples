@@ -1,0 +1,44 @@
+{
+  "global": {
+    "files": "/src/**/*.*"
+  },
+  "dependencies": [],
+  "syntax": {
+    "version": "v754",
+    "errorNamespace": "^(Z|Y|LCL_|LIF_|LCX_|LTC_|LTD_)",
+    "globalConstants": [],
+    "globalMacros": []
+  },
+  "rules": {
+    "parser_error": true,
+    "check_syntax": true,
+    "unknown_types": true,
+    "7bit_ascii": true,
+    "contains_tab": true,
+    "whitespace_end": true,
+    "empty_statement": true,
+    "max_one_statement": true,
+    "sequential_blank": { "lines": 3 },
+    "line_length": { "length": 120 },
+    "indentation": true,
+    "object_naming": {
+      "clas": "^Z(CL|CX|IF)_MODULO_",
+      "intf": "^ZIF_MODULO_",
+      "prog": "^Z_?MODULO_"
+    },
+    "local_class_naming": {
+      "local": "^LCL_",
+      "test": "^LTCL_",
+      "exception": "^LCX_"
+    },
+    "prefer_inline": true,
+    "unused_variables": true,
+    "functional_writing": true,
+    "exit_or_check": true,
+    "keyword_case": { "style": "upper" },
+    "definitions_top": true,
+    "space_before_colon": true,
+    "check_text_elements": true,
+    "no_public_attributes": { "allowReadOnly": true }
+  }
+}
