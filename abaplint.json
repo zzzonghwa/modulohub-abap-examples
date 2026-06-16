@@ -13,7 +13,6 @@
     "parser_error": true,
     "check_syntax": true,
     "unknown_types": true,
-    "7bit_ascii": true,
     "contains_tab": true,
     "whitespace_end": true,
     "empty_statement": true,
