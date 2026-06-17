@@ -1,3 +1,13 @@
+"! 빈 스택에서 꺼낼 때 던지는 도메인 예외. CX_DYNAMIC_CHECK 상속 —
+"! 호출자에 처리 강제가 없고(동적 검사) TRY/CATCH로 안정적으로 잡힌다.
+"! (표준 no-check 예외 cx_sy_itab_line_not_found는 CATCH에서 누락될 수 있어 도메인 예외 사용)
+CLASS lcx_empty_stack DEFINITION INHERITING FROM cx_dynamic_check.
+ENDCLASS.
+
+CLASS lcx_empty_stack IMPLEMENTATION.
+ENDCLASS.
+
+
 "! 테스트 대상(CUT) — 정수 스택(LIFO). LTCL_STACK이 이 클래스를 검증한다.
 CLASS lcl_stack DEFINITION CREATE PUBLIC.
   PUBLIC SECTION.
@@ -7,9 +17,10 @@ CLASS lcl_stack DEFINITION CREATE PUBLIC.
     METHODS push
       IMPORTING value TYPE i.
 
-    "! 맨 위 값을 꺼내 제거한다. 빈 스택이면 cx_sy_itab_line_not_found.
+    "! 맨 위 값을 꺼내 제거한다. 빈 스택이면 lcx_empty_stack.
     METHODS pop
-      RETURNING VALUE(result) TYPE i.
+      RETURNING VALUE(result) TYPE i
+      RAISING   lcx_empty_stack.
 
     METHODS size
       RETURNING VALUE(result) TYPE i.
@@ -27,9 +38,9 @@ CLASS lcl_stack IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD pop.
-    " 빈 스택은 꺼낼 값이 없다 — 명시적으로 예외를 던진다(테이블 식 암묵 예외 대신).
+    " 빈 스택은 꺼낼 값이 없다 — 도메인 예외를 명시적으로 던진다.
     IF items IS INITIAL.
-      RAISE EXCEPTION TYPE cx_sy_itab_line_not_found.
+      RAISE EXCEPTION TYPE lcx_empty_stack.
     ENDIF.
     DATA(last) = lines( items ).
     result = items[ last ].

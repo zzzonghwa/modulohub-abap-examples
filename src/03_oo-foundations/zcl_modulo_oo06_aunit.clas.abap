@@ -27,7 +27,7 @@ CLASS zcl_modulo_oo06_aunit IMPLEMENTATION.
     TRY.
         out->write( |pop = { stack->pop( ) }| ).   " 30 (LIFO)
         out->write( |pop = { stack->pop( ) }| ).   " 20
-      CATCH cx_sy_itab_line_not_found.
+      CATCH lcx_empty_stack.
         out->write( `예상치 못한 빈 스택` ).
     ENDTRY.
     out->write( |남은 size = { stack->size( ) }| ).
@@ -37,8 +37,8 @@ CLASS zcl_modulo_oo06_aunit IMPLEMENTATION.
     TRY.
         empty_stack->pop( ).
         out->write( `(예상과 다름) 예외가 발생하지 않음` ).
-      CATCH cx_sy_itab_line_not_found.
-        out->write( `빈 스택 pop -> cx_sy_itab_line_not_found 발생` ).
+      CATCH lcx_empty_stack.
+        out->write( `빈 스택 pop -> lcx_empty_stack 발생` ).
     ENDTRY.
   ENDMETHOD.
 ENDCLASS.

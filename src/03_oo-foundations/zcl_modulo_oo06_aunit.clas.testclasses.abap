@@ -61,7 +61,7 @@ CLASS ltcl_stack IMPLEMENTATION.
     TRY.
         cut->pop( ).
         cl_abap_unit_assert=>fail( `빈 스택 pop은 예외여야 한다` ).
-      CATCH cx_sy_itab_line_not_found.
+      CATCH lcx_empty_stack.
         " 기대대로 예외 발생 — 통과.
     ENDTRY.
   ENDMETHOD.
