@@ -1,8 +1,12 @@
 {
   "global": {
-    "files": "/src/**/*.*"
+    "files": "/{src,deps}/**/*.*"
   },
-  "dependencies": [],
+  "dependencies": [
+    {
+      "files": "/deps/**/*.*"
+    }
+  ],
   "syntax": {
     "version": "v754",
     "errorNamespace": "^(Z|Y|LCL_|LIF_|LCX_|LTC_|LTD_)",
@@ -21,6 +25,7 @@
     "line_length": { "length": 120 },
     "indentation": true,
     "object_naming": {
+      "exclude": ["deps/"],
       "clas": "^Z(CL|CX|IF)_MODULO_",
       "intf": "^ZIF_MODULO_",
       "prog": "^Z_?MODULO_"

@@ -9,6 +9,7 @@
     <item>/.gitignore</item>
     <item>/LICENSE</item>
     <item>/README.md</item>
+    <item>/deps/*</item>
    </IGNORE>
   </DATA>
  </asx:values>
