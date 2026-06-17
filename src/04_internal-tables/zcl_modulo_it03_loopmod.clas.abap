@@ -85,9 +85,9 @@ CLASS zcl_modulo_it03_loopmod IMPLEMENTATION.
   METHOD raise_prices.
     DATA(tab) = sample( ).
     LOOP AT tab ASSIGNING FIELD-SYMBOL(<row>).
-      " 문자 리터럴 '1.10' 곱셈은 행마다 정수로 반올림된다. 정수비(11/10)로
-      " 곱해 packed 고정소수점에서 정확히 10% 인상한다.
-      <row>-price = <row>-price * 11 / 10.
+      " packed 곱셈은 고정소수점(FIXPT) 설정에 따라 행별로 정수 반올림될 수 있다.
+      " 레포 표준대로 decfloat34로 정확히 계산한 뒤 packed에 대입해 10% 인상한다.
+      <row>-price = CONV decfloat34( <row>-price ) * CONV decfloat34( '1.1' ).
     ENDLOOP.
     result = REDUCE amount( INIT sum = 0 FOR row IN tab NEXT sum = sum + row-price ).
   ENDMETHOD.
