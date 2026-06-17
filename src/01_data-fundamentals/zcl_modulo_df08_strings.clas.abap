@@ -17,8 +17,9 @@ CLASS zcl_modulo_df08_strings DEFINITION
       IMPORTING text          TYPE string
       RETURNING VALUE(result) TYPE string.
 
-    "! 문자열 안의 숫자 개수. FIND ... REGEX(7.54 호환)로 \d의 전체 매치 수.
-    "! 7.55+에서는 REGEX 대신 PCRE 추가어가 표준이다.
+    "! 문자열 안의 숫자 개수. 내장 함수 count_any_of로 0-9 문자 수를 센다 —
+    "! POSIX REGEX는 7.55+에서 deprecated, PCRE는 7.55+ 전용이라 7.54 호환·
+    "! 무경고를 위해 정규식 없이 처리한다(정규식은 7.55+ FIND PCRE).
     METHODS digit_count
       IMPORTING text         TYPE string
       RETURNING VALUE(count) TYPE i.
@@ -85,7 +86,7 @@ CLASS zcl_modulo_df08_strings IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD digit_count.
-    FIND ALL OCCURRENCES OF REGEX `\d` IN text MATCH COUNT count.
+    count = count_any_of( val = text sub = `0123456789` ).
   ENDMETHOD.
 
   METHOD trim.

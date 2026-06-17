@@ -84,7 +84,9 @@ CLASS zcl_modulo_df07_datetime IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD is_month_end.
-    DATA(next_day) = date + 1.
+    " date + 1은 산술 결과가 i(일수)로 추론돼 오프셋 접근이 안 된다.
+    " CONV d로 정수 day-count를 다시 날짜 타입으로 변환해야 +4(2) 접근 가능.
+    DATA(next_day) = CONV d( date + 1 ).
     result = xsdbool( next_day+4(2) <> date+4(2) ).
   ENDMETHOD.
 
