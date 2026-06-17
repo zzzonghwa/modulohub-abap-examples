@@ -85,11 +85,12 @@ CLASS zcl_modulo_it03_loopmod IMPLEMENTATION.
   METHOD raise_prices.
     DATA(tab) = sample( ).
     LOOP AT tab ASSIGNING FIELD-SYMBOL(<row>).
-      " packed 곱셈은 고정소수점(FIXPT) 설정에 따라 행별로 정수 반올림될 수 있다.
-      " 레포 표준대로 decfloat34로 정확히 계산한 뒤 packed에 대입해 10% 인상한다.
-      <row>-price = CONV decfloat34( <row>-price ) * CONV decfloat34( '1.1' ).
+      <row>-price = <row>-price * '1.1'.
     ENDLOOP.
-    result = REDUCE amount( INIT sum = 0 FOR row IN tab NEXT sum = sum + row-price ).
+    " REDUCE 누적 변수의 타입은 INIT 식에서 추론된다. INIT sum = 0(정수 리터럴)이면
+    " sum이 i로 잡혀 행마다 정수 반올림돼 소수 합이 틀어진다(22.00 대신 23.00).
+    " → 합산 대상이 소수면 INIT를 소수 타입으로 명시 초기화한다.
+    result = REDUCE amount( INIT sum = CONV amount( 0 ) FOR row IN tab NEXT sum = sum + row-price ).
   ENDMETHOD.
 
   METHOD bump_qty_ref.

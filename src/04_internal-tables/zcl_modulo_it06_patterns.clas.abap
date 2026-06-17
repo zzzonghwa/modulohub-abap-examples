@@ -156,7 +156,7 @@ CLASS zcl_modulo_it06_patterns IMPLEMENTATION.
 
   METHOD grand_total.
     DATA(ords) = orders_sample( ).
-    result = REDUCE amount( INIT sum = 0 FOR o IN ords NEXT sum = sum + o-amount ).
+    result = REDUCE amount( INIT sum = CONV amount( 0 ) FOR o IN ords NEXT sum = sum + o-amount ).
   ENDMETHOD.
 
   METHOD customer_map.

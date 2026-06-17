@@ -107,12 +107,12 @@ CLASS zcl_modulo_it05_ctorexpr IMPLEMENTATION.
 
   METHOD reduce_total_salary.
     DATA(emps) = sample( ).
-    result = REDUCE salary( INIT sum = 0 FOR e IN emps NEXT sum = sum + e-salary ).
+    result = REDUCE salary( INIT sum = CONV salary( 0 ) FOR e IN emps NEXT sum = sum + e-salary ).
   ENDMETHOD.
 
   METHOD reduce_max_salary.
     DATA(emps) = sample( ).
-    result = REDUCE salary( INIT max = 0
+    result = REDUCE salary( INIT max = CONV salary( 0 )
                             FOR e IN emps
                             NEXT max = COND #( WHEN e-salary > max THEN e-salary ELSE max ) ).
   ENDMETHOD.
