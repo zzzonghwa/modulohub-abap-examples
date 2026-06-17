@@ -4,6 +4,9 @@ CLASS zcl_modulo_df02_convert DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
+    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+    INTERFACES if_oo_adt_classrun.
+
     "! 숫자 텍스트 필드(타입 n). 유효값은 숫자 문자뿐이고 초기값은 모두 '0'.
     TYPES digit_string TYPE n LENGTH 10.
 
@@ -54,6 +57,20 @@ ENDCLASS.
 
 
 CLASS zcl_modulo_df02_convert IMPLEMENTATION.
+  METHOD if_oo_adt_classrun~main.
+    out->write( `=== DF02 변환 CONV/EXACT ===` ).
+    out->write( |to_int_rounded( 2.6 ) = { to_int_rounded( CONV #( '2.6' ) ) }| ).
+    out->write( |to_text( 42 )         = { to_text( 42 ) }| ).
+    out->write( |digits_to_int         = { digits_to_int( '0000000042' ) }| ).
+    TRY.
+        out->write( |to_int_lossless( 4 ) = { to_int_lossless( CONV #( '4' ) ) }| ).
+        out->write( |exact_ratio( 1, 4 )  = { exact_ratio( dividend = 1 divisor = 4 ) }| ).
+        exact_ratio( dividend = 1 divisor = 3 ).
+      CATCH cx_sy_conversion_error.
+        out->write( `exact_ratio( 1, 3 ) -> 무손실 불가 예외(정상)` ).
+    ENDTRY.
+  ENDMETHOD.
+
   METHOD to_int_rounded.
     result = CONV i( value ).
   ENDMETHOD.

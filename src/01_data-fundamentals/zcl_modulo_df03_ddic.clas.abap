@@ -4,6 +4,9 @@ CLASS zcl_modulo_df03_ddic DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
+    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+    INTERFACES if_oo_adt_classrun.
+
     "! DDIC 데이터 요소를 TYPE으로 소비한다. 도메인 ZMODULO_DEBIT_CREDIT가
     "! 기술 속성(CHAR 1 + 고정값 H/S)을, 동명 데이터 요소가 의미(레이블)를
     "! 담는다. 프로그램은 도메인을 직접 참조하지 못하고 데이터 요소를 거친다.
@@ -57,6 +60,20 @@ ENDCLASS.
 
 
 CLASS zcl_modulo_df03_ddic IMPLEMENTATION.
+  METHOD if_oo_adt_classrun~main.
+    out->write( `=== DF03 DDIC 도메인/데이터요소 ===` ).
+    out->write( |is_debit( 'S' )  = { is_debit( debit ) }| ).
+    out->write( |is_credit( 'H' ) = { is_credit( credit ) }| ).
+    out->write( |is_valid( 'Z' )  = { is_valid( 'Z' ) }| ).
+    TRY.
+        out->write( |label_of( 'S' )    = { label_of( debit ) }| ).
+        out->write( |opposite_of( 'S' ) = { opposite_of( debit ) }| ).
+        label_of( 'Z' ).
+      CATCH cx_parameter_invalid_range.
+        out->write( `label_of( 'Z' ) -> 고정값 아님 가드 예외(정상)` ).
+    ENDTRY.
+  ENDMETHOD.
+
   METHOD is_debit.
     result = xsdbool( sign = debit ).
   ENDMETHOD.

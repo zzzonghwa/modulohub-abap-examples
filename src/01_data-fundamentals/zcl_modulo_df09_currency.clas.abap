@@ -4,6 +4,9 @@ CLASS zcl_modulo_df09_currency DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
+    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+    INTERFACES if_oo_adt_classrun.
+
     "! 달러 금액(소수 2자리). DDIC CURR 타입을 프로그램 레벨에서 p로 모사한다.
     TYPES amount_usd TYPE p LENGTH 8 DECIMALS 2.
 
@@ -56,6 +59,20 @@ ENDCLASS.
 
 
 CLASS zcl_modulo_df09_currency IMPLEMENTATION.
+  METHOD if_oo_adt_classrun~main.
+    out->write( `=== DF09 통화/수량 ===` ).
+    out->write( |add_usd( 10.50, 4.50 ) = { add_usd( first = CONV #( '10.50' ) second = CONV #( '4.50' ) ) }| ).
+    out->write( |scale_usd( 100, x1.5 )  = { scale_usd( amount = CONV #( '100.00' ) rate = CONV #( '1.5' ) ) }| ).
+    out->write( |percent_of( 200, 10% )  = { percent_of( amount = CONV #( '200.00' ) percent = CONV #( '10' ) ) }| ).
+    out->write( |to_krw( 10, x1300 )     = { to_krw( usd = CONV #( '10.00' ) rate = CONV #( '1300' ) ) }| ).
+    TRY.
+        out->write( |split_evenly( 30, 4 )  = { split_evenly( amount = CONV #( '30.00' ) shares = 4 ) }| ).
+        split_evenly( amount = CONV #( '30.00' ) shares = 0 ).
+      CATCH cx_parameter_invalid_range.
+        out->write( `split_evenly( 0명 ) -> 가드 예외(정상)` ).
+    ENDTRY.
+  ENDMETHOD.
+
   METHOD add_usd.
     result = first + second.
   ENDMETHOD.

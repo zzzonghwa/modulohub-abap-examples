@@ -4,6 +4,9 @@ CLASS zcl_modulo_pf03_message DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
+    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+    INTERFACES if_oo_adt_classrun.
+
     "! 캡처된 메시지. MESSAGE ... INTO는 화면에 띄우지 않고 텍스트와
     "! sy-msg* 필드를 채운다(로깅·검증 게이트용).
     TYPES:
@@ -51,6 +54,18 @@ ENDCLASS.
 
 
 CLASS zcl_modulo_pf03_message IMPLEMENTATION.
+  METHOD if_oo_adt_classrun~main.
+    out->write( `=== PF03 메시지/로깅 ===` ).
+    DATA(info) = capture_info( first = `hello` second = `world` ).
+    out->write( |capture_info: id={ info-id } no={ info-number } type={ info-type }| ).
+    out->write( |capture_info text = { info-text }| ).
+    DATA(err) = capture_typed( message_type = 'E' detail = `boom` ).
+    out->write( |capture_typed( E ): type={ err-type } text={ err-text }| ).
+    out->write( |type_text( E )       = { type_text( 'E' ) }| ).
+    out->write( |is_blocking_type( E )= { is_blocking_type( 'E' ) }| ).
+    out->write( |is_blocking_type( S )= { is_blocking_type( 'S' ) }| ).
+  ENDMETHOD.
+
   METHOD capture_info.
     " 398(00)은 placeholder 4개(&1&2&3&4). WITH 개수를 placeholder 수에
     " 맞춰야 ATC(Extended Program Check)가 통과한다 — 나머지는 빈 칸.

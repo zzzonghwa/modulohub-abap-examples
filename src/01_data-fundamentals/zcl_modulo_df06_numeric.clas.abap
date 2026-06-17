@@ -4,6 +4,9 @@ CLASS zcl_modulo_df06_numeric DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
+    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+    INTERFACES if_oo_adt_classrun.
+
     "! 정수 나눗셈의 몫(DIV). 소수부를 버린다.
     METHODS quotient
       IMPORTING dividend      TYPE i
@@ -63,6 +66,24 @@ ENDCLASS.
 
 
 CLASS zcl_modulo_df06_numeric IMPLEMENTATION.
+  METHOD if_oo_adt_classrun~main.
+    out->write( `=== DF06 숫자 연산 ===` ).
+    out->write( |quotient( 7, 2 )  = { quotient( dividend = 7 divisor = 2 ) }| ).
+    out->write( |remainder( 7, 2 ) = { remainder( dividend = 7 divisor = 2 ) }| ).
+    out->write( |power( 2, 5 )      = { power( base = 2 exponent = 5 ) }| ).
+    out->write( |ratio( 1, 4 )      = { ratio( dividend = 1 divisor = 4 ) }| ).
+    out->write( |absolute( -5 )     = { absolute( -5 ) }| ).
+    out->write( |sign_of( -9 )      = { sign_of( -9 ) }| ).
+    out->write( |fraction( 3.25 )   = { fraction( CONV #( '3.25' ) ) }| ).
+    out->write( |truncate( -3.9 )   = { truncate( CONV #( '-3.9' ) ) }| ).
+    TRY.
+        out->write( |safe_quotient( 8, 2 ) = { safe_quotient( dividend = 8 divisor = 2 ) }| ).
+        safe_quotient( dividend = 8 divisor = 0 ).
+      CATCH cx_sy_zerodivide.
+        out->write( `safe_quotient( 8, 0 ) -> 0 나눗셈 가드 예외(정상)` ).
+    ENDTRY.
+  ENDMETHOD.
+
   METHOD quotient.
     result = dividend DIV divisor.
   ENDMETHOD.

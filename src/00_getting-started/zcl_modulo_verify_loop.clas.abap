@@ -4,6 +4,9 @@ CLASS zcl_modulo_verify_loop DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
+    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+    INTERFACES if_oo_adt_classrun.
+
     TYPES amount_value TYPE p LENGTH 13 DECIMALS 2.
     TYPES amount_list  TYPE STANDARD TABLE OF amount_value WITH EMPTY KEY.
 
@@ -18,6 +21,15 @@ ENDCLASS.
 
 
 CLASS zcl_modulo_verify_loop IMPLEMENTATION.
+  METHOD if_oo_adt_classrun~main.
+    out->write( `=== 검증 루프 데모: 금액 합산 ===` ).
+    DATA(amounts) = VALUE amount_list(
+      ( CONV #( '10.00' ) ) ( CONV #( '20.50' ) ) ( CONV #( '4.50' ) ) ).
+    out->write( |amounts    = 10.00, 20.50, 4.50| ).
+    out->write( |sum_amounts = { sum_amounts( amounts ) }| ).
+    out->write( |sum( empty )= { sum_amounts( VALUE #( ) ) }| ).
+  ENDMETHOD.
+
   METHOD sum_amounts.
     total = REDUCE amount_value( INIT sum TYPE amount_value
                                  FOR amount IN amounts

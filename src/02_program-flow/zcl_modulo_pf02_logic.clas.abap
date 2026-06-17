@@ -4,6 +4,9 @@ CLASS zcl_modulo_pf02_logic DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
+    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+    INTERFACES if_oo_adt_classrun.
+
     TYPES number_list TYPE STANDARD TABLE OF i WITH EMPTY KEY.
 
     "! 빈 문자열인지(술어식 IS INITIAL + xsdbool). xsdbool은 c LENGTH 1
@@ -57,6 +60,18 @@ ENDCLASS.
 
 
 CLASS zcl_modulo_pf02_logic IMPLEMENTATION.
+  METHOD if_oo_adt_classrun~main.
+    out->write( `=== PF02 논리식/술어 ===` ).
+    out->write( |is_blank( `` )       = { is_blank( `` ) }| ).
+    out->write( |in_range( 5,1,10 )   = { in_range( value = 5 low = 1 high = 10 ) }| ).
+    DATA(numbers) = VALUE number_list( ( 1 ) ( 2 ) ( 3 ) ).
+    out->write( |contains_value( 2 )  = { contains_value( numbers = numbers value = 2 ) }| ).
+    out->write( |all_positive         = { all_positive( numbers ) }| ).
+    out->write( |mentions( abap )     = { mentions( text = `clean abap` word = `abap` ) }| ).
+    out->write( |starts_with( abap )  = { starts_with( text = `abapGit` prefix = `abap` ) }| ).
+    out->write( |is_bound( me )       = { is_bound( me ) }| ).
+  ENDMETHOD.
+
   METHOD is_blank.
     result = xsdbool( text IS INITIAL ).
   ENDMETHOD.

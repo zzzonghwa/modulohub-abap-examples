@@ -4,6 +4,9 @@ CLASS zcl_modulo_df05_struct DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
+    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+    INTERFACES if_oo_adt_classrun.
+
     "! 구조 타입(structured type). 연관된 필드를 한 단위로 묶는 값 객체.
     TYPES:
       BEGIN OF address,
@@ -60,6 +63,17 @@ ENDCLASS.
 
 
 CLASS zcl_modulo_df05_struct IMPLEMENTATION.
+  METHOD if_oo_adt_classrun~main.
+    out->write( `=== DF05 구조 ===` ).
+    DATA(addr) = VALUE address( person_name = `Kim` city = `Seoul` ).
+    out->write( |format_label   = { format_label( addr ) }| ).
+    out->write( |is_complete    = { is_complete( addr ) }| ).
+    out->write( |with_city(Busan)| ).
+    out->write( with_city( addr = addr city = `Busan` ) ).
+    out->write( |to_contact (CORRESPONDING, phone 미이동)| ).
+    out->write( to_contact( addr ) ).
+  ENDMETHOD.
+
   METHOD format_label.
     label = |{ addr-person_name }, { addr-city }|.
   ENDMETHOD.

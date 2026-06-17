@@ -4,6 +4,9 @@ CLASS zcl_modulo_df08_strings DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
+    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+    INTERFACES if_oo_adt_classrun.
+
     "! 문자열 템플릿(|...|, 7.40+)과 내장 함수 to_upper로 대문자 + 느낌표.
     METHODS shout
       IMPORTING text          TYPE string
@@ -56,6 +59,23 @@ ENDCLASS.
 
 
 CLASS zcl_modulo_df08_strings IMPLEMENTATION.
+  METHOD if_oo_adt_classrun~main.
+    out->write( `=== DF08 문자열 ===` ).
+    out->write( |shout( abap )       = { shout( `abap` ) }| ).
+    out->write( |whisper( ABAP )     = { whisper( `ABAP` ) }| ).
+    out->write( |digit_count( a1b2c3 ) = { digit_count( `a1b2c3` ) }| ).
+    out->write( |trim( '  a  b  ' )  = { trim( `  a  b  ` ) }| ).
+    out->write( |replace_first(a-a-a)= { replace_first( text = `a-a-a` what = `-` with = `+` ) }| ).
+    out->write( |is_palindrome(Level)= { is_palindrome( `Level` ) }| ).
+    out->write( |mask_but_last4      = { mask_but_last4( `1234567890` ) }| ).
+    TRY.
+        out->write( |word_at( 2 )        = { word_at( text = `clean abap rocks` index = 2 ) }| ).
+        word_at( text = `clean abap` index = 0 ).
+      CATCH cx_parameter_invalid_range.
+        out->write( `word_at( index 0 ) -> 가드 예외(정상)` ).
+    ENDTRY.
+  ENDMETHOD.
+
   METHOD shout.
     result = |{ to_upper( text ) }!|.
   ENDMETHOD.

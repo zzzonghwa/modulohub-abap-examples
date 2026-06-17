@@ -4,6 +4,9 @@ CLASS zcl_modulo_df07_datetime DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
+    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+    INTERFACES if_oo_adt_classrun.
+
     "! 두 날짜 사이의 일수. 타입 d끼리 빼면 결과는 일수(i)다.
     METHODS days_between
       IMPORTING from_date   TYPE d
@@ -45,6 +48,22 @@ ENDCLASS.
 
 
 CLASS zcl_modulo_df07_datetime IMPLEMENTATION.
+  METHOD if_oo_adt_classrun~main.
+    out->write( `=== DF07 날짜/시간 ===` ).
+    DATA(jan_first) = CONV d( '20260101' ).
+    DATA(feb_first) = CONV d( '20260201' ).
+    out->write( |days_between( 1/1, 2/1 ) = { days_between( from_date = jan_first to_date = feb_first ) }| ).
+    out->write( |add_days( 1/1, +31 )      = { add_days( date = jan_first days = 31 ) }| ).
+    out->write( |first_day_of_month( 2/17 )= { first_day_of_month( CONV #( '20260217' ) ) }| ).
+    out->write( |is_month_end( 1/31 )      = { is_month_end( CONV #( '20260131' ) ) }| ).
+    out->write( |quarter_of( 8/15 )        = { quarter_of( CONV #( '20260815' ) ) }| ).
+    TRY.
+        days_between_checked( from_date = feb_first to_date = jan_first ).
+      CATCH cx_parameter_invalid_range.
+        out->write( `days_between_checked( 역순 ) -> 가드 예외(정상)` ).
+    ENDTRY.
+  ENDMETHOD.
+
   METHOD days_between.
     days = to_date - from_date.
   ENDMETHOD.

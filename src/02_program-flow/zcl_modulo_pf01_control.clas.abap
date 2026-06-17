@@ -4,6 +4,9 @@ CLASS zcl_modulo_pf01_control DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
+    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+    INTERFACES if_oo_adt_classrun.
+
     TYPES number_list TYPE STANDARD TABLE OF i WITH EMPTY KEY.
     TYPES text_list   TYPE STANDARD TABLE OF string WITH EMPTY KEY.
     "! 등급 한 글자. RETURNING은 완전 타입이어야 하므로(제네릭 c 금지)
@@ -70,6 +73,23 @@ ENDCLASS.
 
 
 CLASS zcl_modulo_pf01_control IMPLEMENTATION.
+  METHOD if_oo_adt_classrun~main.
+    out->write( `=== PF01 제어 구조 ===` ).
+    out->write( |classify( 95 )     = { classify( 95 ) }| ).
+    out->write( |weekday_name( 1 )  = { weekday_name( 1 ) }| ).
+    out->write( |digit_sum( 12345 ) = { digit_sum( 12345 ) }| ).
+    DATA(numbers) = VALUE number_list( ( 1 ) ( -5 ) ( 2 ) ( 0 ) ( 3 ) ).
+    out->write( |sum_positives      = { sum_positives( numbers ) }| ).
+    out->write( |fizzbuzz( 1..5 )| ).
+    out->write( fizzbuzz( 5 ) ).
+    TRY.
+        out->write( |factorial( 5 )     = { factorial( 5 ) }| ).
+        factorial( -1 ).
+      CATCH cx_parameter_invalid_range.
+        out->write( `factorial( -1 ) -> 가드 예외(정상)` ).
+    ENDTRY.
+  ENDMETHOD.
+
   METHOD classify.
     IF score >= 90.
       grade = 'A'.

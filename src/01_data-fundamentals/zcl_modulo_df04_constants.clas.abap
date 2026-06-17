@@ -4,6 +4,9 @@ CLASS zcl_modulo_df04_constants DEFINITION
   CREATE PUBLIC.
 
   PUBLIC SECTION.
+    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+    INTERFACES if_oo_adt_classrun.
+
     "! 열거형(ENUM, since 7.51). 베이스 타입 미지정 시 i. 열거 변수에는
     "! 열거값 외 대입이 금지되어 상수 그룹보다 타입 안전하다.
     TYPES:
@@ -60,6 +63,17 @@ ENDCLASS.
 
 
 CLASS zcl_modulo_df04_constants IMPLEMENTATION.
+  METHOD if_oo_adt_classrun~main.
+    out->write( `=== DF04 상수/ENUM ===` ).
+    out->write( |max_retries          = { max_retries }| ).
+    out->write( |level_text( error )  = { level_text( error ) }| ).
+    out->write( |is_blocking( error ) = { is_blocking( error ) }| ).
+    out->write( |is_blocking( info )  = { is_blocking( info ) }| ).
+    out->write( |level_text( escalate( info ) ) = { level_text( escalate( info ) ) }| ).
+    out->write( |remaining_retries( 1 ) = { remaining_retries( 1 ) }| ).
+    out->write( |remaining_retries( 5 ) = { remaining_retries( 5 ) }| ).
+  ENDMETHOD.
+
   METHOD default_level.
     level = info.
   ENDMETHOD.
