@@ -27,8 +27,11 @@ CLASS lcl_stack IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD pop.
+    " 빈 스택은 꺼낼 값이 없다 — 명시적으로 예외를 던진다(테이블 식 암묵 예외 대신).
+    IF items IS INITIAL.
+      RAISE EXCEPTION TYPE cx_sy_itab_line_not_found.
+    ENDIF.
     DATA(last) = lines( items ).
-    " 빈 스택(last=0)이면 테이블 식이 cx_sy_itab_line_not_found를 던진다.
     result = items[ last ].
     DELETE items INDEX last.
   ENDMETHOD.
