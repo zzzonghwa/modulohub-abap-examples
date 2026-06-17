@@ -6,13 +6,16 @@ CLASS zcl_modulo_pf01_control DEFINITION
   PUBLIC SECTION.
     TYPES number_list TYPE STANDARD TABLE OF i WITH EMPTY KEY.
     TYPES text_list   TYPE STANDARD TABLE OF string WITH EMPTY KEY.
+    "! 등급 한 글자. RETURNING은 완전 타입이어야 하므로(제네릭 c 금지)
+    "! 길이를 고정한 별칭을 쓴다.
+    TYPES grade_value TYPE c LENGTH 1.
 
     "! 점수를 등급으로 분류한다. IF/ELSEIF/ELSE 체인.
     "! @parameter score | 점수
     "! @parameter grade | A(>=90) / B(>=80) / C(그 외)
     METHODS classify
       IMPORTING score        TYPE i
-      RETURNING VALUE(grade) TYPE c.
+      RETURNING VALUE(grade) TYPE grade_value.
 
     "! 요일 번호를 이름으로 변환한다. CASE ... WHEN ... WHEN OTHERS.
     "! @parameter day  | 1=월 ... 7=일
