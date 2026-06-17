@@ -28,7 +28,8 @@ CLASS zcl_modulo_df02_convert DEFINITION
       RETURNING VALUE(result) TYPE i
       RAISING   cx_sy_conversion_error.
 
-    "! 수치를 문자열로 변환한다(CONV string). 선행/후행 공백 없이 채운다.
+    "! 수치를 문자열로 변환한다. string 템플릿으로 선행 공백 없이 포맷한다
+    "! (CONV string은 정수에 선행 공백을 붙이는 함정이 있다).
     "! @parameter value  | 정수
     "! @parameter result | 문자열 표현
     METHODS to_text
@@ -80,7 +81,9 @@ CLASS zcl_modulo_df02_convert IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD to_text.
-    result = CONV string( value ).
+    " CONV string( i )는 선행 공백을 붙인다. string 템플릿은 패딩 없이
+    " 숫자를 그대로 포맷하므로 "42" 같은 깔끔한 결과를 준다.
+    result = |{ value }|.
   ENDMETHOD.
 
   METHOD digits_to_int.
