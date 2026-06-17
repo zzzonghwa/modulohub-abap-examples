@@ -1,6 +1,6 @@
 # ModuloHub ABAP Examples
 
-[ModuloHub](https://modulohub.com) ABAP 학습 트랙의 **검증된 실행 가능한 ABAP 예제** 모음입니다. 각 예제는 SAP S/4HANA(ABAP Platform 7.54+)에서 컴파일·실행·ATC 검사를 통과합니다.
+[ModuloHub](https://modulohub.com) ABAP 학습 트랙의 **실행 가능한 ABAP 예제** 모음입니다. 각 예제는 SAP S/4HANA(ABAP Platform 7.54+)에서 컴파일·실행·ATC 검사를 통과하도록 작성했습니다.
 
 ## 사용법 (abapGit import)
 
@@ -16,7 +16,7 @@
 
 ## 커리큘럼 로드맵
 
-전체 커리큘럼(12섹션·62편)의 **정본은 [ModuloHub ABAP 트랙](https://modulohub.com/learn/abap)**입니다. 이 레포는 그 커리큘럼의 **실행 코드 동반자**로, 검증을 통과한 단원의 코드를 점증적으로 수록합니다. 아래는 섹션 단위 로드맵입니다.
+전체 커리큘럼(12섹션·62편)의 **정본은 [ModuloHub ABAP 트랙](https://modulohub.com/learn/abap)**입니다. 이 레포는 그 커리큘럼의 **실행 코드 동반자**로, 준비된 단원의 코드를 점증적으로 수록합니다. 아래는 섹션 단위 로드맵입니다.
 
 | NN | 섹션 슬러그 | 편수 |
 |---|---|---|
@@ -34,7 +34,7 @@
 | 11 | `capstone` | 3 |
 
 ## 수록 예제
-검증(activate → ABAP Unit → ATC)을 통과해 abapGit import가 가능한 단원을 등재합니다. 코드가 추가될 때마다 행이 늘어납니다.
+abapGit import가 가능한 단원을 등재합니다. 코드가 추가될 때마다 행이 늘어납니다. import 후 ADT에서 활성화 → ABAP Unit(`Ctrl+Shift+F10`) → ATC를 각자 환경에서 수행해 확인하세요.
 
 | 섹션 | 단원 | 폴더 | ModuloHub 노트 |
 |---|---|---|---|
@@ -51,6 +51,12 @@
 | 02 `program-flow` | 제어 구조 (IF·CASE·DO·WHILE) | `src/02_program-flow` `ZCL_MODULO_PF01_CONTROL` | [트랙](https://modulohub.com/learn/abap) |
 | 02 `program-flow` | 논리식·술어 함수 | `src/02_program-flow` `ZCL_MODULO_PF02_LOGIC` | [트랙](https://modulohub.com/learn/abap) |
 | 02 `program-flow` | 메시지·로깅 | `src/02_program-flow` `ZCL_MODULO_PF03_MESSAGE` | [트랙](https://modulohub.com/learn/abap) |
+| 03 `oo-foundations` | 메서드·모듈화 (인스턴스·정적·함수형) | `src/03_oo-foundations` `ZCL_MODULO_OO01_METHODS` | [트랙](https://modulohub.com/learn/abap) |
+| 03 `oo-foundations` | 클래스·객체·캡슐화·네이밍 | `src/03_oo-foundations` `ZCL_MODULO_OO02_CLASS` | [트랙](https://modulohub.com/learn/abap) |
+| 03 `oo-foundations` | 가시성·생성자·NEW | `src/03_oo-foundations` `ZCL_MODULO_OO03_CTOR` | [트랙](https://modulohub.com/learn/abap) |
+| 03 `oo-foundations` | 메서드 시그니처 (IMPORTING~RAISING) | `src/03_oo-foundations` `ZCL_MODULO_OO04_SIGNATURE` | [트랙](https://modulohub.com/learn/abap) |
+| 03 `oo-foundations` | 상속·다형성·인터페이스 | `src/03_oo-foundations` `ZCL_MODULO_OO05_INHERIT` | [트랙](https://modulohub.com/learn/abap) |
+| 03 `oo-foundations` | ABAP Unit 최소 사용법 | `src/03_oo-foundations` `ZCL_MODULO_OO06_AUNIT` | [트랙](https://modulohub.com/learn/abap) |
 
 ## 출처·라이선스
 참고 원전: [SAP-samples/abap-cheat-sheets](https://github.com/SAP-samples/abap-cheat-sheets), [SAP/styleguides](https://github.com/SAP/styleguides) — **인용·참조이며 코드 복제가 아닙니다.** 라이선스: [Apache-2.0](LICENSE).
