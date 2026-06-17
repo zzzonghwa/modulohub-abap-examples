@@ -29,11 +29,25 @@
 
 ## 수록 예제
 
-검증(activate → ABAP Unit → ATC)을 통과해 abapGit import가 가능한 단원만 등재합니다. 코드가 추가될 때마다 행이 늘어납니다.
+검증(activate → ABAP Unit → ATC)을 통과해 abapGit import가 가능한 단원을 등재합니다. 코드가 추가될 때마다 행이 늘어납니다.
+
+> **검증 상태:** `00_getting-started`는 SAP 시스템(7.57)에서 4단계 전체 통과. `01_data-fundamentals`·`02_program-flow`는 현재 **로컬 abaplint(구문·Clean ABAP 정적 검사) 통과**까지 완료했고, SAP 시스템에서의 activate → ABAP Unit → ATC는 import 후 수행한다(미수행 시 해당 단계 미검증).
 
 | 섹션 | 단원 | 폴더 | ModuloHub 노트 |
 |---|---|---|---|
 | 00 `getting-started` | 검증 루프 체험 (첫 프로그램) | `src/00_getting-started` | [트랙](https://modulohub.com/learn/abap) |
+| 01 `data-fundamentals` | 타입 시스템·TYPES/DATA·인라인 선언 | `src/01_data-fundamentals` `ZCL_MODULO_DF01_TYPES` | [트랙](https://modulohub.com/learn/abap) |
+| 01 `data-fundamentals` | 기본 타입·CONV·EXACT | `src/01_data-fundamentals` `ZCL_MODULO_DF02_CONVERT` | [트랙](https://modulohub.com/learn/abap) |
+| 01 `data-fundamentals` | DDIC 타입·도메인·데이터 요소 | `src/01_data-fundamentals` `ZCL_MODULO_DF03_DDIC` (+`ZMODULO_DEBIT_CREDIT` 도메인·데이터 요소) | [트랙](https://modulohub.com/learn/abap) |
+| 01 `data-fundamentals` | 상수·텍스트 기호·ENUM | `src/01_data-fundamentals` `ZCL_MODULO_DF04_CONSTANTS` | [트랙](https://modulohub.com/learn/abap) |
+| 01 `data-fundamentals` | 구조(structure) | `src/01_data-fundamentals` `ZCL_MODULO_DF05_STRUCT` | [트랙](https://modulohub.com/learn/abap) |
+| 01 `data-fundamentals` | 숫자 연산 (DIV·MOD·계산 타입) | `src/01_data-fundamentals` `ZCL_MODULO_DF06_NUMERIC` | [트랙](https://modulohub.com/learn/abap) |
+| 01 `data-fundamentals` | 날짜·시간·타임스탬프 | `src/01_data-fundamentals` `ZCL_MODULO_DF07_DATETIME` | [트랙](https://modulohub.com/learn/abap) |
+| 01 `data-fundamentals` | 문자열·정규식·문자열 함수 | `src/01_data-fundamentals` `ZCL_MODULO_DF08_STRINGS` | [트랙](https://modulohub.com/learn/abap) |
+| 01 `data-fundamentals` | 통화·수량 처리 | `src/01_data-fundamentals` `ZCL_MODULO_DF09_CURRENCY` | [트랙](https://modulohub.com/learn/abap) |
+| 02 `program-flow` | 제어 구조 (IF·CASE·DO·WHILE) | `src/02_program-flow` `ZCL_MODULO_PF01_CONTROL` | [트랙](https://modulohub.com/learn/abap) |
+| 02 `program-flow` | 논리식·술어 함수 | `src/02_program-flow` `ZCL_MODULO_PF02_LOGIC` | [트랙](https://modulohub.com/learn/abap) |
+| 02 `program-flow` | 메시지·로깅 | `src/02_program-flow` `ZCL_MODULO_PF03_MESSAGE` | [트랙](https://modulohub.com/learn/abap) |
 
 ## 출처·라이선스
 
