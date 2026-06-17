@@ -6,7 +6,13 @@
 
 1. ABAP 시스템에 [abapGit](https://abapgit.org)을 설치합니다.
 2. abapGit에서 "Online" → 이 레포 URL(`https://github.com/zzzonghwa/modulohub-abap-examples`)로 새 저장소를 만들고, 전용 패키지(예: `$MODULOHUB_ABAP` 로컬 또는 `ZMODULOHUB_ABAP` 운반)로 pull합니다.
-3. `src/<단원>/` 의 클래스·프로그램을 활성화해 실행합니다.
+3. `src/<단원>/` 의 클래스를 활성화합니다.
+
+## 예제 실행·학습
+
+- **바로 실행 (ADT)**: 모든 예제 클래스는 `IF_OO_ADT_CLASSRUN`을 구현합니다. ADT(Eclipse)에서 클래스를 열고 **F9**(Run As → ABAP Application)를 누르면 `main`이 각 메서드를 호출해 콘솔에 결과를 출력합니다 — 별도 리포트·드라이버 없이 즉시 체험할 수 있습니다.
+- **테스트 확인**: 각 클래스의 `LTCL_*` 테스트 클래스를 ADT에서 `Ctrl+Shift+F10`(Run As → ABAP Unit Test)로 실행합니다.
+- **`/deps` 폴더**: `IF_OO_ADT_CLASSRUN`·`IF_OO_ADT_OUTPUT`의 **abaplint 전용 스텁**입니다. abapGit `STARTING_FOLDER`(`/src/`) 밖이라 SAP에 import되지 않으며(표준 객체와 무관), 로컬 정적 검사 시 인터페이스 해석에만 쓰입니다.
 
 ## 커리큘럼 로드맵
 
