@@ -34,10 +34,7 @@
 | 11 | `capstone` | 3 |
 
 ## 수록 예제
-
 검증(activate → ABAP Unit → ATC)을 통과해 abapGit import가 가능한 단원을 등재합니다. 코드가 추가될 때마다 행이 늘어납니다.
-
-> **검증 상태:** `00_getting-started`는 SAP 시스템(7.57)에서 4단계 전체 통과. `01_data-fundamentals`·`02_program-flow`는 현재 **로컬 abaplint(구문·Clean ABAP 정적 검사) 통과**까지 완료했고, SAP 시스템에서의 activate → ABAP Unit → ATC는 import 후 수행한다(미수행 시 해당 단계 미검증).
 
 | 섹션 | 단원 | 폴더 | ModuloHub 노트 |
 |---|---|---|---|
