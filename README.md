@@ -56,5 +56,4 @@
 | 02 `program-flow` | 메시지·로깅 | `src/02_program-flow` `ZCL_MODULO_PF03_MESSAGE` | [트랙](https://modulohub.com/learn/abap) |
 
 ## 출처·라이선스
-
-코드는 직접 저작하고 SAP 시스템(비프로덕션 SAP)에서 검증했습니다. 참고 원전: *Clean ABAP*(SAP Press), *ABAP to the Future*(SAP Press), [SAP-samples/abap-cheat-sheets](https://github.com/SAP-samples/abap-cheat-sheets), [SAP/styleguides](https://github.com/SAP/styleguides) — **인용·참조이며 코드 복제가 아닙니다.** 라이선스: [Apache-2.0](LICENSE).
+참고 원전: *Clean ABAP*(SAP Press), *ABAP to the Future*(SAP Press), [SAP-samples/abap-cheat-sheets](https://github.com/SAP-samples/abap-cheat-sheets), [SAP/styleguides](https://github.com/SAP/styleguides) — **인용·참조이며 코드 복제가 아닙니다.** 라이선스: [Apache-2.0](LICENSE).
