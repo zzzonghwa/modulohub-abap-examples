@@ -60,6 +60,8 @@ CLASS zcl_modulo_exec06_dml IMPLEMENTATION.
     upsert_flight( VALUE #( carrid = 'LH' connid = '0400' seatsmax = 280 seatsocc = 10 ) ).
     out->write( |count(업서트) = { count( ) }| ).
     out->write( |delete_flight = { delete_flight( carrid = 'AA' connid = '0017' ) }| ).
+    " 데모 변경을 되돌려 표를 깨끗이 둔다 — ROLLBACK WORK = LUW의 보류 변경 폐기.
+    ROLLBACK WORK.
   ENDMETHOD.
 
   METHOD insert_flight.
