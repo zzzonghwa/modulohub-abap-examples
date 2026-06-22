@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_MODULO_EXPR04_CONV</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Modern expressions: CONV, CAST, REF, EXACT</DESCRIPT>
+    <DESCRIPT>Modern expr: CONV/CAST/REF/EXACT - convert, cast, reference, lossless</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

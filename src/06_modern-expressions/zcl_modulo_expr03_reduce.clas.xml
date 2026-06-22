@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_MODULO_EXPR03_REDUCE</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Modern expressions: REDUCE (fold/accumulate)</DESCRIPT>
+    <DESCRIPT>Modern expressions: REDUCE (fold, multi-accum, FOR GROUPS)</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
