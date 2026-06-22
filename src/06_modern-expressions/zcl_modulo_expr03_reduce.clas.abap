@@ -264,16 +264,12 @@ CLASS zcl_modulo_expr03_reduce IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD average_of.
-    " INIT x TYPE dtype : rhs 없이 타입만 선언(주장 5a). 합과 개수를 모아 마지막에 나눈다.
-    DATA(stats) = REDUCE string( INIT acc TYPE string
-                                 total = 0 count = 0
-                                 FOR n IN values
-                                 NEXT total += n
-                                      count += 1
-                                      acc = |{ total }/{ count }| ).
-    SPLIT stats AT '/' INTO DATA(total_text) DATA(count_text).
-    DATA(count) = CONV i( count_text ).
-    result = COND #( WHEN count > 0 THEN CONV average( total_text ) / count ELSE 0 ).
+    " INIT x TYPE dtype : rhs 없이 타입만 선언해 누적기를 시작한다(주장 5a). 합을 소수 타입으로 모은다.
+    DATA(total) = REDUCE average( INIT sum TYPE average
+                                  FOR n IN values
+                                  NEXT sum = sum + n ).
+    DATA(item_count) = lines( values ).
+    result = COND #( WHEN item_count > 0 THEN total / item_count ELSE 0 ).
   ENDMETHOD.
 
   METHOD seats_per_carrier.

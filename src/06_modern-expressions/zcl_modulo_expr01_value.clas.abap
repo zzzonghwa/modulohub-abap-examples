@@ -138,8 +138,8 @@ CLASS zcl_modulo_expr01_value DEFINITION
     METHODS corresponding_vs_move
       RETURNING VALUE(result) TYPE string.
 
-    "! CORRESPONDING ... MAPPING + EXCEPT: 이름이 다른 컴포넌트 매핑·특정 컴포넌트 제외.
-    "! id·salary 자동 매핑, name -> full_name 매핑(MAPPING), dept 제외(EXCEPT).
+    "! CORRESPONDING ... MAPPING: 이름이 다른 컴포넌트를 매핑한다(name -> full_name).
+    "! id·salary는 동명이라 자동 매핑, dept는 person에 없어 자동 제외된다.
     "! @parameter result | "1 Kim 5000" 형태의 매핑 결과
     METHODS map_employee
       RETURNING VALUE(result) TYPE string.
@@ -318,9 +318,10 @@ CLASS zcl_modulo_expr01_value IMPLEMENTATION.
 
   METHOD map_employee.
     DATA(employee) = VALUE employee( id = 1 name = `Kim` dept = `IT` salary = 5000 ).
-    " name -> full_name 매핑(MAPPING), dept는 EXCEPT로 명시 제외.
+    " name -> full_name 매핑(MAPPING). dept는 person에 없어 자동 제외된다
+    " (CORRESPONDING은 대상에 없는 소스 컬럼을 버린다 — EXCEPT는 대상에도 있는 컬럼에만 의미).
     DATA(result_person) = CORRESPONDING person(
-      employee MAPPING full_name = name EXCEPT dept ).
+      employee MAPPING full_name = name ).
     result = |{ result_person-id } { result_person-full_name } { result_person-salary }|.
   ENDMETHOD.
 
