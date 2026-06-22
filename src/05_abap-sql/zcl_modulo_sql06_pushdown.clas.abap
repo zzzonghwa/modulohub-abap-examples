@@ -105,7 +105,7 @@ CLASS zcl_modulo_sql06_pushdown IMPLEMENTATION.
     out->write( |big_flights_pushdown      = { big_flights_pushdown( ) } (SELECT CASE)| ).
     out->write( |flight_exists(AA)         = { flight_exists( 'AA' ) } (SELECT SINGLE @abap_true)| ).
     out->write( |flights_for_carriers(AA,LH) = { flights_for_carriers(
-                  VALUE #( ( `AA` ) ( `LH` ) ) ) } (FOR ALL ENTRIES)| ).
+                  VALUE #( ( 'AA' ) ( 'LH' ) ) ) } (FOR ALL ENTRIES)| ).
     out->write( |count_bypassing_buffer    = { count_bypassing_buffer( ) } (버퍼 우회 — 메서드 주석 참조)| ).
     out->write( |count_with_db_hint        = { count_with_db_hint( ) } (%_HINTS HDB)| ).
   ENDMETHOD.

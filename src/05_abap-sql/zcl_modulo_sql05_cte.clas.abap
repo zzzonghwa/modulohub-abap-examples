@@ -176,7 +176,7 @@ CLASS zcl_modulo_sql05_cte IMPLEMENTATION.
     " 괄호 안 SELECT가 단일 값(평균)을 돌려주는 스칼라 비교 서브쿼리.
     SELECT carrid, connid, seatsmax
       FROM zmodulo_flight
-      WHERE seatsmax > ( SELECT AVG( seatsmax ) FROM zmodulo_flight )
+      WHERE seatsmax > ( SELECT AVG( seatsmax AS DEC( 17, 2 ) ) FROM zmodulo_flight )
       INTO TABLE @DATA(above).
     result = lines( above ).
   ENDMETHOD.
@@ -236,7 +236,7 @@ CLASS zcl_modulo_sql05_cte IMPLEMENTATION.
     " 다편 운항 항공사 중 평균 초과편을 가진 항공사 코드 수.
     SELECT DISTINCT carrid
       FROM zmodulo_flight
-      WHERE seatsmax > ( SELECT AVG( seatsmax ) FROM zmodulo_flight )
+      WHERE seatsmax > ( SELECT AVG( seatsmax AS DEC( 17, 2 ) ) FROM zmodulo_flight )
         AND carrid IN ( SELECT carrid
                         FROM zmodulo_flight
                         GROUP BY carrid
