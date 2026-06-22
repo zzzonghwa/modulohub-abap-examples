@@ -152,3 +152,24 @@ CLASS lcl_importer IMPLEMENTATION.
     ENDLOOP.
   ENDMETHOD.
 ENDCLASS.
+
+
+"! DbC 클래스 불변식(class invariant)을 IF_CONSTRAINT(ABAP Unit 제약 인터페이스)로 구현한다.
+"! ABAP 런타임은 Eiffel과 달리 메서드 호출 후 불변식을 자동 검사하지 않으므로,
+"! ABAP Unit 테스트에서 cl_abap_unit_assert=>assert_that( act = .. exp = <이 제약> )로 수동 검사한다.
+"! assert_that는 is_valid(act)를 호출하고, 거짓이면 get_description을 실패 메시지로 쓴다.
+CLASS lcl_non_negative_invariant DEFINITION CREATE PUBLIC.
+  PUBLIC SECTION.
+    INTERFACES if_constraint.
+ENDCLASS.
+
+CLASS lcl_non_negative_invariant IMPLEMENTATION.
+  METHOD if_constraint~is_valid.
+    " 불변식: 값이 음수가 아니어야 한다(예: 계좌 잔액 >= 0).
+    result = xsdbool( CONV i( data_object ) >= 0 ).
+  ENDMETHOD.
+
+  METHOD if_constraint~get_description.
+    result = VALUE #( ( `class invariant: value must be non-negative` ) ).
+  ENDMETHOD.
+ENDCLASS.

@@ -28,6 +28,7 @@ CLASS ltcl_except DEFINITION FINAL FOR TESTING
     METHODS contract_zero_raises     FOR TESTING.
     METHODS contract_overdraw_raises FOR TESTING.
     METHODS resumable_continues      FOR TESTING.
+    METHODS invariant_via_constraint FOR TESTING.
 ENDCLASS.
 
 
@@ -153,5 +154,13 @@ CLASS ltcl_except IMPLEMENTATION.
   METHOD resumable_continues.
     " RESUMABLE: 불량 행(-2)에서 예외 -> RESUME으로 이어가 [1,-2,3] 3행 모두 처리.
     cl_abap_unit_assert=>assert_equals( act = cut->resumable_demo( ) exp = 3 ).
+  ENDMETHOD.
+
+  METHOD invariant_via_constraint.
+    " DbC 클래스 불변식을 IF_CONSTRAINT 구현으로 검사 — assert_that가 is_valid(act)를 호출한다.
+    DATA(non_negative) = NEW lcl_non_negative_invariant( ).
+    cl_abap_unit_assert=>assert_that( act = 100 exp = non_negative ).
+    " 위반 케이스는 is_valid 직접 호출로 확인(assert_that에 위반값을 넣으면 테스트가 실패하므로).
+    cl_abap_unit_assert=>assert_false( act = non_negative->if_constraint~is_valid( CONV i( -5 ) ) ).
   ENDMETHOD.
 ENDCLASS.
