@@ -172,7 +172,9 @@ CLASS zcl_modulo_tst04_clean IMPLEMENTATION.
 
   METHOD has_content.
     " 주장 7 — initial 비교 대신 의도를 명시한 비교. condense로 공백만 있는 입력도 걸러낸다.
-    result = xsdbool( condense( text ) IS NOT INITIAL ).
+    " IS INITIAL은 데이터 오브젝트에만 쓸 수 있다(함수 결과엔 불가) -> 변수로 받아 검사.
+    DATA(condensed) = condense( text ).
+    result = xsdbool( condensed IS NOT INITIAL ).
   ENDMETHOD.
 
   METHOD discount_rate.

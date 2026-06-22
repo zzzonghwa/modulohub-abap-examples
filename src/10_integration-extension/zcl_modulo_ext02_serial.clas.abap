@@ -264,7 +264,9 @@ CLASS zcl_modulo_ext02_serial IMPLEMENTATION.
     DATA(original) = sample( ).
     DATA(writer) = cl_sxml_string_writer=>create( type = if_sxml=>co_xt_xml10 ).
     CALL TRANSFORMATION id SOURCE data = original RESULT XML writer.
-    result = xsdbool( writer->get_output( ) IS NOT INITIAL ).
+    " IS INITIAL은 데이터 오브젝트에만 — 메서드 결과는 변수로 받아 검사한다.
+    DATA(output) = writer->get_output( ).
+    result = xsdbool( output IS NOT INITIAL ).
   ENDMETHOD.
 
   METHOD bapi_has_error.

@@ -176,7 +176,7 @@ CLASS lcl_multi_use_badi IMPLEMENTATION.
       FOR plug_in IN plug_ins
       WHERE ( active = abap_true )
       NEXT count = count
-        + COND i( WHEN plug_in-instance->check( value ) IS NOT INITIAL THEN 1 ELSE 0 ) ).
+        + COND i( WHEN plug_in-instance->check( value ) <> `` THEN 1 ELSE 0 ) ).
   ENDMETHOD.
 ENDCLASS.
 

@@ -149,7 +149,8 @@ CLASS zcl_modulo_ext03_badi IMPLEMENTATION.
     badi->set_fallback( NEW lcl_fallback( ) ).
     TRY.
         DATA(plugin) = badi->get_badi( ).
-        result = COND #( WHEN plugin->check( value ) IS NOT INITIAL THEN 1 ELSE 0 ).
+        DATA(violation) = plugin->check( value ).
+        result = COND #( WHEN violation IS NOT INITIAL THEN 1 ELSE 0 ).
       CATCH lcx_badi_not_implemented lcx_badi_multiply.
         result = -1.
     ENDTRY.
@@ -187,7 +188,8 @@ CLASS zcl_modulo_ext03_badi IMPLEMENTATION.
                     implementation = NEW lcl_non_negative( ) ).
     TRY.
         DATA(plugin) = badi->get_badi_filtered( filter ).
-        result = COND #( WHEN plugin->check( value ) IS NOT INITIAL THEN 1 ELSE 0 ).
+        DATA(violation) = plugin->check( value ).
+        result = COND #( WHEN violation IS NOT INITIAL THEN 1 ELSE 0 ).
       CATCH lcx_badi_not_implemented.
         result = -1.
     ENDTRY.
