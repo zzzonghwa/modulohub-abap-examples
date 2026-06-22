@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_MODULO_EXT01_XCO</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Integration: consuming released XCO APIs (vs classic FMs)</DESCRIPT>
+    <DESCRIPT>Released API/XCO: strings, UUID, sy, random vs classic FMs</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

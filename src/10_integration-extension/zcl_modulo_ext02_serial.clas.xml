@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_MODULO_EXT02_SERIAL</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Integration: lightweight XML/JSON serialization</DESCRIPT>
+    <DESCRIPT>Integration: XML/JSON serialization and BAPI consume</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

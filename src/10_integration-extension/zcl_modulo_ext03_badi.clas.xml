@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_MODULO_EXT03_BADI</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Integration: BAdI/enhancement multicast consumption (concept)</DESCRIPT>
+    <DESCRIPT>Integration: BAdI consume - multicast/filter/single-use</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
