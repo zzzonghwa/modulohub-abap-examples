@@ -1,29 +1,195 @@
 REPORT z_modulo_exec05.
 
-" 클래식 리스트 출력(WRITE) — 역사적 대조(level=대조).
-" 모던 ABAP은 목록을 ALV(CL_SALV_TABLE, EXEC03)로 그린다. WRITE 리스트는 화면·커서 위치에
-" 종속적이라 정렬·필터·엑셀 내보내기를 직접 구현해야 하고 재사용이 어렵다 — 왜 ALV로 옮겨갔는가.
-" 실행: SE38/SA38에서 F8. manual-report.
+" 클래식 리스트 출력(WRITE) — 역사적 대조(노트 08-5, level=대조).
+" 모던 ABAP은 목록을 ALV(CL_SALV_TABLE, EXEC03)로 그린다. WRITE 리스트는 SAP GUI 렌더러에
+" 종속적이라(주장 14·15·18) 정렬·필터·엑셀 내보내기를 직접 구현해야 하고, 화면·커서 위치에
+" 묶여 단위 테스트가 구조적으로 어렵다(주장 19·25) — "왜 ALV/SALV로 옮겨갔는가"를 보이는 단원.
+"
+" 실행: SE38/SA38에서 F8(또는 ADT "Run As -> ABAP Application"). manual-report.
+"   7.52+ ADT는 F9로 ABAP Console에 WRITE 결과를 보낼 수 있으나 "기초 테스트·로깅 전용"이다(주장 17).
+"   BTP ABAP 환경엔 SAP GUI가 없어 executable program 자체가 불가하다(주장 16·23) — 온프렘 전용 데모.
+"
+" 노트(08-5) 소절 대응 — 이 리포트가 시연하는 *실행 가능한* WRITE 리스트 구문 폭:
+"  L1  WRITE 컬럼 위치     WRITE: / col 'text' — 고정 컬럼 위치로 수작업 포맷(주장 14, WHY 수작업 정렬).
+"  L2  FORMAT/색·강조      FORMAT COLOR / INTENSIFIED / INVERSE — 행 단위 시각 속성(GUI 종속).
+"  L3  WRITE 옵션          LEFT/RIGHT-JUSTIFIED·NO-ZERO·NO-GAP·NO-SIGN — 필드별 출력 옵션.
+"  L4  숫자/통화 편집      WRITE ... DECIMALS·CURRENCY·USING EDIT MASK — 숫자 표시 가공.
+"  L5  날짜/시간 편집      WRITE ... DD/MM/YYYY·USING EDIT MASK '__:__:__' — 환경 독립 포맷.
+"  L6  레이아웃 제어       ULINE·SKIP·NEW-LINE·WRITE UNDER — 줄·구분선·세로 정렬.
+"  L7  text 기호           TEXT-001.. — 번역 가능한 리스트 헤더(하드코딩 회피).
+"  L8  집계 라인           소계·합계를 LOOP에서 직접 누적(SALV get_aggregations가 자동화하는 것).
+"  L9  대조 요약           각 WHY를 한 줄로 — 같은 표를 EXEC03 SALV가 어떻게 무료로 주는가.
+" 비실행(SE51 화면 필요) 소절은 코드로 시연 불가 — 주석 대조로만 남긴다:
+"  DYN  MODULE OUTPUT/INPUT(PBO/PAI)·CALL SCREEN·SY-UCOMM(주장 8~13)은 SE51 일반 Dynpro 전제라
+"       abapGit serialize 포맷 단일 REPORT로는 재현 불가. WHY: 화면 정의와 플로우 로직이 리포지터리
+"       객체에 묶여 코드만으로 자체완결이 안 된다 — 이 결합 자체가 클래식 Dynpro 폐기의 근본 이유(주장 1·7).
 
+" --- 행 타입 — 항공편 한 건. WRITE 리스트가 한 줄씩 그릴 모델 데이터. ---
 TYPES:
   BEGIN OF flight_row,
-    carrier TYPE c LENGTH 3,
-    connid  TYPE n LENGTH 4,
-    seats   TYPE i,
+    carrier  TYPE c LENGTH 3,
+    connid   TYPE n LENGTH 4,
+    cityfrom TYPE c LENGTH 20,
+    seats    TYPE i,
+    price    TYPE p LENGTH 9 DECIMALS 2,
+    flydate  TYPE d,
   END OF flight_row.
+TYPES flight_rows TYPE STANDARD TABLE OF flight_row WITH EMPTY KEY.
 
-DATA flights TYPE STANDARD TABLE OF flight_row WITH EMPTY KEY.
+" 통화 코드 — WRITE ... CURRENCY가 소수 자릿수를 결정할 때 참조한다(L4).
+CONSTANTS report_currency TYPE c LENGTH 5 VALUE 'USD'.
+
+" WRITE 컬럼 위치 상수 — "12·22·44" 매직 넘버를 한 곳에 모은다(수작업 포맷의 취약점을 드러냄, L1 WHY).
+" WRITE의 컬럼 위치 자리(WRITE: col ...)에 쓰므로 클래스 밖 프로그램 전역 상수로 둔다.
+CONSTANTS:
+  BEGIN OF column_at,
+    connid TYPE i VALUE 12,
+    city   TYPE i VALUE 22,
+    seats  TYPE i VALUE 44,
+    price  TYPE i VALUE 54,
+  END OF column_at.
+
+" --- 보고서 로직 — 이벤트 블록은 얇게, 데이터·집계는 OO 클래스로 위임한다(CleanABAP 주장 24). ---
+" WRITE 출력 자체는 화면 의존이라 클래스 밖(START-OF-SELECTION)에 둔다 — 테스트는 순수 계산부만 건다.
+CLASS lcl_report DEFINITION CREATE PRIVATE.
+  PUBLIC SECTION.
+    "! 데모용 항공편 6건 샘플 데이터(EXEC02/EXEC03/SQL02와 동일 시드 + 날짜 컬럼).
+    CLASS-METHODS sample
+      RETURNING VALUE(result) TYPE flight_rows.
+
+    "! L8 집계: 전체 좌석 합계. SALV get_aggregations(add_aggregation)가 자동화하는 것을 직접 계산한다.
+    "! @parameter rows   | 집계 대상 항공편
+    "! @parameter result | 좌석 수 총합
+    CLASS-METHODS total_seats
+      IMPORTING rows          TYPE flight_rows
+      RETURNING VALUE(result) TYPE i.
+
+    "! L8 집계: 전체 가격 합계(소계 라인용). REDUCE 누적기는 price 타입으로 초기화해 절단을 피한다.
+    "! @parameter rows   | 집계 대상 항공편
+    "! @parameter result | 가격 총합
+    CLASS-METHODS total_price
+      IMPORTING rows          TYPE flight_rows
+      RETURNING VALUE(result) TYPE flight_row-price.
+
+    "! L8 그룹 소계: 한 항공사의 좌석 합계(carrier 그룹 소계 라인 계산).
+    "! @parameter rows    | 집계 대상 항공편
+    "! @parameter carrier | 합계를 낼 항공사 코드
+    "! @parameter result  | 해당 항공사 좌석 합계
+    CLASS-METHODS seats_of_carrier
+      IMPORTING rows          TYPE flight_rows
+                carrier       TYPE flight_row-carrier
+      RETURNING VALUE(result) TYPE i.
+ENDCLASS.
+
+CLASS lcl_report IMPLEMENTATION.
+  METHOD sample.
+    result = VALUE #(
+      ( carrier = 'AA' connid = '0017' cityfrom = 'NEW YORK'      seats = 380 price = '899.00' flydate = '20260601' )
+      ( carrier = 'AA' connid = '0064' cityfrom = 'SAN FRANCISCO' seats = 320 price = '799.00' flydate = '20260615' )
+      ( carrier = 'LH' connid = '0400' cityfrom = 'FRANKFURT'     seats = 280 price = '650.00' flydate = '20260620' )
+      ( carrier = 'LH' connid = '2402' cityfrom = 'FRANKFURT'     seats = 180 price = '120.00' flydate = '20260622' )
+      ( carrier = 'UA' connid = '0941' cityfrom = 'FRANKFURT'     seats = 240 price = '720.00' flydate = '20260701' )
+      ( carrier = 'UA' connid = '3517' cityfrom = 'CHICAGO'       seats = 300 price = '210.00' flydate = '20260705' ) ).
+  ENDMETHOD.
+
+  METHOD total_seats.
+    " REDUCE로 좌석을 누적한다. SALV였다면 add_aggregation( 'SEATS' ) 한 줄로 끝난다(L8/L9 대조).
+    result = REDUCE i( INIT sum = 0 FOR flight IN rows NEXT sum = sum + flight-seats ).
+  ENDMETHOD.
+
+  METHOD total_price.
+    " 누적기 sum은 price 타입(p DECIMALS 2)으로 초기화 — i로 두면 소수가 절단된다(IT 단원 교훈 재사용).
+    result = REDUCE flight_row-price( INIT sum TYPE flight_row-price
+                                      FOR flight IN rows
+                                      NEXT sum = sum + flight-price ).
+  ENDMETHOD.
+
+  METHOD seats_of_carrier.
+    " 그룹 소계 = WHERE carrier = 로 거른 뒤 좌석 합. SALV는 sort subtotal + aggregation이 자동 결합한다.
+    result = REDUCE i( INIT sum = 0
+                       FOR flight IN rows
+                       WHERE ( carrier = carrier )
+                       NEXT sum = sum + flight-seats ).
+  ENDMETHOD.
+ENDCLASS.
 
 START-OF-SELECTION.
-  flights = VALUE #( ( carrier = 'AA' connid = '0017' seats = 380 )
-                     ( carrier = 'LH' connid = '0400' seats = 280 )
-                     ( carrier = 'UA' connid = '0941' seats = 240 ) ).
+  " EV/CleanABAP: 이벤트 블록은 얇게 — 데이터·집계는 lcl_report에 위임하고 여기선 WRITE 포맷만 다룬다.
+  DATA(flights) = lcl_report=>sample( ).
 
-  " 헤더 + 구분선 + 각 행을 고정 컬럼 위치에 WRITE 한다(수작업 포맷팅).
-  WRITE: / 'Carrier', 12 'Conn', 22 'Seats'.
+  " === L7 text 기호 — 번역 가능한 리스트 헤더(하드코딩 회피). =======================
+  " text-001은 .prog.xml TPOOL의 KEY=001과 연결된다(없으면 키 문자열이 그대로 출력).
+  WRITE: / TEXT-001.
   ULINE.
+
+  " === L1 컬럼 위치 + L2 FORMAT + L7 컬럼 헤더 ====================================
+  " FORMAT COLOR COL_HEADING — 헤더 줄에 색/강조 부여(GUI 렌더러 종속, L2 WHY 클라우드 불가).
+  FORMAT COLOR COL_HEADING INTENSIFIED ON.
+  " "/ col 'text'" — 다음 출력 위치를 고정 컬럼으로 지정하는 수작업 포맷(L1 WHY: 컬럼 폭 변화에 수동 대응).
+  WRITE: /     TEXT-002,
+         column_at-connid TEXT-003,
+         column_at-city   TEXT-004,
+         column_at-seats  TEXT-005,
+         column_at-price  TEXT-006.
+  FORMAT COLOR OFF INTENSIFIED OFF.
+  ULINE.
+
+  " === 본문 행 — L3 옵션 + L4 숫자/통화 + L5 날짜 편집 ============================
   LOOP AT flights INTO DATA(flight).
-    WRITE: / flight-carrier, 12 flight-connid, 22 flight-seats.
+    " L2 INVERSE: carrier가 'AA'인 행만 반전 강조 — 행별 시각 속성을 코드에서 직접 제어(SALV는 컬러 컬럼/규칙).
+    " FORMAT 옵션 값은 변수로 넘긴다(ON/OFF 토글). 한 행을 그리기 전에 강조 여부를 정한다.
+    DATA(highlight) = xsdbool( flight-carrier = 'AA' ).
+    FORMAT INVERSE = highlight.
+
+    WRITE: / flight-carrier.
+    " L3 NO-ZERO: connid는 N(4) 타입 — 선행 0을 출력에서 제거할지 옵션으로 정한다(여기선 NO-ZERO로 '17' 표시).
+    WRITE: column_at-connid flight-connid NO-ZERO.
+    " L3 LEFT-JUSTIFIED: 문자 필드를 컬럼 시작에 붙인다(기본은 좌측이나 명시로 의도를 드러냄).
+    WRITE: column_at-city flight-cityfrom LEFT-JUSTIFIED.
+    " L4 DECIMALS 0: 정수 좌석은 소수 자리 없이. RIGHT-JUSTIFIED로 숫자를 우측 정렬(표 가독성).
+    WRITE: column_at-seats (8) flight-seats DECIMALS 0 RIGHT-JUSTIFIED.
+    " L4 CURRENCY: 통화 코드로 소수 자릿수를 결정해 금액을 출력한다(USD -> 2자리). 통화별 자동 가공.
+    WRITE: column_at-price (12) flight-price CURRENCY report_currency.
+
+    FORMAT INVERSE OFF.
   ENDLOOP.
   ULINE.
-  WRITE: / 'Rows:', lines( flights ).
+
+  " === L8 집계 라인 — 그룹 소계 + 총합. SALV add_aggregation/subtotal이 자동화하는 것을 수작업으로. ===
+  " carrier 그룹 소계: DISTINCT carrier마다 seats_of_carrier로 합을 낸다(직접 그룹핑 — SALV는 sort subtotal).
+  DATA(carriers) = VALUE flight_rows( ).
+  LOOP AT flights INTO DATA(grouped).
+    " 이미 본 carrier는 건너뛴다(중복 소계 라인 방지).
+    CHECK NOT line_exists( carriers[ carrier = grouped-carrier ] ).
+    INSERT grouped INTO TABLE carriers.
+    DATA(subtotal) = lcl_report=>seats_of_carrier( rows = flights carrier = grouped-carrier ).
+    WRITE: / |Subtotal { grouped-carrier }|,
+           column_at-seats (8) subtotal DECIMALS 0 RIGHT-JUSTIFIED.
+  ENDLOOP.
+  ULINE.
+
+  " 총합 라인 — FORMAT COLOR COL_TOTAL로 강조. 좌석 총합 + 가격 총합.
+  FORMAT COLOR COL_TOTAL.
+  WRITE: / TEXT-007,
+         column_at-seats (8)  lcl_report=>total_seats( flights ) DECIMALS 0 RIGHT-JUSTIFIED,
+         column_at-price (12) lcl_report=>total_price( flights ) CURRENCY report_currency.
+  FORMAT COLOR OFF.
+
+  " === L6 레이아웃 제어 — SKIP(빈 줄) + 날짜 편집(L5) 데모 ==========================
+  SKIP.
+  " L5 날짜: 첫 항공편 날짜를 DD/MM/YYYY 포맷으로(환경 사용자 설정과 무관한 고정 포맷).
+  DATA(first_date) = VALUE #( flights[ 1 ]-flydate OPTIONAL ).
+  WRITE: / TEXT-008, first_date DD/MM/YYYY.
+  " L4 USING EDIT MASK: 마스크로 N 필드에 구분 기호를 끼워 출력(connid 4자리를 '00-00' 꼴로).
+  DATA(first_connid) = VALUE #( flights[ 1 ]-connid OPTIONAL ).
+  WRITE: / TEXT-009, first_connid USING EDIT MASK '__-__'.
+
+  " === L9 대조 요약 — 위 표를 SALV(EXEC03)가 어떻게 무료로 주는가. =================
+  SKIP.
+  ULINE.
+  WRITE: / TEXT-010.
+  WRITE: / |- { TEXT-011 }|.
+  WRITE: / |- { TEXT-012 }|.
+  WRITE: / |- { TEXT-013 }|.
+  WRITE: / |- { TEXT-014 }|.
+  WRITE: / TEXT-015.

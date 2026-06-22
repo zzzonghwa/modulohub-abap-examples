@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_MODULO_EXEC04_GRIDALV</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Executable: editable ALV (CL_GUI_ALV_GRID) contrast</DESCRIPT>
+    <DESCRIPT>Executable: editable ALV CL_GUI_ALV_GRID patterns</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

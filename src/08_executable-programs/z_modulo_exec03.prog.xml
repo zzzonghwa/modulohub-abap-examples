@@ -11,8 +11,8 @@
    <TPOOL>
     <item>
      <ID>R</ID>
-     <ENTRY>ALV grid with CL_SALV_TABLE</ENTRY>
-     <LENGTH>27</LENGTH>
+     <ENTRY>ALV report with CL_SALV_TABLE</ENTRY>
+     <LENGTH>29</LENGTH>
     </item>
    </TPOOL>
   </asx:values>
