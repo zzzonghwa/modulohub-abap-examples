@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_MODULO_SQL07_API</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>ABAP SQL: consuming a released API (API state C1)</DESCRIPT>
+    <DESCRIPT>ABAP SQL: released API consumption and release contracts C0-C4</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

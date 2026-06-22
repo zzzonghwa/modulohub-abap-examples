@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_MODULO_SQL01_BASICS</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>ABAP SQL: foundations, SELECT targets, sy-subrc</DESCRIPT>
+    <DESCRIPT>ABAP SQL: data sources, SELECT targets, sy-subrc, loop</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

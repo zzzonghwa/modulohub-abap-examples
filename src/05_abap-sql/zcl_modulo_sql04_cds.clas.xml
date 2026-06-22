@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_MODULO_SQL04_CDS</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>ABAP SQL: consuming a released CDS view (read-only)</DESCRIPT>
+    <DESCRIPT>ABAP SQL: consuming released CDS views (read-only)</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

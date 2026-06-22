@@ -40,13 +40,19 @@ CLASS zcl_modulo_sql03_joinagg DEFINITION
     METHODS carriers_over
       IMPORTING threshold     TYPE i
       RETURNING VALUE(result) TYPE i.
+
+  PRIVATE SECTION.
+    "! 데모 데이터 시드 — 값이 없으면 넣고 이미 있으면 건너뛴다(멱등). F9에서 결과가 보이도록.
+    "! (ABAP Unit은 이 메서드 대신 osql 더블로 데이터를 주입하므로 실 DB를 건드리지 않는다.)
+    METHODS ensure_demo_data.
 ENDCLASS.
 
 
 CLASS zcl_modulo_sql03_joinagg IMPLEMENTATION.
   METHOD if_oo_adt_classrun~main.
+    " 데모 데이터를 먼저 시드한다 — 그래야 F9에서 실제 결과가 보인다(빈 표면 0).
+    ensure_demo_data( ).
     out->write( `=== SQL03 JOIN·집계 (DDIC 테이블) ===` ).
-    out->write( `표가 비어 있으면 값은 0 — ABAP Unit(osql 더블)이 결정적 데이터로 검증한다.` ).
     out->write( |inner_join_count         = { inner_join_count( ) }| ).
     out->write( |left_join_orphans        = { left_join_orphans( ) }| ).
     out->write( |sum_seats_by_carrier(AA) = { sum_seats_by_carrier( 'AA' ) }| ).
@@ -98,5 +104,25 @@ CLASS zcl_modulo_sql03_joinagg IMPLEMENTATION.
       HAVING SUM( seatsmax ) > @threshold
       INTO TABLE @DATA(big).
     result = lines( big ).
+  ENDMETHOD.
+
+  METHOD ensure_demo_data.
+    DATA carriers TYPE STANDARD TABLE OF zmodulo_carrier WITH EMPTY KEY.
+    DATA flights  TYPE STANDARD TABLE OF zmodulo_flight WITH EMPTY KEY.
+
+    carriers = VALUE #( ( carrid = 'AA' carrname = 'Alpha Air' )
+                        ( carrid = 'LH' carrname = 'Luft Air' )
+                        ( carrid = 'UA' carrname = 'Union Air' ) ).
+    " XX는 항공사 마스터가 없는 고아 항공편(LEFT JOIN 데모).
+    flights = VALUE #( ( carrid = 'AA' connid = '0017' seatsmax = 380 seatsocc = 342 )
+                       ( carrid = 'AA' connid = '0064' seatsmax = 320 seatsocc = 240 )
+                       ( carrid = 'LH' connid = '0400' seatsmax = 280 seatsocc = 280 )
+                       ( carrid = 'UA' connid = '0941' seatsmax = 240 seatsocc = 180 )
+                       ( carrid = 'XX' connid = '0001' seatsmax = 100 seatsocc = 90 ) ).
+
+    " 값이 없으면 넣고, 이미 있는 키는 건너뛴다(ACCEPTING DUPLICATE KEYS = 멱등).
+    INSERT zmodulo_carrier FROM TABLE @carriers ACCEPTING DUPLICATE KEYS.
+    INSERT zmodulo_flight FROM TABLE @flights ACCEPTING DUPLICATE KEYS.
+    COMMIT WORK.
   ENDMETHOD.
 ENDCLASS.
