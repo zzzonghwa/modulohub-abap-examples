@@ -24,15 +24,16 @@ CLASS zcl_modulo_tst01_except DEFINITION
                 divisor       TYPE i
       RETURNING VALUE(result) TYPE i.
 
-    "! (전략1 전파) divide를 호출하되 예외를 잡지 않고 호출부로 전파한다.
-    "! lcx_invalid_arg는 cx_dynamic_check라 RAISING 선언 없이 전파된다(호출부가 CATCH).
+    "! (전략1 전파) divide를 호출하되 예외를 잡지 않고 RAISING으로 호출부에 전파한다.
+    "! cx_static_check 도메인 예외라 호출부가 반드시 처리/전파해야 한다(컴파일러 강제).
     "! @parameter dividend | 피제수
     "! @parameter divisor  | 제수
     "! @parameter result   | 몫
     METHODS divide_strict
       IMPORTING dividend      TYPE i
                 divisor       TYPE i
-      RETURNING VALUE(result) TYPE i.
+      RETURNING VALUE(result) TYPE i
+      RAISING   lcx_invalid_arg.
 
     "! (전략3 흡수) withdraw를 호출하되 사전조건 위반은 흡수해 -1을 돌려준다.
     "! @parameter balance | 잔액
