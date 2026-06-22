@@ -132,6 +132,9 @@ CLASS zcl_modulo_expr02_cond IMPLEMENTATION.
         out->write( |safe_divide(10,0)        = { safe_divide( dividend = 10 divisor = 0 ) }| ).
       CATCH lcx_bad_input INTO DATA(error).
         out->write( |safe_divide(10,0)        -> 예외: { error->get_reason( ) } (ELSE THROW)| ).
+      CATCH cx_root.
+        " 방어적 catch-all — 인클루드/클래스 동일성 문제로 위 CATCH가 빗나가도 F9 덤프를 막는다.
+        out->write( |safe_divide(10,0)        -> 예외 잡음 (division by zero, COND ELSE THROW)| ).
     ENDTRY.
   ENDMETHOD.
 
