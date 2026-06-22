@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_MODULO_TST05_PERF</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Testing/quality: performance, measurement tools</DESCRIPT>
+    <DESCRIPT>Testing/quality: performance tools and complexity patterns</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_MODULO_TST06_DEBUG</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Testing/quality: debugging, breakpoints, watchpoints</DESCRIPT>
+    <DESCRIPT>Testing/quality: debugging, watchpoint, ASSERT, DbC</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

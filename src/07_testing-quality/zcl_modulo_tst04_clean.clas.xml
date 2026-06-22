@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_MODULO_TST04_CLEAN</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Testing/quality: Clean ABAP coding rules</DESCRIPT>
+    <DESCRIPT>Testing/quality: Clean ABAP rules with modern syntax</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

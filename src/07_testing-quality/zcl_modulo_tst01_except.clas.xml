@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_MODULO_TST01_EXCEPT</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Testing/quality: exceptions, CX kinds, design by contract</DESCRIPT>
+    <DESCRIPT>Testing/quality: exceptions, CX kinds, TRY/RETRY, DbC</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>

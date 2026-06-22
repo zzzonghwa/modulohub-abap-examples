@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_MODULO_TST03_ATC</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Testing/quality: ATC, static quality, pragmas</DESCRIPT>
+    <DESCRIPT>Testing/quality: ATC priority, suppression, exemption, custom checks</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
