@@ -1,3 +1,15 @@
+"! 도메인 예외 — 잘못된 인자. cx_dynamic_check 계열: 선언 없이 전파(글로벌 public RAISING 불필요).
+"! 정적 검사(cx_static_check, 컴파일러 강제)로 보이려면 정의를 CCDEF(locals_def)에 둬야 하나,
+"! CCIMP 로컬 클래스는 글로벌 정의부에서 안 보여 자체완결을 위해 동적 검사로 둔다.
+"! 대비: cx_no_check(프로그래밍 오류, 잡지 않음). READ-ONLY attempted에 위반 입력값을 담는다.
+CLASS lcx_invalid_arg DEFINITION INHERITING FROM cx_dynamic_check CREATE PUBLIC.
+  PUBLIC SECTION.
+    "! @parameter attempted | 위반을 유발한 입력값(진단용)
+    METHODS constructor
+      IMPORTING attempted TYPE i OPTIONAL.
+    DATA attempted TYPE i READ-ONLY.
+ENDCLASS.
+
 CLASS lcx_invalid_arg IMPLEMENTATION.
   METHOD constructor.
     super->constructor( ).

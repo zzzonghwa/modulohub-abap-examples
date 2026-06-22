@@ -243,10 +243,11 @@ CLASS zcl_modulo_expr03_reduce IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD triangular.
-    " THEN 생략 -> numeric은 +1 자동증가. UNTIL은 pre-test이므로 n<1이면 0회 -> 0.
-    result = REDUCE i( INIT sum = 0
-                       FOR i = 1 UNTIL i > n
-                       NEXT sum += i ).
+    " THEN 생략 -> numeric은 +1 자동증가. n<1이면 빈 삼각수 0(가드), n>=1은 UNTIL로 1..n 합산.
+    result = COND #( WHEN n < 1 THEN 0
+                     ELSE REDUCE i( INIT sum = 0
+                                    FOR i = 1 UNTIL i > n
+                                    NEXT sum += i ) ).
   ENDMETHOD.
 
   METHOD count_while.

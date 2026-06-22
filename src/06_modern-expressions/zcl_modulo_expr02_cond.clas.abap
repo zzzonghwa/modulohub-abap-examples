@@ -66,15 +66,14 @@ CLASS zcl_modulo_expr02_cond DEFINITION
       RETURNING VALUE(result) TYPE label30.
 
     "! COND(ELSE THROW): 분모 0이면 값 대신 도메인 예외(lcx_bad_input)를 인라인으로 raise.
+    "! lcx_bad_input은 cx_dynamic_check라 RAISING 선언 없이 전파된다(호출부가 CATCH).
     "! @parameter dividend | 피제수
     "! @parameter divisor  | 제수
     "! @parameter result   | dividend / divisor(반올림)
-    "! @raising lcx_bad_input | divisor가 0일 때
     METHODS safe_divide
       IMPORTING dividend      TYPE i
                 divisor       TYPE i
-      RETURNING VALUE(result) TYPE i
-      RAISING   lcx_bad_input.
+      RETURNING VALUE(result) TYPE i.
 
     "! SWITCH(정확 값 매칭): 요일 번호 -> 이름. ELSE로 범위 밖 처리.
     "! @parameter day    | 1=Mon .. 7=Sun
