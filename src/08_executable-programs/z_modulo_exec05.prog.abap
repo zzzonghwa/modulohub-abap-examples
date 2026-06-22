@@ -39,15 +39,9 @@ TYPES flight_rows TYPE STANDARD TABLE OF flight_row WITH EMPTY KEY.
 " 통화 코드 — WRITE ... CURRENCY가 소수 자릿수를 결정할 때 참조한다(L4).
 CONSTANTS report_currency TYPE c LENGTH 5 VALUE 'USD'.
 
-" WRITE 컬럼 위치 상수 — "12·22·44" 매직 넘버를 한 곳에 모은다(수작업 포맷의 취약점을 드러냄, L1 WHY).
-" WRITE의 컬럼 위치 자리(WRITE: col ...)에 쓰므로 클래스 밖 프로그램 전역 상수로 둔다.
-CONSTANTS:
-  BEGIN OF column_at,
-    connid TYPE i VALUE 12,
-    city   TYPE i VALUE 22,
-    seats  TYPE i VALUE 44,
-    price  TYPE i VALUE 54,
-  END OF column_at.
+" WRITE 컬럼 위치는 리터럴(12·22·44·54)로 직접 준다 — 클래식 WRITE에서 위치가 변수면 AT가
+" 필요하고 길이 `col(len)`은 변수에 붙일 수 없어, 정석은 리터럴이다. 이 흩뿌려진 "매직 넘버"가
+" 바로 L1의 취약점(컬럼 폭이 바뀌면 전부 수동 수정) — EXEC03 SALV는 이걸 자동화한다.
 
 " --- 보고서 로직 — 이벤트 블록은 얇게, 데이터·집계는 OO 클래스로 위임한다(CleanABAP 주장 24). ---
 " WRITE 출력 자체는 화면 의존이라 클래스 밖(START-OF-SELECTION)에 둔다 — 테스트는 순수 계산부만 건다.
@@ -126,11 +120,11 @@ START-OF-SELECTION.
   " FORMAT COLOR COL_HEADING — 헤더 줄에 색/강조 부여(GUI 렌더러 종속, L2 WHY 클라우드 불가).
   FORMAT COLOR COL_HEADING INTENSIFIED ON.
   " "/ col 'text'" — 다음 출력 위치를 고정 컬럼으로 지정하는 수작업 포맷(L1 WHY: 컬럼 폭 변화에 수동 대응).
-  WRITE: /     TEXT-002,
-         column_at-connid TEXT-003,
-         column_at-city   TEXT-004,
-         column_at-seats  TEXT-005,
-         column_at-price  TEXT-006.
+  WRITE: /  TEXT-002,
+         12 TEXT-003,
+         22 TEXT-004,
+         44 TEXT-005,
+         54 TEXT-006.
   FORMAT COLOR OFF INTENSIFIED OFF.
   ULINE.
 
@@ -142,14 +136,14 @@ START-OF-SELECTION.
     FORMAT INVERSE = highlight.
 
     WRITE: / flight-carrier.
-    " L3 NO-ZERO: connid는 N(4) 타입 — 선행 0을 출력에서 제거할지 옵션으로 정한다(여기선 NO-ZERO로 '17' 표시).
-    WRITE: column_at-connid flight-connid NO-ZERO.
-    " L3 LEFT-JUSTIFIED: 문자 필드를 컬럼 시작에 붙인다(기본은 좌측이나 명시로 의도를 드러냄).
-    WRITE: column_at-city flight-cityfrom LEFT-JUSTIFIED.
-    " L4 DECIMALS 0: 정수 좌석은 소수 자리 없이. RIGHT-JUSTIFIED로 숫자를 우측 정렬(표 가독성).
-    WRITE: column_at-seats (8) flight-seats DECIMALS 0 RIGHT-JUSTIFIED.
-    " L4 CURRENCY: 통화 코드로 소수 자릿수를 결정해 금액을 출력한다(USD -> 2자리). 통화별 자동 가공.
-    WRITE: column_at-price (12) flight-price CURRENCY report_currency.
+    " L3 NO-ZERO: connid는 N(4) 타입 — 선행 0을 출력에서 제거(여기선 NO-ZERO로 '17' 표시).
+    WRITE: 12 flight-connid NO-ZERO.
+    " L3 LEFT-JUSTIFIED: 문자 필드를 컬럼 시작에 붙인다.
+    WRITE: 22 flight-cityfrom LEFT-JUSTIFIED.
+    " L4 길이 8 + DECIMALS 0: 정수 좌석을 우측 정렬(col(len)은 리터럴에 붙여 쓴다).
+    WRITE: 44(8) flight-seats DECIMALS 0 RIGHT-JUSTIFIED.
+    " L4 CURRENCY: 통화 코드로 소수 자릿수를 결정해 금액 출력(USD -> 2자리).
+    WRITE: 54(12) flight-price CURRENCY report_currency.
 
     FORMAT INVERSE OFF.
   ENDLOOP.
@@ -164,15 +158,18 @@ START-OF-SELECTION.
     INSERT grouped INTO TABLE carriers.
     DATA(subtotal) = lcl_report=>seats_of_carrier( rows = flights carrier = grouped-carrier ).
     WRITE: / |Subtotal { grouped-carrier }|,
-           column_at-seats (8) subtotal DECIMALS 0 RIGHT-JUSTIFIED.
+           44(8) subtotal DECIMALS 0 RIGHT-JUSTIFIED.
   ENDLOOP.
   ULINE.
 
   " 총합 라인 — FORMAT COLOR COL_TOTAL로 강조. 좌석 총합 + 가격 총합.
   FORMAT COLOR COL_TOTAL.
+  " WRITE는 함수 호출을 직접 못 받으므로 합계를 먼저 변수로 계산한다.
+  DATA(grand_seats) = lcl_report=>total_seats( flights ).
+  DATA(grand_price) = lcl_report=>total_price( flights ).
   WRITE: / TEXT-007,
-         column_at-seats (8)  lcl_report=>total_seats( flights ) DECIMALS 0 RIGHT-JUSTIFIED,
-         column_at-price (12) lcl_report=>total_price( flights ) CURRENCY report_currency.
+         44(8)  grand_seats DECIMALS 0 RIGHT-JUSTIFIED,
+         54(12) grand_price CURRENCY report_currency.
   FORMAT COLOR OFF.
 
   " === L6 레이아웃 제어 — SKIP(빈 줄) + 날짜 편집(L5) 데모 ==========================
