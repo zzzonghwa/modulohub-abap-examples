@@ -5,7 +5,7 @@
    <VSEOCLASS>
     <CLSNAME>ZCL_MODULO_TXN01_LUW</CLSNAME>
     <LANGU>E</LANGU>
-    <DESCRIPT>Transactions: SAP LUW and bundling (in-memory concept)</DESCRIPT>
+    <DESCRIPT>Transactions: SAP LUW, bundling order and commit semantics</DESCRIPT>
     <STATE>1</STATE>
     <CLSCCINCL>X</CLSCCINCL>
     <FIXPT>X</FIXPT>
