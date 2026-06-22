@@ -27,6 +27,7 @@ CLASS ltcl_except DEFINITION FINAL FOR TESTING
     METHODS require_violated         FOR TESTING.
     METHODS contract_zero_raises     FOR TESTING.
     METHODS contract_overdraw_raises FOR TESTING.
+    METHODS resumable_continues      FOR TESTING.
 ENDCLASS.
 
 
@@ -147,5 +148,10 @@ CLASS ltcl_except IMPLEMENTATION.
       CATCH lcx_overdrawn INTO DATA(overdraw_error).
         cl_abap_unit_assert=>assert_equals( act = overdraw_error->shortfall exp = 50 ).
     ENDTRY.
+  ENDMETHOD.
+
+  METHOD resumable_continues.
+    " RESUMABLE: 불량 행(-2)에서 예외 -> RESUME으로 이어가 [1,-2,3] 3행 모두 처리.
+    cl_abap_unit_assert=>assert_equals( act = cut->resumable_demo( ) exp = 3 ).
   ENDMETHOD.
 ENDCLASS.

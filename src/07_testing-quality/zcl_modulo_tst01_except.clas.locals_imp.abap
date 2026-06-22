@@ -116,3 +116,39 @@ CLASS lcl_dbc IMPLEMENTATION.
     ENDIF.
   ENDMETHOD.
 ENDCLASS.
+
+
+"! RESUMABLE 예외 — 공급자가 RAISE RESUMABLE로 던지고, 소비자가 RESUME하면 발생 지점 다음부터 이어간다.
+"! 체크 예외(cx_static_check)로 두면 RAISING RESUMABLE 선언이 강제돼 계약이 명확하다.
+CLASS lcx_bad_row DEFINITION INHERITING FROM cx_static_check CREATE PUBLIC.
+ENDCLASS.
+
+CLASS lcx_bad_row IMPLEMENTATION.
+ENDCLASS.
+
+
+"! RESUMABLE 공급자 — 행을 처리하다 불량 행(음수)에서 재개가능 예외를 던진다.
+"! 로컬 클래스(CCIMP) 메서드라 RAISING RESUMABLE(lcx_bad_row)로 로컬 예외를 시그니처에 둘 수 있다
+"! (글로벌 클래스 public 시그니처는 로컬 타입 불가 — 그래서 공급자를 로컬 클래스로 둔다).
+CLASS lcl_importer DEFINITION CREATE PUBLIC.
+  PUBLIC SECTION.
+    TYPES int_rows TYPE STANDARD TABLE OF i WITH EMPTY KEY.
+    "! [1,-2,3]을 처리한다. 음수(불량 행)에서 RESUMABLE 예외 발생.
+    "! @parameter processed | 처리한 행 수(RESUME되면 불량 행도 보정 처리되어 포함, 총 3)
+    METHODS process
+      RETURNING VALUE(processed) TYPE i
+      RAISING   RESUMABLE(lcx_bad_row).
+ENDCLASS.
+
+CLASS lcl_importer IMPLEMENTATION.
+  METHOD process.
+    DATA(rows) = VALUE int_rows( ( 1 ) ( -2 ) ( 3 ) ).
+    LOOP AT rows INTO DATA(row).
+      IF row < 0.
+        " 불량 행 — 재개가능 예외. 소비자가 RESUME하면 이 다음 줄(processed += 1)부터 이어간다.
+        RAISE RESUMABLE EXCEPTION TYPE lcx_bad_row.
+      ENDIF.
+      processed = processed + 1.
+    ENDLOOP.
+  ENDMETHOD.
+ENDCLASS.

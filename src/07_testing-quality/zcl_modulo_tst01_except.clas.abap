@@ -119,6 +119,13 @@ CLASS zcl_modulo_tst01_except DEFINITION
       IMPORTING age           TYPE i
       RETURNING VALUE(result) TYPE abap_bool.
 
+    "! RESUMABLE — 재개가능 예외. 공급자가 RAISE RESUMABLE EXCEPTION으로 던지면, 소비자가
+    "! CATCH BEFORE UNWIND로 받아(스택 미해제) 원인을 고친 뒤 RESUME하면 *예외 발생 다음 줄*부터 이어간다.
+    "! 일반 CATCH는 TRY를 빠져나가 재개 불가 — BEFORE UNWIND + RESUME만 발생 지점으로 복귀한다.
+    "! @parameter result | 행 [1,-2,3] 처리 수 — 불량 행(-2)을 RESUME으로 보정해 3
+    METHODS resumable_demo
+      RETURNING VALUE(result) TYPE i.
+
 ENDCLASS.
 
 
@@ -143,6 +150,7 @@ CLASS zcl_modulo_tst01_except IMPLEMENTATION.
     out->write( |double_or_throw(-3) THROW흡수   = { double_or_throw( -3 ) }| ).
     out->write( |require_non_negative_age(20)   = { require_non_negative_age( 20 ) }| ).
     out->write( |require_non_negative_age(-1)   = { require_non_negative_age( -1 ) }| ).
+    out->write( |resumable_demo               = { resumable_demo( ) } (RESUMABLE: RESUME으로 이어감)| ).
   ENDMETHOD.
 
   METHOD divide_or_zero.
@@ -296,6 +304,21 @@ CLASS zcl_modulo_tst01_except IMPLEMENTATION.
         result = abap_true.
       CATCH lcx_precondition.
         result = abap_false.
+      CATCH cx_root.
+        " 방어적 catch-all — 인클루드/클래스 동일성 문제로 위 CATCH가 빗나가도 F9 덤프를 막는다.
+        result = abap_false.
+    ENDTRY.
+  ENDMETHOD.
+
+  METHOD resumable_demo.
+    " RESUMABLE 소비: CATCH BEFORE UNWIND는 스택을 풀기 전에 잡아, 원인 보정 후 RESUME으로
+    " 예외 발생 다음 줄부터 이어가게 한다(일반 CATCH는 TRY를 빠져나가 재개 불가).
+    DATA(importer) = NEW lcl_importer( ).
+    TRY.
+        result = importer->process( ).
+      CATCH BEFORE UNWIND lcx_bad_row.
+        " 불량 행을 보정했다고 가정하고 RESUME -> process의 RAISE 다음 줄부터 이어간다.
+        RESUME.
     ENDTRY.
   ENDMETHOD.
 
