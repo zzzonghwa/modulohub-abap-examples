@@ -245,8 +245,10 @@ CLASS zcl_modulo_tst01_except IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD zero_divide_text_len.
+    " 제수를 변수로 둔다 — 리터럴 1/0은 활성화 시 상수폴딩으로 구문오류가 나 런타임 예외가 안 잡힌다.
+    DATA(zero) = 0.
     TRY.
-        result = 1 / 0.
+        result = 1 / zero.
       CATCH cx_sy_zerodivide INTO DATA(divide_error).
         " get_text( ): 예외의 단문 메시지(short text).
         result = strlen( divide_error->get_text( ) ).
@@ -254,8 +256,10 @@ CLASS zcl_modulo_tst01_except IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD error_source_line.
+    " 제수를 변수로 둔다(리터럴 1/0은 활성화 구문오류).
+    DATA(zero) = 0.
     TRY.
-        result = 1 / 0.
+        result = 1 / zero.
       CATCH cx_sy_zerodivide INTO DATA(divide_error).
         " get_source_position( ): program_name·include_name·source_line 반환.
         divide_error->get_source_position( IMPORTING source_line = result ).

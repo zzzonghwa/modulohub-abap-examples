@@ -257,13 +257,17 @@ CLASS zcl_modulo_sql05_cte IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD join_internal_table.
-    " FAE 대안(B2): 내부 테이블 wanted를 @itab AS alias로 JOIN 소스화(since 7.52).
-    " alias(wanted)는 필수다(B4) — 없으면 tilde 참조 불가로 syntax error.
-    " @wanted가 FROM에 쓰이나 정적분석이 못 봄 -> ##NEEDED로 false positive 억제.
-    DATA(source) = wanted ##NEEDED.
-    SELECT flight~carrid, flight~connid
-      FROM zmodulo_flight AS flight
-      INNER JOIN @source AS wanted ON flight~carrid = wanted~table_line
+    " DB 테이블과 내부 테이블의 직접 JOIN은 7.55+라 7.54에서는 활성화되지 않는다.
+    " 7.54에서는 코드 목록을 RANGE로 바꿔 WHERE ... IN @range로 조회한다(빈 목록은 0건).
+    DATA carrier_range TYPE RANGE OF zmodulo_flight-carrid.
+    IF wanted IS INITIAL.
+      result = 0.
+      RETURN.
+    ENDIF.
+    carrier_range = VALUE #( FOR code IN wanted ( sign = 'I' option = 'EQ' low = code ) ).
+    SELECT carrid, connid
+      FROM zmodulo_flight
+      WHERE carrid IN @carrier_range
       INTO TABLE @DATA(picked).
     result = lines( picked ).
   ENDMETHOD.

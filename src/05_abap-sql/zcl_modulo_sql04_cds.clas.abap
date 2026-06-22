@@ -51,7 +51,7 @@ CLASS zcl_modulo_sql04_cds DEFINITION
       BEGIN OF load_row,
         carrier TYPE carrier_code,
         connid  TYPE n LENGTH 4,
-        band    TYPE string,
+        band    TYPE c LENGTH 5,
       END OF load_row.
     TYPES load_rows TYPE STANDARD TABLE OF load_row WITH EMPTY KEY.
 

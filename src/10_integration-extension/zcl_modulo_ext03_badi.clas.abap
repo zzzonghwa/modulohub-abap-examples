@@ -138,7 +138,7 @@ CLASS zcl_modulo_ext03_badi IMPLEMENTATION.
     TRY.
         NEW lcl_single_use_badi( )->get_badi( ).
         result = abap_false.
-      CATCH lcx_badi_not_implemented.
+      CATCH lcx_badi_not_implemented lcx_badi_multiply.
         result = abap_true.
     ENDTRY.
   ENDMETHOD.
@@ -163,7 +163,7 @@ CLASS zcl_modulo_ext03_badi IMPLEMENTATION.
     TRY.
         badi->get_badi( ).
         result = abap_false.
-      CATCH lcx_badi_multiply.
+      CATCH lcx_badi_multiply lcx_badi_not_implemented.
         result = abap_true.
     ENDTRY.
   ENDMETHOD.

@@ -206,8 +206,10 @@ START-OF-SELECTION.
   WRITE: / 'Carrier  :', p_carr.
   WRITE: / 'Connid   :', s_conn-low, '~', s_conn-high.
   WRITE: / 'Min seats:', p_min.
-  WRITE: / 'Sort     :', COND string( WHEN p_bysea = 'X' THEN 'seats' ELSE 'connid' ),
-           COND string( WHEN p_desc = 'X' THEN 'DESC' ELSE 'ASC' ).
+  " 클래식 WRITE 출력 인자엔 생성자식(COND)을 직접 못 쓴다 — 데이터 오브젝트로 분리한다.
+  DATA(sort_label) = COND string( WHEN p_bysea = 'X' THEN `seats` ELSE `connid` ).
+  DATA(dir_label) = COND string( WHEN p_desc = 'X' THEN `DESC` ELSE `ASC` ).
+  WRITE: / 'Sort     :', sort_label, dir_label.
   ULINE.
 
   WRITE: / 'CARR', 'CONNID', 'SEATS'.

@@ -251,7 +251,7 @@ CLASS zcl_modulo_ext02_serial IMPLEMENTATION.
 
   METHOD ixml_root_name.
     " iXML(DOM) 빌더(claim 10·33): core->document->element 트리를 메모리에 만든다.
-    DATA(core) = cl_ixml_core=>create( ).
+    DATA(core) = cl_ixml=>create( ).
     DATA(document) = core->create_document( ).
     DATA(root) = document->create_element( name = `item` ).
     document->append_child( root ).

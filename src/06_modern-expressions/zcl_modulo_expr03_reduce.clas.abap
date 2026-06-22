@@ -18,6 +18,8 @@ CLASS zcl_modulo_expr03_reduce DEFINITION
     TYPES texts TYPE STANDARD TABLE OF string WITH EMPTY KEY.
     "! 평균 결과 타입 — 메서드 시그니처는 완전 타입이 필요하므로 제네릭 p 대신 별칭을 쓴다.
     TYPES average TYPE p LENGTH 8 DECIMALS 2.
+    "! 항공사 코드(c2) — seats_of_carrier 파라미터가 c1로 잡혀 절단되는 것을 막는다.
+    TYPES carrier_key TYPE c LENGTH 2.
 
     "! REDUCE(조건 반복): 1*2*...*n. FOR x = 1 THEN x+1 UNTIL — NEXT에 곱셈 누적.
     "! @parameter n      | 상한(0이면 1)
@@ -79,7 +81,7 @@ CLASS zcl_modulo_expr03_reduce DEFINITION
     "! @parameter carrier_code | 합산할 항공사 코드
     "! @parameter result       | 해당 항공사 좌석 합
     METHODS seats_of_carrier
-      IMPORTING carrier_code  TYPE c
+      IMPORTING carrier_code  TYPE carrier_key
       RETURNING VALUE(result) TYPE i.
 
     "! REDUCE(조건 반복 UNTIL, THEN 생략): 1..n 삼각수. numeric은 THEN 생략 시 +1 자동증가.

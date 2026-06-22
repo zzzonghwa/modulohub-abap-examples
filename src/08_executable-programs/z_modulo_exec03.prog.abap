@@ -54,7 +54,9 @@ CLASS lcl_report DEFINITION CREATE PRIVATE.
 
     "! seats 내림차순 정렬 + carrier 그룹 소계 기준을 추가한다(소절 F, 주장 9).
     METHODS configure_sorts
-      RAISING cx_salv_data_error.
+      RAISING cx_salv_data_error
+              cx_salv_not_found
+              cx_salv_existing.
 
     "! price·seats 합계(소계) 집계 컬럼을 지정한다(소절 G, 주장 10).
     METHODS configure_aggregations

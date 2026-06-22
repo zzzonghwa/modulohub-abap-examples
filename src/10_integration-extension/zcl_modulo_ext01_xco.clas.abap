@@ -12,7 +12,7 @@ CLASS zcl_modulo_ext01_xco DEFINITION
     "! released class의 class-based 예외는 처리 누락을 컴파일/런타임에 강제한다.
     "!
     "! 소절 대응(노트 본문):
-    "! - 문자열 체이닝(claim 18): xco_cp=>string( )->to_upper/lower/from/to/reverse/append/
+    "! - 문자열 체이닝(claim 18): xco_cp=>string( )->to_upper/lower/from/to/append/
     "!   prepend/split, xco_cp=>strings( )->join, ->starts_with/ends_with/matches.
     "! - UUID(claim 17): xco_cp=>uuid( )->value / ->as( c36 ), cl_system_uuid 대안.
     "! - 현재 순간(claim 16): xco_cp=>sy->date/user — sy-datum 직접 접근의 Cloud 호환 경로.
@@ -41,7 +41,7 @@ CLASS zcl_modulo_ext01_xco DEFINITION
       IMPORTING text          TYPE string
       RETURNING VALUE(result) TYPE string.
 
-    "! 문자열 역순(고전 문자열 처리 FM 대체). xco_cp=>string( )->reverse( ).
+    "! 문자열 역순(고전 문자열 처리 FM 대체). 내장 함수 reverse( ).
     "! @parameter text   | 입력 문자열
     "! @parameter result | 역순 문자열
     METHODS reverse
@@ -159,7 +159,8 @@ CLASS zcl_modulo_ext01_xco IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD reverse.
-    result = xco_cp=>string( text )->reverse( )->value.
+    " XCO 단일 문자열 핸들러엔 역순 메서드가 없다 — 내장 함수 reverse를 쓴다.
+    result = reverse( text ).
   ENDMETHOD.
 
   METHOD resplit.
