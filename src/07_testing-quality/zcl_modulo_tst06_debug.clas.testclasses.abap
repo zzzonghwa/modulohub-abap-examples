@@ -27,7 +27,7 @@ CLASS ltcl_debug DEFINITION FINAL FOR TESTING
     METHODS breach_at_fourth    FOR TESTING.
     METHODS breach_none         FOR TESTING.
 
-    " post_movements — 클래스 불변(invariant, G4).
+    " post_movements — 클래스 불변(invariant).
     METHODS closing_balance     FOR TESTING.
 
     " assert type 선택 + quit 비종료 모드 시연.
@@ -119,9 +119,9 @@ CLASS ltcl_debug IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD right_assert_type.
-    " F2/CA1: assert_true( xsdbool( act = exp ) ) 대신 assert_equals를 쓰면
+    " assert_true( xsdbool( act = exp ) ) 대신 assert_equals를 쓰면
     " 실패 시 act/exp 값이 메시지에 자동 포함돼 디버거 진입 없이 원인을 안다.
-    " F3/F4: quit = if_abap_unit_constant=>quit-no 면 실패해도 다음 assert가 계속 실행된다.
+    " quit = if_abap_unit_constant=>quit-no 면 실패해도 다음 assert가 계속 실행된다.
     " 여기서는 두 assert 모두 통과하므로 quit 모드와 무관하게 정상 종료한다.
     cl_abap_unit_assert=>assert_equals( act  = cut->safe_divide( dividend = 9 divisor = 3 )
                                         exp  = 3
