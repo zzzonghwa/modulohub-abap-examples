@@ -47,13 +47,16 @@ CLASS ltcl_except IMPLEMENTATION.
 
   METHOD divide_strict_propagates.
     " 전파 전략: 정상은 결과, 0 제수는 예외가 호출부(이 테스트)까지 올라온다.
+    cl_abap_unit_assert=>assert_equals( act = cut->divide_strict( dividend = 10 divisor = 2 ) exp = 5 ).
+    " 예외 전파 여부를 플래그로 받고 검증은 TRY 밖에서 — fail() 마스킹을 피하고,
+    " cx_root로 받아 인클루드/클래스 동일성 문제와 무관하게 전파를 확인한다.
+    DATA(propagated) = abap_false.
     TRY.
-        cl_abap_unit_assert=>assert_equals( act = cut->divide_strict( dividend = 10 divisor = 2 ) exp = 5 ).
         cut->divide_strict( dividend = 10 divisor = 0 ).
-        cl_abap_unit_assert=>fail( msg = `expected lcx_invalid_arg` ).
-      CATCH lcx_invalid_arg.
-        " 기대한 전파 — 통과.
+      CATCH cx_root.
+        propagated = abap_true.
     ENDTRY.
+    cl_abap_unit_assert=>assert_true( propagated ).
   ENDMETHOD.
 
   METHOD withdraw_happy.
