@@ -1,5 +1,5 @@
 "! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
-"! <p>COND·SWITCH — 조건부 표현식의 폭. 노트(06-2)의 구문 형태를 자체완결로 시연한다.</p>
+"! <p>COND·SWITCH — 조건부 표현식의 폭. 구문 형태를 자체완결로 시연한다.</p>
 "! <ul>
 "! <li>COND: 논리식 분기. WHEN을 순서대로 평가, 첫 참의 THEN 결과를 반환(short-circuit).</li>
 "! <li>SWITCH: 한 피연산자의 값 일치 분기(CASE의 표현식판). WHEN 뒤는 리터럴/상수만.</li>
@@ -52,7 +52,7 @@ CLASS zcl_modulo_expr02_cond DEFINITION
       RETURNING VALUE(result) TYPE string.
 
     "! COND(abap_bool, ELSE 생략): ELSE가 없으면 초기값 abap_false를 조용히 반환한다.
-    "! Clean ABAP은 이 형태를 xsdbool의 secondary로만 권장(여기선 KW-5 동작 시연용).
+    "! Clean ABAP은 이 형태를 xsdbool의 secondary로만 권장(여기선 동작 시연용).
     "! @parameter text   | 검사할 문자열
     "! @parameter result | 비어있지 않으면 abap_true, 비면 abap_false(초기값)
     METHODS has_content
@@ -98,7 +98,7 @@ CLASS zcl_modulo_expr02_cond DEFINITION
       IMPORTING parvw         TYPE partner_function
       RETURNING VALUE(result) TYPE string.
 
-    "! SWITCH(ELSE 생략): 미일치 시 결과 타입(string)의 초기값(공백)을 반환한다(KW-5).
+    "! SWITCH(ELSE 생략): 미일치 시 결과 타입(string)의 초기값(공백)을 반환한다.
     "! @parameter flag   | 단일 문자 플래그
     "! @parameter result | 'X' -> 'on', ' ' -> 'off', 그 외 초기값('')
     METHODS flag_state
@@ -106,7 +106,7 @@ CLASS zcl_modulo_expr02_cond DEFINITION
       RETURNING VALUE(result) TYPE string.
 
     "! SWITCH(루프 + ELSE THROW): 일치하는 코드까지 누적하다 미지원 코드를 만나면 예외로 탈출.
-    "! KW-doc: "The loop is exited when the exception after ELSE is caught."
+    "! ELSE 뒤 예외가 잡히면 루프가 종료된다.
     "! @parameter codes  | 처리할 코드 목록
     "! @parameter result | 첫 미지원 코드 직전까지의 가중치 합
     METHODS sum_until_unknown
@@ -222,7 +222,7 @@ CLASS zcl_modulo_expr02_cond IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD sum_until_unknown.
-    " 루프 + SWITCH ELSE THROW: 미지원 코드를 만나면 예외로 루프를 탈출한다(KW-doc 루프 패턴).
+    " 루프 + SWITCH ELSE THROW: 미지원 코드를 만나면 예외로 루프를 탈출한다.
     TRY.
         LOOP AT codes INTO DATA(code).
           result = result + SWITCH i( code

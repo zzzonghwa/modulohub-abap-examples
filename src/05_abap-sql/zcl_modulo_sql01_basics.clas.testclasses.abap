@@ -42,7 +42,7 @@ CLASS ltcl_basics IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD subrc_hit_and_empty.
-    " W-12: hit -> sy-subrc 0, 빈 결과 -> 4.
+    " hit -> sy-subrc 0, 빈 결과 -> 4.
     cl_abap_unit_assert=>assert_equals(
       act = cut->single_subrc( carrier = 'AA' connid = '0017' ) exp = 0 ).
     cl_abap_unit_assert=>assert_equals(
@@ -118,7 +118,7 @@ CLASS ltcl_db_source IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD db_table_count.
-    " DDIC 테이블 소스(W-01): 더블에 주입한 항공사 3건.
+    " DDIC 테이블 소스: 더블에 주입한 항공사 3건.
     cl_abap_unit_assert=>assert_equals( act = cut->count_db_table( ) exp = 3 ).
   ENDMETHOD.
 

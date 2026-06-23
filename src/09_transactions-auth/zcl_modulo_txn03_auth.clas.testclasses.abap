@@ -1,6 +1,6 @@
-"! 권한 체크 단위 테스트(L-01~L-04). 실 AUTHORITY-CHECK는 현재 로그온 사용자에 의존하므로
+"! 권한 체크 단위 테스트. 실 AUTHORITY-CHECK는 현재 로그온 사용자에 의존하므로
 "! 정확값을 단정할 수 없다 -> lif_authority를 인메모리 buffer(test double)로 교체해
-"! 통과 논리(W-01b)·sy-subrc 체계(W-03)·DUMMY(W-05)·FOR USER(W-07)를 결정적으로 검증한다.
+"! 통과 논리·sy-subrc 체계·DUMMY·FOR USER를 결정적으로 검증한다.
 CLASS ltcl_auth DEFINITION FINAL FOR TESTING
   DURATION SHORT
   RISK LEVEL HARMLESS.
@@ -11,27 +11,27 @@ CLASS ltcl_auth DEFINITION FINAL FOR TESTING
 
     METHODS setup.
 
-    " AND across fields: 같은 인스턴스가 CARRID·ACTVT 모두 충족하면 통과(W-01b).
+    " AND across fields: 같은 인스턴스가 CARRID·ACTVT 모두 충족하면 통과.
     METHODS granted_when_both_fields FOR TESTING.
-    " ACTVT value set에 없는 활동 -> subrc=4(value_mismatch, W-03 td4).
+    " ACTVT value set에 없는 활동 -> subrc=4(value_mismatch).
     METHODS mismatch_when_wrong_actvt FOR TESTING.
-    " CARRID value set에 없는 항공사 -> subrc=4(W-03 td4).
+    " CARRID value set에 없는 항공사 -> subrc=4.
     METHODS mismatch_when_wrong_carrier FOR TESTING.
-    " object에 authorization 인스턴스 자체가 없으면 subrc=12(no_auth, W-03 td12).
+    " object에 authorization 인스턴스 자체가 없으면 subrc=12(no_auth).
     METHODS no_auth_when_object_absent FOR TESTING.
-    " 권한 분산(W-01b): CARRID와 ACTVT가 서로 다른 인스턴스에 흩어지면 통과 불가(subrc=4).
+    " 권한 분산: CARRID와 ACTVT가 서로 다른 인스턴스에 흩어지면 통과 불가(subrc=4).
     METHODS mismatch_when_split_instance FOR TESTING.
-    " OR across authorizations: 두 인스턴스 중 하나만 모두 충족해도 통과(W-01b).
+    " OR across authorizations: 두 인스턴스 중 하나만 모두 충족해도 통과.
     METHODS granted_when_one_instance_ok FOR TESTING.
-    " DUMMY(W-05): CARRID를 dummy로 두면 ACTVT만 보고 통과한다.
+    " DUMMY: CARRID를 dummy로 두면 ACTVT만 보고 통과한다.
     METHODS dummy_skips_data_field FOR TESTING.
-    " FOR USER(W-07): 미등록 사용자명은 subrc=40(invalid_user).
+    " FOR USER: 미등록 사용자명은 subrc=40(invalid_user).
     METHODS invalid_user_returns_40 FOR TESTING.
-    " FOR USER(W-07): 등록된 사용자의 권한을 정상 평가한다.
+    " FOR USER: 등록된 사용자의 권한을 정상 평가한다.
     METHODS for_registered_user_ok FOR TESTING.
     " can_start_tcode: S_TCODE 단일 필드 체크가 buffer 부여 시 abap_true.
     METHODS tcode_granted FOR TESTING.
-    " create·delete 활동 분리(W-10·L-05): 부여된 활동만 통과.
+    " create·delete 활동 분리: 부여된 활동만 통과.
     METHODS activity_codes_are_distinct FOR TESTING.
 ENDCLASS.
 

@@ -32,7 +32,7 @@ ENDCLASS.
 
 
 "! 메모리 싱크 — lif_notifier를 완전 구현한 실제 stub(부수효과 없이 메모리에만 누적).
-"! 노트 "Only Mock What's Needed"(주장40): 부수효과 없는 의존은 더블 대신 실 구현을 쓴다.
+"! "Only Mock What's Needed": 부수효과 없는 의존은 더블 대신 실 구현을 쓴다.
 CLASS lcl_memory_sink DEFINITION CREATE PUBLIC.
   PUBLIC SECTION.
     INTERFACES lif_notifier.
@@ -86,7 +86,7 @@ CLASS lcl_greeter IMPLEMENTATION.
 ENDCLASS.
 
 
-"! 출금 거부 도메인 예외 — 예외 기대 테스트(주장 37)·RAISING 전달(주장 38)의 대상.
+"! 출금 거부 도메인 예외 — 예외 기대 테스트·RAISING 전달의 대상.
 CLASS lcx_rejected DEFINITION INHERITING FROM cx_static_check CREATE PUBLIC.
   PUBLIC SECTION.
     METHODS constructor IMPORTING shortfall TYPE i.

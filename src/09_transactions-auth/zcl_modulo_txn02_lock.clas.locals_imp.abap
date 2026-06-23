@@ -1,9 +1,9 @@
-"! 인메모리 lock table — SAP 중앙 enqueue 서버의 잠금 테이블 비유(W26~W32).
+"! 인메모리 lock table — SAP 중앙 enqueue 서버의 잠금 테이블 비유.
 "! 실 시스템은 lock object(SE11 ENQU, E 접두사) 활성화로 생긴 ENQUEUE_/DEQUEUE_ FM이
 "! 중앙 enqueue 서버 메모리에 잠금을 보관한다(DB 아님). 여기선 같은 의미 — 잠금 모드(S/E/X)·
 "! 누적·논리적 잠금·_scope별 해제·예외 구분 — 를 로컬 테이블로 자체완결 시연한다.
 
-"! foreign_lock: 다른 사용자가 이미 같은 키를 잠금. user_name에 소유자가 담긴다(W30·A5).
+"! foreign_lock: 다른 사용자가 이미 같은 키를 잠금. user_name에 소유자가 담긴다.
 CLASS lcx_foreign_lock DEFINITION INHERITING FROM cx_static_check CREATE PUBLIC.
   PUBLIC SECTION.
     DATA user_name TYPE string READ-ONLY.
@@ -19,7 +19,7 @@ CLASS lcx_foreign_lock IMPLEMENTATION.
 ENDCLASS.
 
 
-"! lock_failure: enqueue 서버 장애(system_failure). 소유자 정보가 없다 — SHORTDUMP 대응(A4·A7).
+"! lock_failure: enqueue 서버 장애(system_failure). 소유자 정보가 없다 — SHORTDUMP 대응.
 CLASS lcx_lock_failure DEFINITION INHERITING FROM cx_static_check CREATE PUBLIC.
 ENDCLASS.
 
@@ -27,7 +27,7 @@ CLASS lcx_lock_failure IMPLEMENTATION.
 ENDCLASS.
 
 
-"! SAP 락 모드·_scope 상수 모음(W31·W32).
+"! SAP 락 모드·_scope 상수 모음.
 INTERFACE lif_lock.
   CONSTANTS:
     "! shared — 여러 사용자가 동시에 S 잠금 가능.
@@ -70,7 +70,7 @@ CLASS lcl_lock_table DEFINITION CREATE PUBLIC.
     "! COMMIT WORK: _scope에 따라 락을 해제한다(scope_dialog·scope_both 즉시, scope_update 유지 후 해제).
     METHODS commit_work
       IMPORTING holder TYPE string.
-    "! ROLLBACK WORK: _scope=2(scope_update) 락만 제거한다(W20·W31).
+    "! ROLLBACK WORK: _scope=2(scope_update) 락만 제거한다.
     METHODS rollback_work
       IMPORTING holder TYPE string.
     "! 소유자가 현재 보유한 잠금 라인 수.
@@ -143,7 +143,7 @@ CLASS lcl_lock_table IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD rollback_work.
-    " ROLLBACK WORK는 _scope=2 락만 제거한다(W31). scope_dialog/scope_both 락은 남는다.
+    " ROLLBACK WORK는 _scope=2 락만 제거한다. scope_dialog/scope_both 락은 남는다.
     DELETE locks WHERE owner = holder AND scope = lif_lock=>scope_update.
   ENDMETHOD.
 

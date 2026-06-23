@@ -51,7 +51,7 @@ CLASS ltcl_luw IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD priority_order.
-    " VB1(H1,H2) 등록 순서대로 먼저, 그 뒤 VB2(L).
+    " VB1 등록 순서대로 먼저, 그 뒤 VB2.
     cl_abap_unit_assert=>assert_equals( act = cut->priority_vb1_before_vb2( ) exp = `H1|H2|L` ).
   ENDMETHOD.
 

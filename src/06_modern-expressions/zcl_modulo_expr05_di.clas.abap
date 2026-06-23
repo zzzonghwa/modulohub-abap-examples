@@ -1,12 +1,12 @@
 "! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
-"! <p>표현식 중심 OO 패턴·인터페이스 분리·DI 기초(노트 06-5). 모던 표현식이 패턴에서 어떻게</p>
+"! <p>표현식 중심 OO 패턴·인터페이스 분리·DI 기초. 모던 표현식이 패턴에서 어떻게</p>
 "! <p>쓰이는지를 자체완결 로컬 타입으로 시연한다.</p>
 "! <ul>
-"! <li>Strategy + DI: 할인 정책을 인터페이스(lif_discount)로 분리하고 생성자 주입으로 교체(노트 G-07·G-10).</li>
-"! <li>Factory: CREATE PRIVATE + SWITCH+NEW로 구체 타입을 감추고 인터페이스 레퍼런스 반환(노트 G-01).</li>
-"! <li>Singleton: CREATE PRIVATE + IS NOT BOUND lazy 초기화, 내부 세션 1인스턴스(노트 G-04·G-05).</li>
-"! <li>Adapter: 합성 기반으로 레거시 시그니처를 계약으로 변환(노트 G-09).</li>
-"! <li>추상 클래스 + 인터페이스 합성 + ALIASES: 공통 골격 강제와 짧은 선택자(노트 W-01·W-07·W-08).</li>
+"! <li>Strategy + DI: 할인 정책을 인터페이스(lif_discount)로 분리하고 생성자 주입으로 교체.</li>
+"! <li>Factory: CREATE PRIVATE + SWITCH+NEW로 구체 타입을 감추고 인터페이스 레퍼런스 반환.</li>
+"! <li>Singleton: CREATE PRIVATE + IS NOT BOUND lazy 초기화, 내부 세션 1인스턴스.</li>
+"! <li>Adapter: 합성 기반으로 레거시 시그니처를 계약으로 변환.</li>
+"! <li>추상 클래스 + 인터페이스 합성 + ALIASES: 공통 골격 강제와 짧은 선택자.</li>
 "! </ul>
 "! <p>로컬 타입은 locals_imp(lif_discount·lcl_pricing·lcl_discount_factory·lcl_tax 등)에 있다.</p>
 CLASS zcl_modulo_expr05_di DEFINITION
@@ -32,12 +32,12 @@ CLASS zcl_modulo_expr05_di DEFINITION
       IMPORTING percent       TYPE i
       RETURNING VALUE(result) TYPE i.
 
-    "! [DI] 생성자 인자를 생략하면 OPTIONAL+IS BOUND 가드가 기본 전략을 만든다(노트 G-10).
+    "! [DI] 생성자 인자를 생략하면 OPTIONAL+IS BOUND 가드가 기본 전략을 만든다.
     "! @parameter result | 무할인 기본 전략으로 계산한 합계
     METHODS net_default_dependency
       RETURNING VALUE(result) TYPE i.
 
-    "! [Factory] 종류 상수로 전략을 만들어 합계를 낸다 — 클라이언트는 구체 클래스명을 모른다(노트 G-01).
+    "! [Factory] 종류 상수로 전략을 만들어 합계를 낸다 — 클라이언트는 구체 클래스명을 모른다.
     "! @parameter kind      | 전략 종류(0 none·1 percent·2 flat)
     "! @parameter parameter | percent면 할인율, flat이면 정액
     "! @parameter result    | 해당 전략으로 계산한 합계
@@ -51,31 +51,31 @@ CLASS zcl_modulo_expr05_di DEFINITION
     METHODS factory_rejects_unknown
       RETURNING VALUE(result) TYPE i.
 
-    "! [Adapter] 레거시 천분율 API를 계약(lif_discount)으로 변환해 합계를 낸다(노트 G-09).
+    "! [Adapter] 레거시 천분율 API를 계약(lif_discount)으로 변환해 합계를 낸다.
     "! @parameter per_mille | 천분율 할인(예: 50 = 5%)
     "! @parameter result    | 어댑터를 거친 합계
     METHODS net_via_adapter
       IMPORTING per_mille     TYPE i
       RETURNING VALUE(result) TYPE i.
 
-    "! [Singleton] 세율 싱글턴으로 세금 포함 금액을 낸다(노트 G-04).
+    "! [Singleton] 세율 싱글턴으로 세금 포함 금액을 낸다.
     "! @parameter net    | 세전 금액
     "! @parameter result | 세금 10% 포함 금액
     METHODS gross_with_tax
       IMPORTING net           TYPE i
       RETURNING VALUE(result) TYPE i.
 
-    "! [Singleton] 여러 번 instance( )를 호출해도 초기화는 한 번뿐임을 보인다(노트 G-05).
+    "! [Singleton] 여러 번 instance( )를 호출해도 초기화는 한 번뿐임을 보인다.
     "! @parameter result | 초기화 횟수(싱글턴이면 1)
     METHODS singleton_init_count
       RETURNING VALUE(result) TYPE i.
 
-    "! [추상/합성] 추상 베이스의 공통 골격에 하위가 채운 가중치(2)를 곱한 합계(노트 W-01).
+    "! [추상/합성] 추상 베이스의 공통 골격에 하위가 채운 가중치(2)를 곱한 합계.
     "! @parameter result | 각 금액 x2의 합계
     METHODS weighted_via_abstract
       RETURNING VALUE(result) TYPE i.
 
-    "! [ALIASES/합성] lif_audit~note를 ALIASES log로 호출해 기록한 문구를 되읽는다(노트 W-07·W-08).
+    "! [ALIASES/합성] lif_audit~note를 ALIASES log로 호출해 기록한 문구를 되읽는다.
     "! @parameter result | 기록된 감사 문구
     METHODS audit_roundtrip
       RETURNING VALUE(result) TYPE string.

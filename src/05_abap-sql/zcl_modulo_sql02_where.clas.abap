@@ -1,5 +1,5 @@
 "! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
-"! <p>SELECT·WHERE — 결과 집합 읽기의 폭. 노트(05-2)의 구문 형태를 자체완결 내부 테이블로 시연한다.</p>
+"! <p>SELECT·WHERE — 결과 집합 읽기의 폭. 다양한 구문 형태를 자체완결 내부 테이블로 시연한다.</p>
 "! <ul>
 "! <li>배치: 전통형 SELECT col FROM 과 모던형 SELECT FROM ... FIELDS col(7.40+ strict) 둘 다.</li>
 "! <li>필터: 비교·BETWEEN·IN @range·LIKE·호스트식 @( ).</li>

@@ -7,21 +7,21 @@ CLASS lcx_unknown IMPLEMENTATION.
 ENDCLASS.
 
 
-"! 할인 전략 계약 — 모든 전략이 공유하는 좁은 인터페이스(인터페이스 분리 원칙, 노트 W-03).
-"! 인터페이스로 공개 메서드를 노출하면 의존을 디커플하고 테스트 더블 교체가 쉬워진다(노트 L-04).
+"! 할인 전략 계약 — 모든 전략이 공유하는 좁은 인터페이스(인터페이스 분리 원칙).
+"! 인터페이스로 공개 메서드를 노출하면 의존을 디커플하고 테스트 더블 교체가 쉬워진다.
 INTERFACE lif_discount.
   METHODS apply IMPORTING amount        TYPE i
                 RETURNING VALUE(result) TYPE i.
 ENDINTERFACE.
 
 
-"! 로깅 계약 — 인터페이스 합성(노트 W-07) 데모용 좁은 계약.
+"! 로깅 계약 — 인터페이스 합성 데모용 좁은 계약.
 INTERFACE lif_audit.
   METHODS note IMPORTING text TYPE string.
 ENDINTERFACE.
 
 
-"! 합성 인터페이스 — lif_audit를 포함한다(노트 W-07). 이 계약을 구현하는 클래스는
+"! 합성 인터페이스 — lif_audit를 포함한다. 이 계약을 구현하는 클래스는
 "! note( )까지 모두 구현해야 한다.
 INTERFACE lif_priced_audit.
   INTERFACES lif_audit.
@@ -84,12 +84,12 @@ CLASS lcl_flat IMPLEMENTATION.
 ENDCLASS.
 
 
-"! 할인 전략 팩토리 — CREATE PRIVATE으로 생성 게이트를 잠그고(노트 W-10),
-"! 정적 팩토리 메서드가 SWITCH+NEW로 구체 타입을 골라 인터페이스 레퍼런스로 돌려준다(노트 G-01).
+"! 할인 전략 팩토리 — CREATE PRIVATE으로 생성 게이트를 잠그고,
+"! 정적 팩토리 메서드가 SWITCH+NEW로 구체 타입을 골라 인터페이스 레퍼런스로 돌려준다.
 "! 클라이언트는 구체 클래스명을 모른 채 enum 상수만으로 전략을 얻는다.
 CLASS lcl_discount_factory DEFINITION CREATE PRIVATE.
   PUBLIC SECTION.
-    "! 전략 종류 — 인터페이스 상수가 아니라 팩토리 상수로 SWITCH 분기 키를 노출(노트 W-09).
+    "! 전략 종류 — 인터페이스 상수가 아니라 팩토리 상수로 SWITCH 분기 키를 노출한다.
     CONSTANTS:
       none    TYPE i VALUE 0,
       percent TYPE i VALUE 1,
@@ -130,7 +130,7 @@ CLASS lcl_legacy_promo IMPLEMENTATION.
 ENDCLASS.
 
 
-"! 어댑터 — 합성 기반(Object Adapter, 노트 G-09·L-06). 레거시를 DATA 속성으로 보유하고
+"! 어댑터 — 합성 기반(Object Adapter). 레거시를 DATA 속성으로 보유하고
 "! lif_discount 계약으로 변환만 한다(글루 코드). 단일 상속 제약 영향 없음.
 CLASS lcl_promo_adapter DEFINITION CREATE PUBLIC.
   PUBLIC SECTION.
@@ -156,7 +156,7 @@ CLASS lcl_promo_adapter IMPLEMENTATION.
 ENDCLASS.
 
 
-"! 세율 싱글턴 — CREATE PRIVATE + IS NOT BOUND lazy 초기화(노트 G-04). 내부 세션 1인스턴스(노트 G-05).
+"! 세율 싱글턴 — CREATE PRIVATE + IS NOT BOUND lazy 초기화. 내부 세션당 1인스턴스.
 "! 고비용 초기화(여기선 카운터)를 한 번만 수행함을 hits로 보인다.
 CLASS lcl_tax DEFINITION CREATE PRIVATE.
   PUBLIC SECTION.
@@ -207,8 +207,8 @@ ENDCLASS.
 
 
 "! 가격 계산기 — 할인 전략을 생성자 주입(DI)으로 받는다.
-"! 전략을 바꾸면 동작이 바뀌고(개방-폐쇄), 테스트는 더블을 주입해 격리 검증한다(노트 L-07).
-"! OPTIONAL + IS BOUND 가드(노트 G-10) — 생략 시 기본 전략을 자체 생성한다.
+"! 전략을 바꾸면 동작이 바뀌고(개방-폐쇄), 테스트는 더블을 주입해 격리 검증한다.
+"! OPTIONAL + IS BOUND 가드 — 생략 시 기본 전략을 자체 생성한다.
 CLASS lcl_pricing DEFINITION CREATE PUBLIC.
   PUBLIC SECTION.
     METHODS constructor IMPORTING strategy TYPE REF TO lif_discount OPTIONAL.
@@ -234,14 +234,14 @@ ENDCLASS.
 
 
 "! 추상 계산기 베이스 — 추상 메서드 강제 + 인터페이스 합성 + ALIASES + DEFAULT IGNORE 데모.
-"! INTERFACES lif_priced_audit는 포함된 lif_audit~note까지 구현 의무를 지운다(노트 W-07).
-"! lif_audit~note를 ALIASES log로 짧게 참조한다(노트 W-08).
-"! 추상 메서드 weight는 하위가 반드시 구현한다(노트 W-01).
+"! INTERFACES lif_priced_audit는 포함된 lif_audit~note까지 구현 의무를 지운다.
+"! lif_audit~note를 ALIASES log로 짧게 참조한다.
+"! 추상 메서드 weight는 하위가 반드시 구현한다.
 CLASS lcl_calc_base DEFINITION ABSTRACT CREATE PUBLIC.
   PUBLIC SECTION.
     INTERFACES lif_priced_audit.
     ALIASES log FOR lif_audit~note.
-    "! 하위가 정의하는 가중치 — 추상 메서드는 하위 클래스에서만 구현(노트 W-01).
+    "! 하위가 정의하는 가중치 — 추상 메서드는 하위 클래스에서만 구현한다.
     METHODS weight ABSTRACT RETURNING VALUE(result) TYPE i.
     "! 가중치를 곱해 합계를 낸다 — 공통 골격(Template Method식 공유 구현).
     METHODS weighted_total

@@ -1,13 +1,13 @@
 "! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
-"! <p>released API 소비와 "확장 계약(release contract)" 읽기 — 노트 05-7을 자체완결로 시연한다.</p>
-"! <p>계약은 두 분류의 결합이다(W2): ① release contract(안정성 약속) + ② restricted ABAP</p>
+"! <p>released API 소비와 확장 계약(release contract) 읽기를 자체완결로 시연한다.</p>
+"! <p>계약은 두 분류의 결합이다: ① release contract(안정성 약속) + ② restricted ABAP</p>
 "! <p>language version용 visibility. 둘 다 충족돼야 released API다.</p>
-"! <p>release contract 5종(W4~W10): C0=확장(enhancement 필드 추가) / C1=내부 소비(AS ABAP 내) /</p>
-"! <p>C2=원격 소비(RFC·OData 등 AS ABAP 밖) / C3=설정 영속 / C4=AMDP 간. C1·C2는 공존 가능(W6).</p>
-"! <p>소비 판단(S2·S4): ABAP 코드에서 ->method() 호출 = C1로 충분. 외부(RFC/OData) = C2 필요.</p>
+"! <p>release contract 5종: C0=확장(enhancement 필드 추가) / C1=내부 소비(AS ABAP 내) /</p>
+"! <p>C2=원격 소비(RFC·OData 등 AS ABAP 밖) / C3=설정 영속 / C4=AMDP 간. C1·C2는 공존 가능.</p>
+"! <p>소비 판단: ABAP 코드에서 ->method() 호출 = C1로 충분. 외부(RFC/OData) = C2 필요.</p>
 "! <p>실제 released API 소비: CL_ABAP_CONTEXT_INFO(C1)로 SY/SYST 전역 대신 시스템·사용자 정보를</p>
 "! <p>읽는다(읽기 전용). 출력(날짜·시간)은 실행 시점·시스템마다 달라 manual-report로 분류한다.</p>
-"! <p>released 카탈로그 조회(G6·G7·라이브): 실 시스템은 released 객체를 CDS 뷰</p>
+"! <p>released 카탈로그 조회(라이브): 실 시스템은 released 객체를 CDS 뷰</p>
 "! <p>I_APIsForCloudDevelopment(WHERE ReleaseState='RELEASED')로, deprecated+후속을</p>
 "! <p>I_APIsWithCloudDevSuccessor로 ABAP SQL 소비한다. 7.54 자체완결을 위해 동일한 SELECT 구문</p>
 "! <p>형태를 메모리 카탈로그(단일 itab SELECT FROM @catalog AS api)로 시연한다 — 쿼리 모양은 동일.</p>
@@ -55,35 +55,35 @@ CLASS zcl_modulo_sql07_api DEFINITION
     METHODS system_time
       RETURNING VALUE(result) TYPE t.
 
-    "! G6 패턴: released 카탈로그에서 RELEASED 상태 객체 수를 센다(WHERE ReleaseState='RELEASED').
+    "! released 카탈로그에서 RELEASED 상태 객체 수를 센다(WHERE ReleaseState='RELEASED').
     "! 실 구문: SELECT COUNT(*) FROM i_apisforclouddevelopment WHERE releasestate='RELEASED'.
     "! @parameter result | RELEASED 상태 객체 수
     METHODS released_count
       RETURNING VALUE(result) TYPE i.
 
-    "! G6 패턴: 객체 종류별 released 카탈로그 조회(WHERE ReleaseState·ReleasedObjectType, ORDER BY).
+    "! 객체 종류별 released 카탈로그 조회(WHERE ReleaseState·ReleasedObjectType, ORDER BY).
     "! @parameter object_type | 필터할 객체 종류(예: CLAS)
     "! @parameter result      | 해당 종류의 RELEASED 객체명 목록(이름 오름차순)
     METHODS released_names_of_type
       IMPORTING object_type   TYPE object_type
       RETURNING VALUE(result) TYPE string_table.
 
-    "! S2 2단계 체크 1단계: 객체가 released 카탈로그에 RELEASED로 존재하는가(존재 확인 SELECT SINGLE).
+    "! 2단계 체크 1단계: 객체가 released 카탈로그에 RELEASED로 존재하는가(존재 확인 SELECT SINGLE).
     "! @parameter object_name | 조회할 객체명
     "! @parameter result      | RELEASED로 카탈로그에 있으면 abap_true
     METHODS is_released
       IMPORTING object_name   TYPE csequence
       RETURNING VALUE(result) TYPE abap_bool.
 
-    "! S2 2단계 체크 2단계: 객체의 release contract 등급을 읽는다(SELECT SINGLE contract).
+    "! 2단계 체크 2단계: 객체의 release contract 등급을 읽는다(SELECT SINGLE contract).
     "! @parameter object_name | 조회할 객체명
     "! @parameter result      | 계약 등급(C0~C4), 미등록이면 공백
     METHODS contract_of
       IMPORTING object_name   TYPE csequence
       RETURNING VALUE(result) TYPE release_contract.
 
-    "! S4 소비 판단: 주어진 호출 경계에 맞는 계약을 객체가 보유하는지 판정한다.
-    "! 내부 ABAP 호출(->method())은 C1이면 충분, 원격(RFC·OData)은 C2가 필요(S3·S4).
+    "! 소비 판단: 주어진 호출 경계에 맞는 계약을 객체가 보유하는지 판정한다.
+    "! 내부 ABAP 호출(->method())은 C1이면 충분, 원격(RFC·OData)은 C2가 필요하다.
     "! @parameter object_name | 조회할 객체명
     "! @parameter remote      | abap_true=원격 호출(C2 필요), abap_false=내부 호출(C1 충분)
     "! @parameter result      | 해당 호출에 안전하게 소비 가능하면 abap_true
@@ -92,7 +92,7 @@ CLASS zcl_modulo_sql07_api DEFINITION
                 remote        TYPE abap_bool
       RETURNING VALUE(result) TYPE abap_bool.
 
-    "! S5·G7·G17 패턴: deprecated 객체의 Cloud successor를 조회한다(successor 맵 SELECT SINGLE).
+    "! deprecated 객체의 Cloud successor를 조회한다(successor 맵 SELECT SINGLE).
     "! 실 구문: SELECT SINGLE successorobjectname FROM i_apiswithclouddevsuccessor
     "!         WHERE predecessorobjectname = @old.
     "! @parameter object_name | deprecated(예정) 객체명
@@ -101,7 +101,7 @@ CLASS zcl_modulo_sql07_api DEFINITION
       IMPORTING object_name   TYPE csequence
       RETURNING VALUE(result) TYPE successor_entry-successor.
 
-    "! S5 deprecated 발견 대응: 카탈로그에서 DEPRECATED 상태 객체와 successor를 함께 조회한다.
+    "! deprecated 발견 대응: 카탈로그에서 DEPRECATED 상태 객체와 successor를 함께 조회한다.
     "! 메모리 두 테이블이라 itab 식으로 successor를 붙인다(7.54 자체완결 — 두 itab JOIN 회피).
     "! @parameter result | (deprecated 객체명·successor) 쌍, 객체명 오름차순
     METHODS deprecated_with_successor
@@ -109,7 +109,7 @@ CLASS zcl_modulo_sql07_api DEFINITION
 
   PRIVATE SECTION.
     "! released 카탈로그 데모 데이터(I_APIsForCloudDevelopment 투영 모사).
-    "! 실 클래스(CL_ABAP_CONTEXT_INFO=C1·CL_ABAP_RANDOM_INT=C1·G3)와 가상 객체를 섞어 등급을 보인다.
+    "! 실 클래스(CL_ABAP_CONTEXT_INFO=C1·CL_ABAP_RANDOM_INT=C1)와 가상 객체를 섞어 등급을 보인다.
     METHODS sample_catalog
       RETURNING VALUE(result) TYPE api_catalog.
     "! deprecated->successor 데모 데이터(I_APIsWithCloudDevSuccessor 투영 모사).
@@ -145,7 +145,7 @@ CLASS zcl_modulo_sql07_api IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD released_count.
-    " G6: 실 시스템은 I_APIsForCloudDevelopment를 같은 WHERE 절로 읽는다. 여기선 카탈로그를 모사한다.
+    " 실 시스템은 I_APIsForCloudDevelopment를 같은 WHERE 절로 읽는다. 여기선 카탈로그를 모사한다.
     DATA(catalog) = sample_catalog( ) ##NEEDED.
     SELECT COUNT(*)
       FROM @catalog AS api
@@ -156,7 +156,7 @@ CLASS zcl_modulo_sql07_api IMPLEMENTATION.
 
   METHOD released_names_of_type.
     DATA(catalog) = sample_catalog( ) ##NEEDED.
-    " G6: WHERE ReleaseState + ReleasedObjectType, ORDER BY ReleasedObjectName 패턴.
+    " WHERE ReleaseState + ReleasedObjectType, ORDER BY ReleasedObjectName 패턴.
     SELECT object_name
       FROM @catalog AS api
       WHERE state       = 'RELEASED'
@@ -167,7 +167,7 @@ CLASS zcl_modulo_sql07_api IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD is_released.
-    " S2 1단계: 존재 확인 — 데이터를 안 읽고 RELEASED 행 존재 여부만 본다.
+    " 1단계: 존재 확인 — 데이터를 안 읽고 RELEASED 행 존재 여부만 본다.
     DATA(catalog) = sample_catalog( ) ##NEEDED.
     SELECT SINGLE @abap_true
       FROM @catalog AS api
@@ -178,7 +178,7 @@ CLASS zcl_modulo_sql07_api IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD contract_of.
-    " S2 2단계: 계약 등급 읽기 — 미등록이면 sy-subrc<>0 이므로 공백 반환.
+    " 2단계: 계약 등급 읽기 — 미등록이면 sy-subrc<>0 이므로 공백 반환.
     DATA(catalog) = sample_catalog( ) ##NEEDED.
     SELECT SINGLE contract
       FROM @catalog AS api
@@ -188,7 +188,7 @@ CLASS zcl_modulo_sql07_api IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD may_consume.
-    " S3·S4: 내부 ABAP 호출은 C1로 충분, 원격(RFC·OData)은 C2가 필요하다.
+    " 내부 ABAP 호출은 C1로 충분, 원격(RFC·OData)은 C2가 필요하다.
     " 카탈로그가 RELEASED 상태이고 호출 경계에 맞는 계약을 보유할 때만 소비 가능으로 판정한다.
     DATA(contract) = contract_of( object_name ).
     DATA(released) = is_released( object_name ).
@@ -199,7 +199,7 @@ CLASS zcl_modulo_sql07_api IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD successor_of.
-    " S5·G7: deprecated 객체의 Cloud successor 조회(I_APIsWithCloudDevSuccessor 등가).
+    " deprecated 객체의 Cloud successor 조회(I_APIsWithCloudDevSuccessor 등가).
     DATA(successors) = sample_successors( ) ##NEEDED.
     SELECT SINGLE successor
       FROM @successors AS link
@@ -209,7 +209,7 @@ CLASS zcl_modulo_sql07_api IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD deprecated_with_successor.
-    " S5: 카탈로그에서 DEPRECATED 상태 객체를 뽑고, successor 맵에서 후속을 itab 식으로 붙인다.
+    " 카탈로그에서 DEPRECATED 상태 객체를 뽑고, successor 맵에서 후속을 itab 식으로 붙인다.
     " 두 메모리 itab을 한 SQL로 JOIN하지 않아(7.55+ 의존 회피) 7.54에서도 동작한다.
     DATA(catalog) = sample_catalog( ) ##NEEDED.
     SELECT object_name
@@ -224,7 +224,7 @@ CLASS zcl_modulo_sql07_api IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD sample_catalog.
-    " 실 released 클래스(C1·G3)와 가상 객체를 섞는다. NOT_RELEASED·DEPRECATED 상태도 포함해
+    " 실 released 클래스(C1)와 가상 객체를 섞는다. NOT_RELEASED·DEPRECATED 상태도 포함해
     " 2단계 체크·deprecated 이행 시나리오를 모두 시연한다.
     result = VALUE #(
       ( object_type = 'CLAS' object_name = 'CL_ABAP_CONTEXT_INFO' state = 'RELEASED'     contract = 'C1' )

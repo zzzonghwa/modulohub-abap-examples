@@ -6,7 +6,7 @@
 "! - update function module: 우선순위(VB1=high, VB2=low)로 등록, COMMIT WORK 시 실행.
 "!   VB1은 등록 순서대로 단일 묶음에서 먼저, VB2는 그 뒤에 실행된다.
 "! - PERFORM ON COMMIT subroutine: update FM보다 먼저, LEVEL 오름차순(동일 LEVEL=등록 순서).
-"! - COMMIT WORK 없이 종료(=discard): 등록 절차는 실행되지 않는다(W19).
+"! - COMMIT WORK 없이 종료(=discard): 등록 절차는 실행되지 않는다.
 CLASS lcl_unit_of_work DEFINITION CREATE PUBLIC.
   PUBLIC SECTION.
     "! update FM 우선순위. high=VB1(중요 변경), low=VB2(부수 작업: 로그·통계).
@@ -32,7 +32,7 @@ CLASS lcl_unit_of_work DEFINITION CREATE PUBLIC.
     "! COMMIT WORK — 번들을 실행한다. 순서: ON COMMIT 절차(LEVEL 오름차순) ->
     "! update FM(VB1 등록순 -> VB2 등록순). 실행 후 보류는 비고 SAP LUW가 닫힌다.
     "! @parameter wait   | abap_true면 AND WAIT(동기). 결과를 sy-subrc류로 확인
-    "! @parameter result | AND WAIT 없으면 항상 0. AND WAIT면 update 성공 0·실패 4(W9)
+    "! @parameter result | AND WAIT 없으면 항상 0. AND WAIT면 update 성공 0·실패 4
     METHODS commit_work
       IMPORTING wait          TYPE abap_bool DEFAULT abap_false
       RETURNING VALUE(result) TYPE i.
@@ -41,7 +41,7 @@ CLASS lcl_unit_of_work DEFINITION CREATE PUBLIC.
     "! 이미 commit된 실행 기록(executed)은 영향받지 않는다.
     METHODS rollback_work.
 
-    "! COMMIT WORK 없이 프로그램이 끝나는 경로 — 보류 등록은 실행되지 않고 버려진다(W19).
+    "! COMMIT WORK 없이 프로그램이 끝나는 경로 — 보류 등록은 실행되지 않고 버려진다.
     METHODS discard_without_commit.
 
     "! 다음 commit이 실패하도록 표시(AND WAIT에서 sy-subrc=4 시연용).
@@ -101,7 +101,7 @@ CLASS lcl_unit_of_work IMPLEMENTATION.
       APPEND update_fm-label TO executed.
     ENDLOOP.
 
-    " AND WAIT(동기)면 update 결과를 sy-subrc류로 반환(실패=4), 아니면 항상 0(W9).
+    " AND WAIT(동기)면 update 결과를 sy-subrc류로 반환(실패=4), 아니면 항상 0.
     result = COND #( WHEN wait = abap_true AND next_fails = abap_true THEN 4 ELSE 0 ).
     next_fails = abap_false.
     clear_pending( ).
@@ -113,7 +113,7 @@ CLASS lcl_unit_of_work IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD discard_without_commit.
-    " COMMIT WORK 없는 종료 — 등록 절차는 실행되지 않는다(W19).
+    " COMMIT WORK 없는 종료 — 등록 절차는 실행되지 않는다.
     clear_pending( ).
   ENDMETHOD.
 

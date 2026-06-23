@@ -1,12 +1,12 @@
 "! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
-"! <p>SAP LUW(논리적 작업 단위)·번들링 — 개념(09-1).</p>
+"! <p>SAP LUW(논리적 작업 단위)·번들링 개념.</p>
 "! <ul>
 "! <li>원칙: DB 변경은 COMMIT WORK까지 보류되며 한 LUW로 묶여 전부-또는-전무로 확정된다.
 "! ROLLBACK WORK는 보류 변경을 취소한다.</li>
 "! <li>번들링: 변경을 update FM(CALL FUNCTION ... IN UPDATE TASK)·PERFORM ON COMMIT subroutine으로
 "! 모았다가 COMMIT WORK 한 번에 실행한다(왕복·정합성). 실행 순서·우선순위·동기/비동기를
 "! 인메모리 Unit of Work(locals_imp)로 자체완결 시연한다.</li>
-"! <li>실 DB 변경문·update FM 활성화·ENQUEUE/DEQUEUE는 09-2(DB 필요), 권한은 09-3에서 다룬다.</li>
+"! <li>실 DB 변경문·update FM 활성화·ENQUEUE/DEQUEUE, 권한은 별도 예제에서 다룬다.</li>
 "! </ul>
 CLASS zcl_modulo_txn01_luw DEFINITION
   PUBLIC
@@ -31,12 +31,12 @@ CLASS zcl_modulo_txn01_luw DEFINITION
     METHODS bundle_boundary
       RETURNING VALUE(result) TYPE i.
 
-    "! W19: COMMIT WORK 없이 종료하면 등록된 update FM은 실행되지 않는다.
+    "! COMMIT WORK 없이 종료하면 등록된 update FM은 실행되지 않는다.
     "! @parameter result | 실행된 변경 수(0)
     METHODS orphan_not_executed
       RETURNING VALUE(result) TYPE i.
 
-    "! 번들 실행 순서: PERFORM ON COMMIT 절차가 update FM보다 먼저 실행된다(G3).
+    "! 번들 실행 순서: PERFORM ON COMMIT 절차가 update FM보다 먼저 실행된다.
     "! ON 'A' 등록 -> update FM 'U' 등록 -> commit. 실행 로그는 'A','U' 순.
     "! @parameter result | 실행 로그를 '|'로 이은 문자열('A|U')
     METHODS on_commit_runs_first
@@ -48,19 +48,19 @@ CLASS zcl_modulo_txn01_luw DEFINITION
     METHODS on_commit_level_order
       RETURNING VALUE(result) TYPE string.
 
-    "! update FM 우선순위: VB1(high)이 등록 순서대로 먼저, 그 뒤 VB2(low)가 실행된다(G1).
+    "! update FM 우선순위: VB1(high)이 등록 순서대로 먼저, 그 뒤 VB2(low)가 실행된다.
     "! low 'L', high 'H1', high 'H2' 등록 -> 실행은 'H1|H2|L'.
     "! @parameter result | 우선순위 순 실행 로그('H1|H2|L')
     METHODS priority_vb1_before_vb2
       RETURNING VALUE(result) TYPE string.
 
-    "! W9(a): COMMIT WORK(비동기, AND WAIT 없음)는 update 결과와 무관하게 항상 sy-subrc=0.
+    "! COMMIT WORK(비동기, AND WAIT 없음)는 update 결과와 무관하게 항상 sy-subrc=0.
     "! update 실패를 표시해도 비동기 commit은 0을 반환한다.
     "! @parameter result | 반환 코드(0)
     METHODS async_commit_subrc
       RETURNING VALUE(result) TYPE i.
 
-    "! W9(b): COMMIT WORK AND WAIT(동기)는 update 실패를 sy-subrc=4로 반영한다.
+    "! COMMIT WORK AND WAIT(동기)는 update 실패를 sy-subrc=4로 반영한다.
     "! @parameter result | 반환 코드(4 — 동기 update 실패)
     METHODS sync_commit_failure_subrc
       RETURNING VALUE(result) TYPE i.
@@ -71,7 +71,7 @@ CLASS zcl_modulo_txn01_luw DEFINITION
     METHODS rollback_then_recommit
       RETURNING VALUE(result) TYPE i.
 
-    "! SAP LUW : database LUW = 1 : N 수치 예시(종합·수치 예시 소절).
+    "! SAP LUW : database LUW = 1 : N 수치 예시.
     "! dialog step 3회 = 빈 DB LUW 3 + COMMIT WORK 번들 실행 DB LUW 1 = 총 4.
     "! @parameter dialog_steps | dialog step 수
     "! @parameter result       | 총 database LUW 수(dialog_steps + 1)
@@ -87,7 +87,7 @@ CLASS zcl_modulo_txn01_luw IMPLEMENTATION.
     out->write( |commit_count             = { commit_count( ) }| ).
     out->write( |rollback_count           = { rollback_count( ) }| ).
     out->write( |bundle_boundary          = { bundle_boundary( ) }| ).
-    out->write( |orphan_not_executed      = { orphan_not_executed( ) } (W19)| ).
+    out->write( |orphan_not_executed      = { orphan_not_executed( ) }| ).
     out->write( |on_commit_runs_first     = { on_commit_runs_first( ) } (ON COMMIT -> update FM)| ).
     out->write( |on_commit_level_order    = { on_commit_level_order( ) } (LEVEL 오름차순)| ).
     out->write( |priority_vb1_before_vb2  = { priority_vb1_before_vb2( ) } (VB1 -> VB2)| ).
@@ -131,7 +131,7 @@ CLASS zcl_modulo_txn01_luw IMPLEMENTATION.
     DATA(uow) = NEW lcl_unit_of_work( ).
     uow->register_update_fm( `1` ).
     uow->register_update_fm( `2` ).
-    " COMMIT WORK 없이 종료 -> 등록 update FM은 실행되지 않는다(W19).
+    " COMMIT WORK 없이 종료 -> 등록 update FM은 실행되지 않는다.
     uow->discard_without_commit( ).
     result = uow->executed_count( ).
   ENDMETHOD.
@@ -192,7 +192,7 @@ CLASS zcl_modulo_txn01_luw IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD database_luw_count.
-    " dialog step마다 work process 교체 -> 암묵적 commit으로 "빈" DB LUW 1회씩(W14),
+    " dialog step마다 work process 교체 -> 암묵적 commit으로 "빈" DB LUW 1회씩,
     " 마지막 COMMIT WORK 번들 실행이 실제 변경을 담는 DB LUW 1회. 총 = steps + 1.
     result = dialog_steps + 1.
   ENDMETHOD.

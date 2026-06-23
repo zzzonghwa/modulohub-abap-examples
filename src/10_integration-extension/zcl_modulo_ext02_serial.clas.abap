@@ -1,17 +1,20 @@
 "! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
-"! <p>XML·JSON·직렬화·RFC/BAPI 소비 — 외부 의존 없이 표준 도구로 직렬화의 폭을 시연한다(노트 10-02).</p>
-"! <p>검증은 라운드트립(직렬화->역직렬화 후 원본과 동일)으로 한다 — 포맷 차이에 둔감하다.</p>
-"! <p>소절 대응(노트 본문 주장):</p>
+"! <p>XML·JSON·직렬화·RFC/BAPI 소비 — 외부 의존 없이 표준 도구로
+"! 직렬화의 폭을 시연한다.</p>
+"! <p>검증은 라운드트립(직렬화->역직렬화 후 원본과 동일)으로 한다 —
+"! 포맷 차이에 둔감하다.</p>
+"! <p>다루는 주제:</p>
 "! <ul>
-"! <li>A. CALL TRANSFORMATION 방향(claim 1~3): id 항등 변환으로 ABAP<->asXML, sXML JSON writer로
+"! <li>CALL TRANSFORMATION 방향: id 항등 변환으로 ABAP<->asXML, sXML JSON writer로
 "! ABAP->asJSON, SOURCE/RESULT의 XML 키워드 유무가 직렬화/역직렬화를 가른다.</li>
-"! <li>B. 역직렬화 규칙(claim 4~5): 비존재 컴포넌트는 이전 값 유지, OPTIONS clear='ALL'은 초기화로 통일.</li>
-"! <li>C. OPTIONS 심화(claim 6): xml_header='NO' 등으로 변환 동작 제어.</li>
-"! <li>D. 예외 계층(claim 8): CX_TRANSFORMATION_ERROR 단일 핸들러로 XSLT·ST 포괄.</li>
-"! <li>E. sXML 라이브러리(claim 11~12): CL_SXML_STRING_WRITER/READER 스트리밍, JSON·XML 포맷 전환.</li>
-"! <li>F. iXML 라이브러리(claim 10·33): CL_IXML_CORE DOM 빌더로 XML 생성.</li>
-"! <li>G. JSON 3선택지(claim 14~15): XCO_CP_JSON(Clean Core 1순위) vs sXML writer vs /ui2/cl_json(레거시).</li>
-"! <li>H. RFC/BAPI 소비(claim 17·23~26): CALL FUNCTION DESTINATION·BAPIRET2 type CA 'EA' 판정은
+"! <li>역직렬화 규칙: 비존재 컴포넌트는 이전 값 유지,
+"! OPTIONS clear='ALL'은 초기화로 통일.</li>
+"! <li>OPTIONS 심화: xml_header='NO' 등으로 변환 동작 제어.</li>
+"! <li>예외 계층: CX_TRANSFORMATION_ERROR 단일 핸들러로 XSLT·ST 포괄.</li>
+"! <li>sXML 라이브러리: CL_SXML_STRING_WRITER/READER 스트리밍, JSON·XML 포맷 전환.</li>
+"! <li>iXML 라이브러리: CL_IXML_CORE DOM 빌더로 XML 생성.</li>
+"! <li>JSON 3선택지: XCO_CP_JSON(Clean Core 1순위) vs sXML writer vs /ui2/cl_json(레거시).</li>
+"! <li>RFC/BAPI 소비: CALL FUNCTION DESTINATION·BAPIRET2 type CA 'EA' 판정은
 "! 시스템·연결 의존이라 여기선 BAPIRET2 에러 판정 로직만 자체완결로 시연한다.</li>
 "! </ul>
 CLASS zcl_modulo_ext02_serial DEFINITION
@@ -69,39 +72,39 @@ CLASS zcl_modulo_ext02_serial DEFINITION
     METHODS to_xco_json
       RETURNING VALUE(result) TYPE string.
 
-    "! OPTIONS 심화(claim 6): xml_header='NO'로 XML 선언(<?xml ...?>) 출력을 끈다.
+    "! OPTIONS 심화: xml_header='NO'로 XML 선언(<?xml ...?>) 출력을 끈다.
     "! @parameter result | XML 헤더가 없으면 abap_true
     METHODS xml_without_header_ok
       RETURNING VALUE(result) TYPE abap_bool.
 
-    "! 역직렬화 규칙(claim 5): JSON에 없는 컴포넌트는 이전 값 유지. clear='ALL'이면 초기화.
+    "! 역직렬화 규칙: JSON에 없는 컴포넌트는 이전 값 유지. clear='ALL'이면 초기화.
     "! 빈 JSON {}을 채워진 구조에 역직렬화한 뒤, default 동작 시 name 보존 여부를 본다.
     "! @parameter result | 미전송 필드가 보존되면 abap_true
     METHODS missing_field_keeps_value
       RETURNING VALUE(result) TYPE abap_bool.
 
-    "! 역직렬화 규칙(claim 5): OPTIONS clear='ALL'은 미전송 필드를 초기화한다.
+    "! 역직렬화 규칙: OPTIONS clear='ALL'은 미전송 필드를 초기화한다.
     "! @parameter result | clear='ALL'로 name이 초기화되면 abap_true
     METHODS clear_all_resets_value
       RETURNING VALUE(result) TYPE abap_bool.
 
-    "! 예외 계층(claim 8): 잘못된 XML을 id로 역직렬화하면 CX_TRANSFORMATION_ERROR가 잡힌다.
+    "! 예외 계층: 잘못된 XML을 id로 역직렬화하면 CX_TRANSFORMATION_ERROR가 잡힌다.
     "! CX_TRANSFORMATION_ERROR 단일 핸들러로 XSLT·ST 양쪽을 포괄함을 보인다.
     "! @parameter result | 변환 예외가 잡히면 abap_true
     METHODS invalid_xml_raises
       RETURNING VALUE(result) TYPE abap_bool.
 
-    "! iXML(DOM) 빌더(claim 10·33): CL_IXML_CORE로 XML 트리를 만들고 루트 태그명을 읽는다.
+    "! iXML(DOM) 빌더: CL_IXML_CORE로 XML 트리를 만들고 루트 태그명을 읽는다.
     "! @parameter result | 생성한 루트 요소 이름('item')
     METHODS ixml_root_name
       RETURNING VALUE(result) TYPE string.
 
-    "! sXML 포맷 전환(claim 11): 같은 데이터를 XML writer로도 직렬화 — type 상수만 바꾼다.
+    "! sXML 포맷 전환: 같은 데이터를 XML writer로도 직렬화 — type 상수만 바꾼다.
     "! @parameter result | asXML 결과가 비어있지 않으면 abap_true
     METHODS sxml_xml_writer_ok
       RETURNING VALUE(result) TYPE abap_bool.
 
-    "! BAPI 오류 판정(claim 24): return 테이블에 type CA 'EA'(Error/Abort)가 있으면 실패로 본다.
+    "! BAPI 오류 판정: return 테이블에 type CA 'EA'(Error/Abort)가 있으면 실패로 본다.
     "! CALL FUNCTION 자체는 시스템 의존이라 BAPIRET2 판정 로직만 자체완결로 시연한다.
     "! @parameter messages | BAPI 반환 메시지 테이블
     "! @parameter result   | E·A 메시지가 하나라도 있으면 abap_true
@@ -158,7 +161,7 @@ CLASS zcl_modulo_ext02_serial IMPLEMENTATION.
   METHOD json_roundtrip_ok.
     DATA restored TYPE item.
     DATA(original) = sample( ).
-    " sXML JSON writer: type=co_xt_json으로 asJSON 생성(claim 11·34).
+    " sXML JSON writer: type=co_xt_json으로 asJSON 생성.
     DATA(writer) = cl_sxml_string_writer=>create( type = if_sxml=>co_xt_json ).
     CALL TRANSFORMATION id SOURCE data = original RESULT XML writer.
     " JSON reader로 역직렬화 — sXML reader를 SOURCE XML에 직접 넘긴다.
@@ -170,7 +173,7 @@ CLASS zcl_modulo_ext02_serial IMPLEMENTATION.
   METHOD xco_json_roundtrip_ok.
     DATA restored TYPE item.
     DATA(original) = sample( ).
-    " XCO_CP_JSON 체인(claim 15): from_abap->to_string / from_string->write_to.
+    " XCO_CP_JSON 체인: from_abap->to_string / from_string->write_to.
     DATA(json) = xco_cp_json=>data->from_abap( original )->to_string( ).
     xco_cp_json=>data->from_string( json )->write_to( REF #( restored ) ).
     result = xsdbool( restored = original ).
@@ -179,14 +182,14 @@ CLASS zcl_modulo_ext02_serial IMPLEMENTATION.
   METHOD legacy_json_roundtrip_ok.
     DATA restored TYPE item.
     DATA(original) = sample( ).
-    " /ui2/cl_json은 released 아님 — 레거시 코드 읽기 참조용(claim 14). 신규 코드 비권장.
+    " /ui2/cl_json은 released 아님 — 레거시 코드 읽기 참조용. 신규 코드 비권장.
     DATA(json) = /ui2/cl_json=>serialize( data = original ).
     /ui2/cl_json=>deserialize( EXPORTING json = json CHANGING data = restored ).
     result = xsdbool( restored = original ).
   ENDMETHOD.
 
   METHOD to_json.
-    " sXML JSON writer 결과를 string으로 변환(claim 34). 키는 컴포넌트명 UPPERCASE.
+    " sXML JSON writer 결과를 string으로 변환. 키는 컴포넌트명 UPPERCASE.
     DATA(original) = sample( ).
     DATA(writer) = cl_sxml_string_writer=>create( type = if_sxml=>co_xt_json ).
     CALL TRANSFORMATION id SOURCE data = original RESULT XML writer.
@@ -207,7 +210,7 @@ CLASS zcl_modulo_ext02_serial IMPLEMENTATION.
   METHOD xml_without_header_ok.
     DATA serialized TYPE xstring.
     DATA(original) = sample( ).
-    " OPTIONS xml_header='NO'(claim 6): <?xml version="1.0"?> 선언을 출력하지 않는다.
+    " OPTIONS xml_header='NO': <?xml version="1.0"?> 선언을 출력하지 않는다.
     CALL TRANSFORMATION id SOURCE data = original
                            RESULT XML serialized
                            OPTIONS xml_header = 'no'.
@@ -216,7 +219,7 @@ CLASS zcl_modulo_ext02_serial IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD missing_field_keeps_value.
-    " 미전송 필드 보존(claim 5): JSON에 id만 있으면 name은 이전 값을 유지한다(clear=NONE 기본).
+    " 미전송 필드 보존: JSON에 id만 있으면 name은 이전 값을 유지한다(clear=NONE 기본).
     DATA(restored) = VALUE item( name = `kept` ).
     DATA(reader) = cl_sxml_string_reader=>create(
       cl_abap_conv_codepage=>create_out( )->convert( `{"ID":9}` ) ).
@@ -226,7 +229,7 @@ CLASS zcl_modulo_ext02_serial IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD clear_all_resets_value.
-    " OPTIONS clear='ALL'(claim 5): 비전송 필드를 초기화로 통일 -> name이 공백이 된다.
+    " OPTIONS clear='ALL': 비전송 필드를 초기화로 통일 -> name이 공백이 된다.
     DATA(restored) = VALUE item( name = `kept` ).
     DATA(reader) = cl_sxml_string_reader=>create(
       cl_abap_conv_codepage=>create_out( )->convert( `{"ID":9}` ) ).
@@ -237,7 +240,7 @@ CLASS zcl_modulo_ext02_serial IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD invalid_xml_raises.
-    " 예외 계층(claim 8): 깨진 XML을 역직렬화하면 CX_TRANSFORMATION_ERROR 단일 핸들러로 잡힌다.
+    " 예외 계층: 깨진 XML을 역직렬화하면 CX_TRANSFORMATION_ERROR 단일 핸들러로 잡힌다.
     DATA restored TYPE item.
     TRY.
         DATA(reader) = cl_sxml_string_reader=>create(
@@ -250,7 +253,7 @@ CLASS zcl_modulo_ext02_serial IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD ixml_root_name.
-    " iXML(DOM) 빌더(claim 10·33): core->document->element 트리를 메모리에 만든다.
+    " iXML(DOM) 빌더: core->document->element 트리를 메모리에 만든다.
     DATA(core) = cl_ixml=>create( ).
     DATA(document) = core->create_document( ).
     DATA(root) = document->create_element( name = `item` ).
@@ -260,7 +263,7 @@ CLASS zcl_modulo_ext02_serial IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD sxml_xml_writer_ok.
-    " sXML 포맷 전환(claim 11~12): 같은 코드에서 type만 co_xt_xml10으로 두면 XML이 나온다.
+    " sXML 포맷 전환: 같은 코드에서 type만 co_xt_xml10으로 두면 XML이 나온다.
     DATA(original) = sample( ).
     DATA(writer) = cl_sxml_string_writer=>create( type = if_sxml=>co_xt_xml10 ).
     CALL TRANSFORMATION id SOURCE data = original RESULT XML writer.
@@ -270,7 +273,7 @@ CLASS zcl_modulo_ext02_serial IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD bapi_has_error.
-    " BAPIRET2 판정(claim 24): type이 'E'(Error)·'A'(Abort) 중 하나면 실패. CA = contains any.
+    " BAPIRET2 판정: type이 'E'(Error)·'A'(Abort) 중 하나면 실패. CA = contains any.
     result = xsdbool( line_exists( messages[ table_line-type = 'E' ] )
                    OR line_exists( messages[ table_line-type = 'A' ] ) ).
   ENDMETHOD.

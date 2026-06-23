@@ -38,8 +38,8 @@ ENDCLASS.
 
 
 "! DBC 사전조건 위반 — "절대 발생해선 안 되는" 호출자 버그.
-"! ATF는 DBC 위반에 cx_no_check(모든 시그니처에 묵시 선언, 선언 강제 없음)를 권장하지만,
-"! 전제조건으로 차단 가능한 위반은 cx_dynamic_check도 적합하다(주장 19: "사실상 ASSERT에 가깝다").
+"! DBC 위반에는 cx_no_check(모든 시그니처에 묵시 선언, 선언 강제 없음)를 권장하지만,
+"! 전제조건으로 차단 가능한 위반은 cx_dynamic_check도 적합하다(사실상 ASSERT에 가깝다).
 "! 런타임 미처리 시 short dump로 "발생 자체가 버그"임을 알린다.
 CLASS lcx_precondition DEFINITION INHERITING FROM cx_dynamic_check CREATE PUBLIC.
   PUBLIC SECTION.
@@ -98,7 +98,7 @@ CLASS lcl_calculator IMPLEMENTATION.
 ENDCLASS.
 
 
-"! DBC 유틸리티 — REQUIRE 패턴(ATF Listing 4.13). 조건이 거짓이면 사전조건 위반
+"! DBC 유틸리티 — REQUIRE 패턴. 조건이 거짓이면 사전조건 위반
 "! 예외를 던진다. xsdbool()로 인라인 bool 변환을 결합한다.
 CLASS lcl_dbc DEFINITION CREATE PRIVATE.
   PUBLIC SECTION.
@@ -155,7 +155,7 @@ ENDCLASS.
 
 
 "! DbC 클래스 불변식(class invariant)을 IF_CONSTRAINT(ABAP Unit 제약 인터페이스)로 구현한다.
-"! ABAP 런타임은 Eiffel과 달리 메서드 호출 후 불변식을 자동 검사하지 않으므로,
+"! ABAP 런타임은 메서드 호출 후 불변식을 자동 검사하지 않으므로,
 "! ABAP Unit 테스트에서 cl_abap_unit_assert=>assert_that( act = .. exp = <이 제약> )로 수동 검사한다.
 "! assert_that는 is_valid(act)를 호출하고, 거짓이면 get_description을 실패 메시지로 쓴다.
 CLASS lcl_non_negative_invariant DEFINITION CREATE PUBLIC.

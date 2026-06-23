@@ -1,16 +1,15 @@
 "! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
 "! <p>CTE(WITH)·서브쿼리·집합 연산 — 실제 DDIC 테이블(ZMODULO_FLIGHT·ZMODULO_CARRIER) 대상.</p>
 "! <p>DB 테이블이 소스라 인라인 서브쿼리(스칼라 비교·IN·EXISTS)가 자유롭다("문당 itab 1개"</p>
-"! <p>제약은 내부 테이블 전용 — 노트 A13). 표는 import 직후 비어 있으나 main이 멱등 시드를</p>
+"! <p>제약은 내부 테이블 전용). 표는 import 직후 비어 있으나 main이 멱등 시드를</p>
 "! <p>먼저 실행하므로 F9에서도 실제 값이 보인다. 결정적 검증은 ABAP Unit(osql 더블)로 한다.</p>
-"! <p>노트 소절 매핑:</p>
 "! <ul>
-"! <li>A2·A20: +cte 접두사, CTE를 또 다른 CTE의 JOIN 소스로 사용(다단계 집계).</li>
-"! <li>A7: CTE 컬럼 이름 리스트(name list)로 SELECT list alias를 덮어쓴다.</li>
-"! <li>A21: CTE 서브쿼리 안에서 UNION DISTINCT로 합집합 도시 목록 구성.</li>
-"! <li>A18·A19: WHERE EXISTS 상관 서브쿼리(외부 alias tilde 참조).</li>
-"! <li>A15~A17: UNION ALL / INTERSECT / EXCEPT 집합 연산(기본 DISTINCT).</li>
-"! <li>B2·B4: FAE 대안 — 내부 테이블을 @itab AS alias로 JOIN 데이터 소스화(since 7.52).</li>
+"! <li>+cte 접두사, CTE를 또 다른 CTE의 JOIN 소스로 사용(다단계 집계).</li>
+"! <li>CTE 컬럼 이름 리스트(name list)로 SELECT list alias를 덮어쓴다.</li>
+"! <li>CTE 서브쿼리 안에서 UNION DISTINCT로 합집합 도시 목록 구성.</li>
+"! <li>WHERE EXISTS 상관 서브쿼리(외부 alias tilde 참조).</li>
+"! <li>UNION ALL / INTERSECT / EXCEPT 집합 연산(기본 DISTINCT).</li>
+"! <li>FAE 대안 — 내부 테이블을 @itab AS alias로 JOIN 데이터 소스화(since 7.52).</li>
 "! </ul>
 CLASS zcl_modulo_sql05_cte DEFINITION
   PUBLIC
@@ -27,7 +26,7 @@ CLASS zcl_modulo_sql05_cte DEFINITION
       IMPORTING threshold     TYPE i
       RETURNING VALUE(result) TYPE i.
 
-    "! 다단계 CTE(A20): +totals(집계 CTE)와 ZMODULO_CARRIER를 INNER JOIN해 이름까지 붙인다.
+    "! 다단계 CTE: +totals(집계 CTE)와 ZMODULO_CARRIER를 INNER JOIN해 이름까지 붙인다.
     "! CTE가 임시 뷰 역할이라 실테이블과 동일하게 JOIN 대상이 된다.
     "! @parameter threshold | 좌석 합계 임계치(초과)
     "! @parameter result    | 조건을 넘는 (이름 매칭된) 항공사 수
@@ -35,12 +34,12 @@ CLASS zcl_modulo_sql05_cte DEFINITION
       IMPORTING threshold     TYPE i
       RETURNING VALUE(result) TYPE i.
 
-    "! CTE 컬럼 이름 리스트(A7): +named( code, total ) 형태로 SELECT list alias를 덮어쓴다.
+    "! CTE 컬럼 이름 리스트: +named( code, total ) 형태로 SELECT list alias를 덮어쓴다.
     "! @parameter result | CTE가 돌려준 항공사 합계 행 수
     METHODS cte_named_columns
       RETURNING VALUE(result) TYPE i.
 
-    "! CTE 안 UNION(A21): 출발·도착 도시를 합쳐 중복 없는 운항 도시 집합을 만든다.
+    "! CTE 안 UNION: 출발·도착 도시를 합쳐 중복 없는 운항 도시 집합을 만든다.
     "! 여기서는 carrid 두 집합의 UNION DISTINCT로 운항 항공사 코드 수를 센다.
     "! @parameter result | 합집합(중복 제거) 후 항공사 코드 수
     METHODS cte_union_inside
@@ -56,36 +55,36 @@ CLASS zcl_modulo_sql05_cte DEFINITION
     METHODS busy_carrier_flights
       RETURNING VALUE(result) TYPE i.
 
-    "! EXISTS 상관 서브쿼리(A19): 마스터(carrier)에 매칭 행이 있는 항공편만 센다.
+    "! EXISTS 상관 서브쿼리: 마스터(carrier)에 매칭 행이 있는 항공편만 센다.
     "! 외부 쿼리 alias flight를 서브쿼리 안에서 tilde(~)로 참조한다.
     "! @parameter result | 항공사 마스터가 존재하는 항공편 수
     METHODS flights_with_master
       RETURNING VALUE(result) TYPE i.
 
-    "! NOT EXISTS(A19 변형): 마스터에 매칭이 없는 고아(orphan) 항공편 수.
+    "! NOT EXISTS: 마스터에 매칭이 없는 고아(orphan) 항공편 수.
     "! @parameter result | 항공사 마스터가 없는 항공편 수
     METHODS orphan_flights
       RETURNING VALUE(result) TYPE i.
 
-    "! UNION ALL(A15): 두 결과 집합을 중복 허용으로 이어 붙인 총 행 수.
+    "! UNION ALL: 두 결과 집합을 중복 허용으로 이어 붙인 총 행 수.
     "! ALL이라 정렬·중복 제거가 없어 DISTINCT보다 빠르다.
     "! @parameter result | 좌석 많은 편 + 좌석 적은 편(겹침 없음)의 합산 행 수
     METHODS union_all_count
       RETURNING VALUE(result) TYPE i.
 
-    "! INTERSECT(A15·A16): 두 항공사 집합의 교집합 코드 수(항상 DISTINCT).
+    "! INTERSECT: 두 항공사 집합의 교집합 코드 수(항상 DISTINCT).
     "! @parameter result | 다편 운항이면서 좌석 평균 초과편을 가진 항공사 코드 수
     METHODS intersect_count
       RETURNING VALUE(result) TYPE i.
 
-    "! EXCEPT(A17): 전체 항공편 항공사에서 마스터 등록 항공사를 뺀 차집합 코드 수.
+    "! EXCEPT: 전체 항공편 항공사에서 마스터 등록 항공사를 뺀 차집합 코드 수.
     "! ABAP SQL은 MINUS 미지원 — EXCEPT만 사용한다.
     "! @parameter result | 항공편에는 있으나 마스터에 없는 항공사 코드 수
     METHODS except_count
       RETURNING VALUE(result) TYPE i.
 
-    "! FAE 대안(B2·B4): 내부 테이블을 @itab AS alias로 JOIN 소스화(since 7.52).
-    "! FOR ALL ENTRIES 대신 모던 ABAP이 권장하는 패턴. alias는 필수(B4).
+    "! FAE 대안: 내부 테이블을 @itab AS alias로 JOIN 소스화(since 7.52).
+    "! FOR ALL ENTRIES 대신 모던 ABAP이 권장하는 패턴. alias는 필수.
     "! @parameter wanted | 조회할 항공사 코드 목록(내부 테이블)
     "! @parameter result | 해당 항공사들의 항공편 수
     METHODS join_internal_table
@@ -119,7 +118,7 @@ CLASS zcl_modulo_sql05_cte IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD cte_carriers_over.
-    " WITH로 항공사별 합계를 임시 식 +totals에 묶고, 본 쿼리에서 그 식을 읽는다(A2).
+    " WITH로 항공사별 합계를 임시 식 +totals에 묶고, 본 쿼리에서 그 식을 읽는다.
     WITH
       +totals AS ( SELECT carrid, SUM( seatsmax ) AS total
                    FROM zmodulo_flight
@@ -132,7 +131,7 @@ CLASS zcl_modulo_sql05_cte IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD cte_join_master.
-    " 집계 CTE(+totals)를 실테이블 ZMODULO_CARRIER와 INNER JOIN한다(A20).
+    " 집계 CTE(+totals)를 실테이블 ZMODULO_CARRIER와 INNER JOIN한다.
     " CTE가 임시 뷰이므로 ON 조건·JOIN이 실테이블과 동일하게 동작한다.
     WITH
       +totals AS ( SELECT carrid, SUM( seatsmax ) AS total
@@ -147,7 +146,7 @@ CLASS zcl_modulo_sql05_cte IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD cte_named_columns.
-    " CTE 이름 뒤 ( code, total ) 리스트가 SELECT list의 alias를 덮어쓴다(A7).
+    " CTE 이름 뒤 ( code, total ) 리스트가 SELECT list의 alias를 덮어쓴다.
     " 후속 쿼리는 carrid/total이 아니라 code/total로 컬럼을 참조한다.
     WITH
       +named( code, total ) AS ( SELECT carrid, SUM( seatsmax )
@@ -160,7 +159,7 @@ CLASS zcl_modulo_sql05_cte IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD cte_union_inside.
-    " CTE 서브쿼리 안에서 UNION DISTINCT로 두 집합을 합친다(A21).
+    " CTE 서브쿼리 안에서 UNION DISTINCT로 두 집합을 합친다.
     " 컬럼 이름은 첫 SELECT의 alias(code)로 결정된다 — 두 번째 alias는 무시.
     WITH
       +codes AS ( SELECT carrid AS code FROM zmodulo_flight
@@ -182,7 +181,7 @@ CLASS zcl_modulo_sql05_cte IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD busy_carrier_flights.
-    " 서브쿼리가 돌려준 항공사 집합에 carrid가 속하는 행만 남긴다(IN 서브쿼리, A18).
+    " 서브쿼리가 돌려준 항공사 집합에 carrid가 속하는 행만 남긴다(IN 서브쿼리).
     SELECT carrid, connid
       FROM zmodulo_flight
       WHERE carrid IN ( SELECT carrid
@@ -194,7 +193,7 @@ CLASS zcl_modulo_sql05_cte IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD flights_with_master.
-    " EXISTS 상관 서브쿼리(A19): 외부 alias flight를 서브쿼리 안에서 tilde로 참조한다.
+    " EXISTS 상관 서브쿼리: 외부 alias flight를 서브쿼리 안에서 tilde로 참조한다.
     " 행 존재 여부만 보므로 서브쿼리 SELECT list 값은 의미 없다.
     SELECT carrid, connid
       FROM zmodulo_flight AS flight
@@ -206,7 +205,7 @@ CLASS zcl_modulo_sql05_cte IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD orphan_flights.
-    " NOT EXISTS: 마스터에 매칭 행이 없는 고아 항공편(A19 변형).
+    " NOT EXISTS: 마스터에 매칭 행이 없는 고아 항공편.
     SELECT carrid, connid
       FROM zmodulo_flight AS flight
       WHERE NOT EXISTS ( SELECT carrid
@@ -217,7 +216,7 @@ CLASS zcl_modulo_sql05_cte IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD union_all_count.
-    " UNION ALL(A15): 두 집합을 중복 허용으로 이어 붙인다. INTO는 전체 문 끝에(A14).
+    " UNION ALL: 두 집합을 중복 허용으로 이어 붙인다. INTO는 전체 문 끝에.
     " 두 조건이 상호 배타라 ALL이어도 중복은 없고, 행 수 = 두 집합 합.
     SELECT carrid, connid
       FROM zmodulo_flight
@@ -231,7 +230,7 @@ CLASS zcl_modulo_sql05_cte IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD intersect_count.
-    " 교집합 의미(A16). ABAP SQL INTERSECT 연산자는 다편 운항 ∩ 평균 초과편 보유를
+    " 교집합 의미. ABAP SQL INTERSECT 연산자는 다편 운항 ∩ 평균 초과편 보유를
     " 한 문장으로 표현하나, 이식 가능한 동치는 IN 서브쿼리다(왼쪽 ∩ 오른쪽).
     " 다편 운항 항공사 중 평균 초과편을 가진 항공사 코드 수.
     SELECT DISTINCT carrid
@@ -246,7 +245,7 @@ CLASS zcl_modulo_sql05_cte IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD except_count.
-    " 차집합 의미(A17). ABAP SQL EXCEPT 연산자는 왼쪽-오른쪽을 한 문장으로 표현하고
+    " 차집합 의미. ABAP SQL EXCEPT 연산자는 왼쪽-오른쪽을 한 문장으로 표현하고
     " MINUS는 미지원이다. 이식 가능한 동치는 NOT IN 서브쿼리다.
     " 항공편 항공사 - 마스터 등록 항공사 = 고아 항공사 코드.
     SELECT DISTINCT carrid

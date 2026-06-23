@@ -1,13 +1,13 @@
 "! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
-"! <p>버퍼링·Code Pushdown — 노트(05-6)의 구문 형태를 자체완결로 시연한다.</p>
+"! <p>버퍼링·Code Pushdown 구문 형태를 자체완결로 시연한다.</p>
 "! <ul>
-"! <li>Code Pushdown(E): 집계·필터·CASE 변환을 SQL로 표현 -> DB에서 계산, 결과만 ABAP으로.
+"! <li>Code Pushdown: 집계·필터·CASE 변환을 SQL로 표현 -> DB에서 계산, 결과만 ABAP으로.
 "! 같은 결과를 ABAP LOOP로도 구해 "어디서 계산하느냐"의 대조를 보인다.</li>
-"! <li>기법 선택(G1): CASE는 SELECT 절에서 pushdown 가능, 복잡한 IF 분기는 CDS/AMDP로 위임.</li>
-"! <li>존재 확인(F4): SELECT SINGLE @abap_true — 행 데이터를 안 읽고 실존만 확인(7.40 SP05).</li>
-"! <li>FOR ALL ENTRIES(F3): 7.40+ 버퍼 테이블에서 버퍼 내 SINGLE 루프로 처리될 수 있다.</li>
-"! <li>BYPASSING BUFFER(B): OPTIONS BYPASSING BUFFER로 테이블 버퍼를 우회해 DB 직접 조회.</li>
-"! <li>DB Hints(C): %_HINTS HDB 'INDEX(...)' — DB 옵티마이저에 힌트(성능만, 결과 불변).</li>
+"! <li>기법 선택: CASE는 SELECT 절에서 pushdown 가능, 복잡한 IF 분기는 CDS/AMDP로 위임.</li>
+"! <li>존재 확인: SELECT SINGLE @abap_true — 행 데이터를 안 읽고 실존만 확인(7.40 SP05).</li>
+"! <li>FOR ALL ENTRIES: 7.40+ 버퍼 테이블에서 버퍼 내 SINGLE 루프로 처리될 수 있다.</li>
+"! <li>BYPASSING BUFFER: OPTIONS BYPASSING BUFFER로 테이블 버퍼를 우회해 DB 직접 조회.</li>
+"! <li>DB Hints: %_HINTS HDB 'INDEX(...)' — DB 옵티마이저에 힌트(성능만, 결과 불변).</li>
 "! </ul>
 "! <p>단일 itab SELECT는 자체완결(FROM @itab), 버퍼/JOIN/힌트는 실 Z 테이블 대상이다.</p>
 CLASS zcl_modulo_sql06_pushdown DEFINITION
@@ -31,7 +31,7 @@ CLASS zcl_modulo_sql06_pushdown DEFINITION
     "! FOR ALL ENTRIES driver — 조회 대상 항공사 코드 목록 타입.
     TYPES carrier_codes TYPE STANDARD TABLE OF zmodulo_flight-carrid WITH EMPTY KEY.
 
-    "! pushdown(E1): SUM 집계를 SQL로 표현(DB에서 계산).
+    "! pushdown: SUM 집계를 SQL로 표현(DB에서 계산).
     "! @parameter result | 전체 좌석 합계
     METHODS total_seats_pushdown
       RETURNING VALUE(result) TYPE i.
@@ -43,27 +43,27 @@ CLASS zcl_modulo_sql06_pushdown DEFINITION
       IMPORTING threshold     TYPE i
       RETURNING VALUE(result) TYPE i.
 
-    "! anti-pattern(E2): 전 행을 ABAP으로 가져와 LOOP로 같은 카운트를 구한다(대조용).
+    "! anti-pattern: 전 행을 ABAP으로 가져와 LOOP로 같은 카운트를 구한다(대조용).
     "! @parameter threshold | 좌석 수 하한
     "! @parameter result    | 좌석이 하한 이상인 항공편 수(결과는 pushdown과 동일)
     METHODS high_demand_in_abap
       IMPORTING threshold     TYPE i
       RETURNING VALUE(result) TYPE i.
 
-    "! pushdown(G1): SELECT 절 CASE로 분류·집계를 DB에서 수행 — 'BIG'(>=300) 좌석 행 수.
+    "! pushdown: SELECT 절 CASE로 분류·집계를 DB에서 수행 — 'BIG'(>=300) 좌석 행 수.
     "! IF식 복잡 분기는 CASE로 표현 불가 -> CDS/AMDP 위임이 기법 선택 기준이다.
     "! @parameter result | 좌석 300 이상으로 분류된 행 수
     METHODS big_flights_pushdown
       RETURNING VALUE(result) TYPE i.
 
-    "! 존재 확인(F4): SELECT SINGLE @abap_true — 행 데이터 전송 없이 실존만 본다(실 Z 테이블).
+    "! 존재 확인: SELECT SINGLE @abap_true — 행 데이터 전송 없이 실존만 본다(실 Z 테이블).
     "! @parameter carrid | 항공사 코드
     "! @parameter result | 한 편이라도 있으면 abap_true
     METHODS flight_exists
       IMPORTING carrid        TYPE zmodulo_flight-carrid
       RETURNING VALUE(result) TYPE abap_bool.
 
-    "! FOR ALL ENTRIES(F3): driver 테이블의 키로 항공편을 묶어 조회한다(실 Z 테이블).
+    "! FOR ALL ENTRIES: driver 테이블의 키로 항공편을 묶어 조회한다(실 Z 테이블).
     "! 7.40+ 버퍼 테이블이면 버퍼 내 SINGLE 루프로 처리될 수 있다(DB 접근 없이).
     "! @parameter carrids | driver — 조회할 항공사 코드 목록
     "! @parameter result  | driver 항공사들의 항공편 수(중복 키는 제거됨)
@@ -71,13 +71,13 @@ CLASS zcl_modulo_sql06_pushdown DEFINITION
       IMPORTING carrids       TYPE carrier_codes
       RETURNING VALUE(result) TYPE i.
 
-    "! BYPASSING BUFFER(B1·B3): OPTIONS BYPASSING BUFFER로 버퍼를 우회해 DB 직접 조회.
+    "! BYPASSING BUFFER: OPTIONS BYPASSING BUFFER로 버퍼를 우회해 DB 직접 조회.
     "! 결산 마감 등 최신 일관성이 필수일 때 stale 버퍼 위험을 제거한다(성능 이점은 포기).
     "! @parameter result | 전체 항공편 수(버퍼 우회로 읽음)
     METHODS count_bypassing_buffer
       RETURNING VALUE(result) TYPE i.
 
-    "! DB Hints(C1·C4): %_HINTS HDB로 옵티마이저에 힌트 — 결과는 불변, 성능에만 영향.
+    "! DB Hints: %_HINTS HDB로 옵티마이저에 힌트 — 결과는 불변, 성능에만 영향.
     "! 힌트가 유효하지 않으면 DB가 무시하므로 결과는 힌트 없는 SELECT와 동일하다.
     "! @parameter result | 전체 항공편 수(힌트 부여 SELECT)
     METHODS count_with_db_hint
@@ -176,7 +176,7 @@ CLASS zcl_modulo_sql06_pushdown IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD count_bypassing_buffer.
-    " 실 7.54 권장 형식은 INTO 뒤에 OPTIONS BYPASSING BUFFER를 둔다(노트 B3):
+    " 실 7.54 권장 형식은 INTO 뒤에 OPTIONS BYPASSING BUFFER를 둔다:
     "   SELECT COUNT(*) FROM zmodulo_flight INTO @DATA(n) OPTIONS BYPASSING BUFFER.
     " BYPASSING BUFFER 단독 지정은 7.54에서 하드 E -> 반드시 OPTIONS와 함께 쓴다.
     " (정적분석 파서가 OPTIONS 절을 아직 모르므로 데모 코드는 일반 SELECT로 둔다 —

@@ -1,5 +1,5 @@
 "! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
-"! <p>REDUCE — 축약(fold). 노트(06-3)의 구문 형태를 자체완결로 시연한다.</p>
+"! <p>REDUCE — 축약(fold). 구문 형태를 자체완결로 시연한다.</p>
 "! <ul>
 "! <li>구조: REDUCE type( [LET] INIT 누적기 FOR 반복 NEXT 갱신 ). FOR는 필수(생성자 중 유일).</li>
 "! <li>반복 유형: 조건 반복(FOR x = .. THEN .. UNTIL|WHILE)·테이블 반복(FOR wa IN itab).</li>
@@ -44,7 +44,7 @@ CLASS zcl_modulo_expr03_reduce DEFINITION
       RETURNING VALUE(result) TYPE string.
 
     "! REDUCE(복합 할당 &&= ): 샘플 정수를 쉼표로 이어 CSV 문자열로 축약.
-    "! 선행 쉼표를 피하려고 COND로 첫 원소를 구분. ATF의 대표 use case(comma-delimited).
+    "! 선행 쉼표를 피하려고 COND로 첫 원소를 구분. 대표 use case(comma-delimited).
     "! @parameter result | "1,2,3,4,5"
     METHODS to_csv
       RETURNING VALUE(result) TYPE string.
@@ -59,26 +59,26 @@ CLASS zcl_modulo_expr03_reduce DEFINITION
     METHODS count_evens
       RETURNING VALUE(result) TYPE i.
 
-    "! REDUCE(최댓값): NEXT COND로 직전 최댓값과 비교해 큰 값을 유지(주장 27.3).
+    "! REDUCE(최댓값): NEXT COND로 직전 최댓값과 비교해 큰 값을 유지.
     "! @parameter values | 비교할 정수들
     "! @parameter result | 최댓값(빈 입력이면 0)
     METHODS max_of
       IMPORTING values        TYPE numbers
       RETURNING VALUE(result) TYPE i.
 
-    "! REDUCE(최장 문자열): strlen 비교로 가장 긴 단어를 유지(주장 27.2).
+    "! REDUCE(최장 문자열): strlen 비교로 가장 긴 단어를 유지.
     "! @parameter result | 샘플 단어 중 최장 문자열
     METHODS longest_word
       RETURNING VALUE(result) TYPE string.
 
-    "! REDUCE(테이블 빌드): 짝수만 골라 제곱한 테이블을 VALUE BASE로 누적(주장 27.4).
+    "! REDUCE(테이블 빌드): 짝수만 골라 제곱한 테이블을 VALUE BASE로 누적.
     "! NEXT 안 COND로 분기 — 짝수면 행을 추가, 홀수면 누적기를 그대로 둔다.
     "! @parameter result | 짝수의 제곱 테이블(2,4 -> 4,16)
     METHODS even_squares
       RETURNING VALUE(result) TYPE numbers.
 
     "! REDUCE(테이블 반복 + WHERE 필터): 반복원에 WHERE를 붙여 LOOP AT ... WHERE 의미론으로
-    "! 필터한 뒤 좌석을 합산(주장 27.5). 구조 테이블이라 컴포넌트로 WHERE 조건을 건다.
+    "! 필터한 뒤 좌석을 합산. 구조 테이블이라 컴포넌트로 WHERE 조건을 건다.
     "! @parameter carrier_code | 합산할 항공사 코드
     "! @parameter result       | 해당 항공사 좌석 합
     METHODS seats_of_carrier
@@ -86,14 +86,14 @@ CLASS zcl_modulo_expr03_reduce DEFINITION
       RETURNING VALUE(result) TYPE i.
 
     "! REDUCE(조건 반복 UNTIL, THEN 생략): 1..n 삼각수. numeric은 THEN 생략 시 +1 자동증가.
-    "! UNTIL은 pre-test — 시작 전 조건 평가, 초기 조건 충족 시 0회(주장 9).
+    "! UNTIL은 pre-test — 시작 전 조건 평가, 초기 조건 충족 시 0회.
     "! @parameter n      | 상한
     "! @parameter result | 1+2+...+n
     METHODS triangular
       IMPORTING n             TYPE i
       RETURNING VALUE(result) TYPE i.
 
-    "! REDUCE(조건 반복 WHILE, THEN 생략): n 미만 카운트. numeric은 WHILE도 +1 자동증가(주장 8).
+    "! REDUCE(조건 반복 WHILE, THEN 생략): n 미만 카운트. numeric은 WHILE도 +1 자동증가.
     "! WHILE도 pre-test이므로 n<=1이면 0회.
     "! @parameter n      | 상한(미만)
     "! @parameter result | 1..n-1 의 개수
@@ -101,14 +101,14 @@ CLASS zcl_modulo_expr03_reduce DEFINITION
       IMPORTING n             TYPE i
       RETURNING VALUE(result) TYPE i.
 
-    "! REDUCE(STEP 보폭): FOR i = 1 ... STEP 2 로 홀수 인덱스만 밟아 합산(주장 9a).
+    "! REDUCE(STEP 보폭): FOR i = 1 ... STEP 2 로 홀수 인덱스만 밟아 합산.
     "! @parameter n      | 상한(포함)
     "! @parameter result | 1,3,5,... <= n 의 합
     METHODS sum_odd_steps
       IMPORTING n             TYPE i
       RETURNING VALUE(result) TYPE i.
 
-    "! REDUCE(INIT x TYPE dtype): rhs 없이 타입만 선언해 초기값으로 시작(주장 5a).
+    "! REDUCE(INIT x TYPE dtype): rhs 없이 타입만 선언해 초기값으로 시작.
     "! 결과 타입을 명시하되 초기 rhs를 생략하는 형식. p 누적기로 평균 계산.
     "! @parameter values | 평균낼 정수들
     "! @parameter result | 평균(소수 2자리, 빈 입력이면 0)
@@ -116,7 +116,7 @@ CLASS zcl_modulo_expr03_reduce DEFINITION
       IMPORTING values        TYPE numbers
       RETURNING VALUE(result) TYPE average.
 
-    "! REDUCE(FOR GROUPS): 그룹별 합을 한 REDUCE 안에서 모은다(주장 14·28).
+    "! REDUCE(FOR GROUPS): 그룹별 합을 한 REDUCE 안에서 모은다.
     "! "carrier:sum" 라인을 carrier 순으로 잇는다. GROUP BY + 그룹 멤버 REDUCE 중첩.
     "! @parameter result | 예: "AA=700;LH=460"
     METHODS seats_per_carrier
@@ -266,7 +266,7 @@ CLASS zcl_modulo_expr03_reduce IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD average_of.
-    " INIT x TYPE dtype : rhs 없이 타입만 선언해 누적기를 시작한다(주장 5a). 합을 소수 타입으로 모은다.
+    " INIT x TYPE dtype : rhs 없이 타입만 선언해 누적기를 시작한다. 합을 소수 타입으로 모은다.
     DATA(total) = REDUCE average( INIT sum TYPE average
                                   FOR n IN values
                                   NEXT sum = sum + n ).

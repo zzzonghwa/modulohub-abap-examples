@@ -1,14 +1,14 @@
 "! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
-"! <p>디버깅·watchpoint(노트 07-6)의 *실행 가능한* 측면을 자체완결로 시연한다.</p>
+"! <p>디버깅·watchpoint의 *실행 가능한* 측면을 자체완결로 시연한다.</p>
 "! <p>디버거 UI(breakpoint·watchpoint·step·call stack)는 대화형이라 코드로 못 박지만,</p>
 "! <p>코드에 남는 진단 구문(ASSERT·LOG-POINT)과 디버깅 친화 패턴은 실행으로 보인다.</p>
 "! <ul>
 "! <li>watchpoint 연습용: collatz_steps(value가 오르내려 변경 추적에 적합).</li>
-"! <li>ASSERT(A5): 단독 ASSERT <논리식>. CONDITION 키워드 없음. 위반 시 dump.</li>
-"! <li>DbC(G1): 사전조건(precondition)·사후조건(postcondition)·클래스 불변(invariant).</li>
-"! <li>내부 테이블 오염 추적(C3-2,C3-5): watchpoint가 어느 단계에서 값이 바뀌는지 잡는 시나리오.</li>
-"! <li>조건부 watchpoint(C3-3): "Free Condition Entry"식 조건(예: total>임계)을 코드로 흉내.</li>
-"! <li>F2/CA1/CA3 assert type 선택·quit 비종료 모드는 테스트 클래스에서 시연한다.</li>
+"! <li>ASSERT: 단독 ASSERT <논리식>. CONDITION 키워드 없음. 위반 시 dump.</li>
+"! <li>DbC: 사전조건(precondition)·사후조건(postcondition)·클래스 불변(invariant).</li>
+"! <li>내부 테이블 오염 추적: watchpoint가 어느 단계에서 값이 바뀌는지 잡는 시나리오.</li>
+"! <li>조건부 watchpoint: "Free Condition Entry"식 조건(예: total>임계)을 코드로 흉내.</li>
+"! <li>assert type 선택·quit 비종료 모드는 테스트 클래스에서 시연한다.</li>
 "! </ul>
 CLASS zcl_modulo_tst06_debug DEFINITION
   PUBLIC
@@ -30,7 +30,7 @@ CLASS zcl_modulo_tst06_debug DEFINITION
       IMPORTING n             TYPE i
       RETURNING VALUE(result) TYPE i.
 
-    "! ASSERT(A5) — 단독 ASSERT <논리식>으로 사전조건을 강제한다(divisor != 0).
+    "! ASSERT — 단독 ASSERT <논리식>으로 사전조건을 강제한다(divisor != 0).
     "! 조건이 참이면 무효과, 거짓이면 런타임 오류(dump). CONDITION 키워드는 단독형에 불필요.
     "! 데모 호출은 항상 조건을 만족하므로 dump 없이 몫을 돌려준다.
     "! @parameter dividend | 피제수
@@ -41,16 +41,16 @@ CLASS zcl_modulo_tst06_debug DEFINITION
                 divisor       TYPE i
       RETURNING VALUE(result) TYPE i.
 
-    "! DbC 사전조건(precondition, G1) — 호출자 책임. 입력 위반 시 즉시 dump.
+    "! DbC 사전조건(precondition) — 호출자 책임. 입력 위반 시 즉시 dump.
     "! 제곱근 정수부를 계산하되 입력이 음수면 precondition 위반(호출자가 잘못 전달).
-    "! 동시에 사후조건(postcondition, G1)으로 result*result <= n < (result+1)^2을 ASSERT한다.
+    "! 동시에 사후조건(postcondition)으로 result*result <= n < (result+1)^2을 ASSERT한다.
     "! @parameter n      | 음이 아닌 정수(음수면 precondition dump)
     "! @parameter result | floor(sqrt(n)) — 사후조건으로 정확성을 자체 검증
     METHODS isqrt
       IMPORTING n             TYPE i
       RETURNING VALUE(result) TYPE i.
 
-    "! 내부 테이블 오염 추적 시나리오(C3-2,C3-5) — watchpoint로 합계가 깨지는 단계를 잡는다.
+    "! 내부 테이블 오염 추적 시나리오 — watchpoint로 합계가 깨지는 단계를 잡는다.
     "! 금액 목록을 누적하다가, 한 단계에서 음수 보정을 잘못 적용하면 합계가 틀어진다.
     "! 여기서는 *정상* 누적만 수행해 올바른 합계를 돌려준다(디버깅 대상 코드의 정답 버전).
     "! ADT: running_total에 watchpoint를 걸면 각 누적 시점에서 자동 중단된다.
@@ -60,7 +60,7 @@ CLASS zcl_modulo_tst06_debug DEFINITION
       IMPORTING amounts       TYPE amounts_table
       RETURNING VALUE(result) TYPE i.
 
-    "! 조건부 watchpoint(C3-3) — "Free Condition Entry"식 조건을 코드로 흉내 낸다.
+    "! 조건부 watchpoint — "Free Condition Entry"식 조건을 코드로 흉내 낸다.
     "! 누적 합이 임계치를 처음 넘는 단계의 1-based 인덱스를 돌려준다.
     "! ADT: running_total에 watchpoint를 걸고 조건 "running_total > threshold"를 입력하면
     "! 조건이 처음 참이 되는 시점에서만 자동 중단된다 — 이 메서드는 그 시점을 값으로 보인다.
@@ -72,7 +72,7 @@ CLASS zcl_modulo_tst06_debug DEFINITION
                 threshold     TYPE i
       RETURNING VALUE(result) TYPE i.
 
-    "! 클래스 불변(invariant, G1/G4) — 메서드 실행 후에도 유지돼야 할 일관성 조건.
+    "! 클래스 불변(invariant) — 메서드 실행 후에도 유지돼야 할 일관성 조건.
     "! 잔액과 거래 합계가 항상 일치함을 ASSERT로 자체 검증한다(언어 미지원의 실용 대안).
     "! @parameter opening   | 개시 잔액
     "! @parameter movements | 입출금(부호 포함) 목록
@@ -120,7 +120,7 @@ CLASS zcl_modulo_tst06_debug IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD safe_divide.
-    " 단독 ASSERT(A5): 논리식이 거짓이면 dump. CONDITION 키워드 없음.
+    " 단독 ASSERT: 논리식이 거짓이면 dump. CONDITION 키워드 없음.
     " divisor=0으로 호출하면 여기서 즉시 실패해 침묵하는 0 나눗셈 dump보다 의도가 분명하다.
     ASSERT divisor <> 0.
     result = dividend DIV divisor.
@@ -153,7 +153,7 @@ CLASS zcl_modulo_tst06_debug IMPLEMENTATION.
     DATA(running_total) = 0.
     LOOP AT amounts INTO DATA(amount).
       running_total = running_total + amount.
-      " 조건부 watchpoint(C3-3)와 같은 의미: running_total > threshold가 처음 참이 되는 행을 잡는다.
+      " 조건부 watchpoint와 같은 의미: running_total > threshold가 처음 참이 되는 행을 잡는다.
       IF running_total > threshold.
         result = sy-tabix.
         RETURN.
@@ -168,7 +168,7 @@ CLASS zcl_modulo_tst06_debug IMPLEMENTATION.
       result = result + movement.
       applied_sum = applied_sum + movement.
     ENDLOOP.
-    " 클래스 불변(invariant, G4): 마감 잔액은 항상 개시 잔액 + 적용 합계와 일치해야 한다.
+    " 클래스 불변(invariant): 마감 잔액은 항상 개시 잔액 + 적용 합계와 일치해야 한다.
     " ABAP은 언어 차원의 invariant가 없으므로 ASSERT로 같은 보장을 흉내 낸다.
     ASSERT result = opening + applied_sum.
   ENDMETHOD.

@@ -1,5 +1,5 @@
 "! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
-"! <p>예외 처리 전략·CX 분류·Design by Contract. 노트(07-1)의 구문 형태를 자체완결로 시연한다.</p>
+"! <p>예외 처리 전략·CX 분류·Design by Contract의 구문 형태를 자체완결로 시연한다.</p>
 "! <ul>
 "! <li>CX 3분류: cx_static_check(미처리/미선언 시 구문 경고) · cx_dynamic_check(선언 없이 전파,
 "! 런타임 전파 시에만 검사) · cx_no_check(선언 강제 없음, 프레임워크 오류·DBC 위반).</li>

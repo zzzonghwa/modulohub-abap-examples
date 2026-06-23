@@ -13,11 +13,11 @@ CLASS ltcl_debug DEFINITION FINAL FOR TESTING
     METHODS long_chain          FOR TESTING.
     METHODS guard_non_positive  FOR TESTING.
 
-    " safe_divide — 단독 ASSERT(A5) 정상 경로.
+    " safe_divide — 단독 ASSERT 정상 경로.
     METHODS divides_exactly     FOR TESTING.
     METHODS div_truncates       FOR TESTING.
 
-    " isqrt — DbC 사전·사후조건(G1).
+    " isqrt — DbC 사전·사후조건.
     METHODS isqrt_perfect       FOR TESTING.
     METHODS isqrt_between       FOR TESTING.
     METHODS isqrt_zero          FOR TESTING.
@@ -30,7 +30,7 @@ CLASS ltcl_debug DEFINITION FINAL FOR TESTING
     " post_movements — 클래스 불변(invariant, G4).
     METHODS closing_balance     FOR TESTING.
 
-    " F2/CA1/CA3 assert type 선택 + F3/F4 quit 비종료 모드 시연.
+    " assert type 선택 + quit 비종료 모드 시연.
     METHODS right_assert_type   FOR TESTING.
 ENDCLASS.
 

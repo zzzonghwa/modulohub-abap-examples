@@ -1,10 +1,10 @@
 "! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
-"! <p>생성자 표현식 — VALUE·FOR·CORRESPONDING·NEW·FILTER. 노트(06-1)의 구문 형태를 자체완결로 시연한다.</p>
+"! <p>생성자 표현식 — VALUE·FOR·CORRESPONDING·NEW·FILTER. 구문 형태를 자체완결로 시연한다.</p>
 "! <ul>
-"! <li>VALUE(B): 구조체·테이블·BASE 부분갱신·LET·중첩 deep·LINES OF STEP·OPTIONAL/DEFAULT·레인지.</li>
-"! <li>FOR(C): IN WHERE 컴프리헨션·UNTIL/WHILE 수치반복·INDEX INTO·다중 FOR·STEP 역방향·USING KEY.</li>
-"! <li>CORRESPONDING(D): 기본 vs MOVE-CORRESPONDING 초기화 차이·BASE·MAPPING·EXCEPT.</li>
-"! <li>E: VALUE+FOR+CORRESPONDING 구조 변환. F: NEW 데이터 객체+체이닝. G: FILTER sorted 키.</li>
+"! <li>VALUE: 구조체·테이블·BASE 부분갱신·LET·중첩 deep·LINES OF STEP·OPTIONAL/DEFAULT·레인지.</li>
+"! <li>FOR: IN WHERE 컴프리헨션·UNTIL/WHILE 수치반복·INDEX INTO·다중 FOR·STEP 역방향·USING KEY.</li>
+"! <li>CORRESPONDING: 기본 vs MOVE-CORRESPONDING 초기화 차이·BASE·MAPPING·EXCEPT.</li>
+"! <li>VALUE+FOR+CORRESPONDING 구조 변환. NEW 데이터 객체+체이닝. FILTER sorted 키.</li>
 "! </ul>
 CLASS zcl_modulo_expr01_value DEFINITION
   PUBLIC
@@ -64,7 +64,6 @@ CLASS zcl_modulo_expr01_value DEFINITION
       RETURNING VALUE(result) TYPE string.
 
     "! FOR k = 1 WHILE k < n (THEN 생략): 수치 반복 변수는 WHILE에서도 +1 자동증가.
-    "! ATF 책의 "WHILE은 자동증가 없음" 서술 정정 — SAP cheat-sheet 05가 자동증가를 실증.
     "! @parameter n      | 상한(미포함)
     "! @parameter result | 1..n-1 합
     METHODS while_auto_increment
@@ -90,7 +89,7 @@ CLASS zcl_modulo_expr01_value DEFINITION
       RETURNING VALUE(result) TYPE string.
 
     "! FOR i = 1 THEN i + 2: THEN 식으로 보폭 2의 수치 반복(STEP 2 효과).
-    "! 노트 B-8/STEP은 라이브 7.54 통과지만 abaplint 파서가 STEP 토큰을 모르므로 THEN으로 등가 시연.
+    "! STEP은 7.54에서 동작하지만 abaplint 파서가 STEP 토큰을 모르므로 THEN으로 등가 시연.
     "! @parameter result | 1..6에서 2칸씩 뽑은 "1,3,5"
     METHODS every_second
       RETURNING VALUE(result) TYPE string.
@@ -118,7 +117,7 @@ CLASS zcl_modulo_expr01_value DEFINITION
       RETURNING VALUE(result) TYPE i.
 
     "! FOR i = lines THEN i - 1 UNTIL i < 1: 역방향 인덱스 순회로 테이블을 거꾸로 읽는다.
-    "! 노트 C-11 STEP -1과 등가지만 abaplint 파서가 STEP을 모르므로 인덱스 표현식으로 시연.
+    "! STEP -1과 등가지만 abaplint 파서가 STEP을 모르므로 인덱스 표현식으로 시연.
     "! @parameter result | 직원 이름을 역순으로 이어붙인 "Choi,Park,Lee,Kim"
     METHODS names_reversed
       RETURNING VALUE(result) TYPE string.

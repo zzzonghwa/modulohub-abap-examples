@@ -6,26 +6,26 @@ CLASS ltcl_badi DEFINITION FINAL FOR TESTING
     DATA cut TYPE REF TO zcl_modulo_ext03_badi.
     METHODS setup.
 
-    " §15 멀티캐스트: active 구현 전부 실행.
+    " 멀티캐스트: active 구현 전부 실행.
     METHODS multicast_all_pass        FOR TESTING.
     METHODS multicast_one_violation   FOR TESTING.
     METHODS multicast_other_violation FOR TESTING.
     METHODS multicast_both_violations FOR TESTING.
 
-    " §9 active/inactive override.
+    " active/inactive override.
     METHODS inactive_excluded_pass    FOR TESTING.
     METHODS inactive_excluded_one     FOR TESTING.
 
-    " §11 §19 single vs multiple — 구현 0개.
+    " single vs multiple — 구현 0개.
     METHODS empty_multi_is_noop       FOR TESTING.
     METHODS single_no_impl_raises     FOR TESTING.
     METHODS single_fallback_no_raise  FOR TESTING.
     METHODS single_multiply_raises    FOR TESTING.
 
-    " §10 인스턴스 모드.
+    " 인스턴스 모드.
     METHODS instance_reuse_accumulates FOR TESTING.
 
-    " §20 §14 filter 라우팅.
+    " filter 라우팅.
     METHODS filter_lower_case_matches FOR TESTING.
     METHODS filter_negative_route     FOR TESTING.
     METHODS filter_unknown_raises     FOR TESTING.

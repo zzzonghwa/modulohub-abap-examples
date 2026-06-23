@@ -1,12 +1,12 @@
 "! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
-"! <p>DDIC 객체·SQL 토대 — 노트(05-1)의 구문 형태를 자체완결로 시연한다.</p>
+"! <p>DDIC 객체·SQL 토대 — 기본 구문 형태를 자체완결로 시연한다.</p>
 "! <ul>
-"! <li>FROM 데이터 소스: 내부 테이블(@itab AS alias, since 7.40)과 DDIC 데이터베이스 테이블 둘 다(W-01).</li>
+"! <li>FROM 데이터 소스: 내부 테이블(@itab AS alias, since 7.40)과 DDIC 데이터베이스 테이블 둘 다.</li>
 "! <li>SELECT 타깃 5종: INTO TABLE / 스칼라 INTO @ / SELECT SINGLE 구조 / SELECT * 구조 /
 "! INTO CORRESPONDING FIELDS / APPENDING TABLE.</li>
-"! <li>결과 메타: sy-subrc(0=hit·4=empty, W-12) / sy-dbcnt.</li>
-"! <li>인라인 선언 결과 타입: SELECT INTO TABLE @DATA(itab)는 standard table·empty key(W-18).</li>
-"! <li>SELECT loop: SELECT ... ENDSELECT(암묵 cursor, W-13).</li>
+"! <li>결과 메타: sy-subrc(0=hit·4=empty) / sy-dbcnt.</li>
+"! <li>인라인 선언 결과 타입: SELECT INTO TABLE @DATA(itab)는 standard table·empty key.</li>
+"! <li>SELECT loop: SELECT ... ENDSELECT(암묵 cursor).</li>
 "! </ul>
 "! <p>다중 테이블 JOIN은 내부 테이블로 불가("문당 itab 1개")하므로 DDIC 소스 데모는</p>
 "! <p>레포 동봉 Z 테이블(ZMODULO_CARRIER)을 쓰고, 결정적 검증은 ABAP Unit이</p>
@@ -31,7 +31,7 @@ CLASS zcl_modulo_sql01_basics DEFINITION
     TYPES flights TYPE STANDARD TABLE OF flight WITH EMPTY KEY.
 
     "! SELECT ... INTO TABLE: 결과 집합 전체를 내부 테이블 타깃으로 읽는다.
-    "! 인라인 @DATA(rows)는 standard table·empty key로 선언된다(W-18).
+    "! 인라인 @DATA(rows)는 standard table·empty key로 선언된다.
     "! @parameter result | 읽은 행 수(sy-dbcnt와 동일)
     METHODS read_into_table
       RETURNING VALUE(result) TYPE i.
@@ -51,7 +51,7 @@ CLASS zcl_modulo_sql01_basics DEFINITION
                 connid        TYPE flight-connid
       RETURNING VALUE(result) TYPE i.
 
-    "! sy-subrc 규칙(W-12): 결과 집합이 비면 SELECT SINGLE은 sy-subrc = 4를 돌려준다.
+    "! sy-subrc 규칙: 결과 집합이 비면 SELECT SINGLE은 sy-subrc = 4를 돌려준다.
     "! @parameter carrier | 항공사 코드
     "! @parameter connid  | 연결편 번호
     "! @parameter result  | hit면 0, empty면 4
@@ -81,7 +81,7 @@ CLASS zcl_modulo_sql01_basics DEFINITION
     METHODS append_two_selects
       RETURNING VALUE(result) TYPE i.
 
-    "! SELECT ... ENDSELECT loop: 행 단위 처리(암묵 database cursor, W-13).
+    "! SELECT ... ENDSELECT loop: 행 단위 처리(암묵 database cursor).
     "! 결과 집합을 한 번에 읽지 않고 행마다 work area로 받아 누적한다.
     "! @parameter result | 좌석 합계
     METHODS sum_via_loop
@@ -93,13 +93,13 @@ CLASS zcl_modulo_sql01_basics DEFINITION
     METHODS top_one_row
       RETURNING VALUE(result) TYPE flight-connid.
 
-    "! DDIC 데이터베이스 테이블을 FROM 소스로(W-01): 내부 테이블이 아닌 실 Z 테이블 대상.
-    "! ABAP SQL 엔진은 이 경우 데이터베이스 인터페이스로 라우팅한다(W-02).
+    "! DDIC 데이터베이스 테이블을 FROM 소스로: 내부 테이블이 아닌 실 Z 테이블 대상.
+    "! ABAP SQL 엔진은 이 경우 데이터베이스 인터페이스로 라우팅한다.
     "! @parameter result | ZMODULO_CARRIER의 항공사 수
     METHODS count_db_table
       RETURNING VALUE(result) TYPE i.
 
-    "! DDIC 테이블에서 SELECT SINGLE: 키로 한 행 읽기. 암묵적 클라이언트 처리(W-05)로
+    "! DDIC 테이블에서 SELECT SINGLE: 키로 한 행 읽기. 암묵적 클라이언트 처리로
     "! WHERE에 MANDT를 직접 쓰지 않는다 — 컴파일러가 현재 클라이언트로 자동 한정한다.
     "! @parameter carrid | 항공사 코드(키)
     "! @parameter result | 항공사명, 없으면 공백
@@ -140,7 +140,7 @@ CLASS zcl_modulo_sql01_basics IMPLEMENTATION.
   METHOD read_into_table.
     " 데이터 소스는 호스트 변수여야 한다 — 식 @( sample( ) )은 소스 위치에 올 수 없다.
     DATA(source) = sample( ) ##NEEDED. " @source가 FROM에 쓰이나 정적분석이 못 봄
-    " 내부 테이블 타깃: INTO TABLE @DATA(...)로 결과 집합 전체를 받는다(W-18: standard·empty key).
+    " 내부 테이블 타깃: INTO TABLE @DATA(...)로 결과 집합 전체를 받는다(standard·empty key).
     SELECT carrier, connid, seats
       FROM @source AS flight
       INTO TABLE @DATA(rows).
@@ -169,7 +169,7 @@ CLASS zcl_modulo_sql01_basics IMPLEMENTATION.
 
   METHOD single_subrc.
     DATA(source) = sample( ) ##NEEDED.
-    " sy-subrc 계약(W-12): hit -> 0, 빈 결과 -> 4.
+    " sy-subrc 계약: hit -> 0, 빈 결과 -> 4.
     SELECT SINGLE seats
       FROM @source AS flight
       WHERE carrier = @carrier
@@ -220,7 +220,7 @@ CLASS zcl_modulo_sql01_basics IMPLEMENTATION.
   METHOD sum_via_loop.
     DATA(source) = sample( ) ##NEEDED.
     DATA total TYPE i.
-    " SELECT ... ENDSELECT: 행마다 work area로 받아 처리한다(암묵 cursor, W-13).
+    " SELECT ... ENDSELECT: 행마다 work area로 받아 처리한다(암묵 cursor).
     SELECT seats
       FROM @source AS flight
       INTO @DATA(seats).
@@ -241,7 +241,7 @@ CLASS zcl_modulo_sql01_basics IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD count_db_table.
-    " DDIC 데이터베이스 테이블을 FROM 소스로 직접 지정(W-01). 호스트 변수 alias 불필요.
+    " DDIC 데이터베이스 테이블을 FROM 소스로 직접 지정. 호스트 변수 alias 불필요.
     SELECT COUNT(*)
       FROM zmodulo_carrier
       INTO @DATA(count).
@@ -249,7 +249,7 @@ CLASS zcl_modulo_sql01_basics IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD read_db_single.
-    " 암묵적 클라이언트 처리(W-05): WHERE에 MANDT를 쓰지 않아도 현재 클라이언트로 자동 한정.
+    " 암묵적 클라이언트 처리: WHERE에 MANDT를 쓰지 않아도 현재 클라이언트로 자동 한정.
     SELECT SINGLE carrname
       FROM zmodulo_carrier
       WHERE carrid = @carrid

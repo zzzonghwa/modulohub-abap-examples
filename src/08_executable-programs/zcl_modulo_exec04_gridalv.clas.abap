@@ -1,17 +1,17 @@
 "! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
-"! <p>편집형/이벤트형 ALV — CL_GUI_ALV_GRID 대조(노트 08-4의 구문 형태를 자체완결로 시연).</p>
+"! <p>편집형/이벤트형 ALV — CL_GUI_ALV_GRID 구문 형태를 자체완결로 시연한다.</p>
 "! <p>CL_GUI_ALV_GRID는 SAP GUI 컨트롤 프레임워크(CFW) 위에서만 동작해 콘솔(IF_OO_ADT_CLASSRUN)에서</p>
 "! <p>실제 그리드를 띄울 수 없다. 그래서 이 예제는 *그리드 표시 자체*가 아니라, 표시를 구동하는</p>
 "! <p>데이터 구조와 결정 로직(필드카탈로그·셀 스타일 테이블·이벤트 등록·툴바 버튼·도구 선택)을</p>
 "! <p>계산해 보여 준다 — 실 API(LVC_S_FCAT / LVC_S_STYL / STB_BUTTON 등)와 같은 필드 모양의</p>
 "! <p>로컬 타입으로 모델링한다(ABAP Doc에 대응 표준 타입 명시).</p>
-"! <p>노트 소절 매핑:</p>
+"! <p>구성:</p>
 "! <ul>
-"! <li>A 컨테이너 선택: choose_container (CUSTOM vs DOCKING).</li>
-"! <li>B set_table_for_first_display: build_fieldcat / i_save_meaning / buffer_conflict / layout_edit_all.</li>
-"! <li>C 편집 이벤트: edit_event_constant / build_style_table / commit_in_pai (LUW 경계).</li>
-"! <li>D 이벤트 핸들러: event_param / build_toolbar / hotspot_columns.</li>
-"! <li>E SALV 내부 그리드: salv_edit_supported (비표준 우회 — 코드 미제공, 사실만).</li>
+"! <li>컨테이너 선택: choose_container (CUSTOM vs DOCKING).</li>
+"! <li>set_table_for_first_display: build_fieldcat / i_save_meaning / buffer_conflict / layout_edit_all.</li>
+"! <li>편집 이벤트: edit_event_constant / build_style_table / commit_in_pai (LUW 경계).</li>
+"! <li>이벤트 핸들러: event_param / build_toolbar / hotspot_columns.</li>
+"! <li>SALV 내부 그리드: salv_edit_supported (비표준 우회 — 코드 미제공, 사실만).</li>
 "! <li>종합 대조: recommend_alv / reuse_needs_pf_status / cloud_available.</li>
 "! </ul>
 CLASS zcl_modulo_exec04_gridalv DEFINITION
@@ -56,28 +56,28 @@ CLASS zcl_modulo_exec04_gridalv DEFINITION
     TYPES toolbar_buttons TYPE STANDARD TABLE OF toolbar_button WITH EMPTY KEY.
 
     "! 편집 이벤트 등록 값. 실 상수 CL_GUI_ALV_GRID=>MC_EVT_ENTER/MC_EVT_MODIFIED를 흉내 낸다.
-    "! register_edit_event는 display 전에 호출해야 data_changed가 발화한다(노트 C-9).
+    "! register_edit_event는 display 전에 호출해야 data_changed가 발화한다.
     CONSTANTS:
       "! Enter 키 입력 시 data_changed 발화(MC_EVT_ENTER 대응).
       event_enter    TYPE i VALUE 1,
       "! 셀 이탈(modified) 시 data_changed 발화(MC_EVT_MODIFIED 대응).
       event_modified TYPE i VALUE 2.
 
-    "! 셀 편집 가능/불가 스타일. 실 상수 MC_STYLE_ENABLED/MC_STYLE_DISABLED 대응(노트 atf L27627).
+    "! 셀 편집 가능/불가 스타일. 실 상수 MC_STYLE_ENABLED/MC_STYLE_DISABLED 대응.
     CONSTANTS:
       "! 편집 가능 셀.
       style_enabled  TYPE i VALUE 1,
       "! 읽기 전용 셀.
       style_disabled TYPE i VALUE 2.
 
-    "! A. 컨테이너 선택 — Dynpro 화면 설계 없이 빠르게 띄울지에 따라.
+    "! 컨테이너 선택 — Dynpro 화면 설계 없이 빠르게 띄울지에 따라.
     "! @parameter need_dynpro_screen | 미리 그려 둔 Custom Control 영역에 붙일지 여부
     "! @parameter result             | CL_GUI_CUSTOM_CONTAINER 또는 CL_GUI_DOCKING_CONTAINER
     METHODS choose_container
       IMPORTING need_dynpro_screen TYPE abap_bool
       RETURNING VALUE(result)      TYPE string.
 
-    "! B. 필드카탈로그 생성 — set_table_for_first_display의 it_fieldcatalog(LVC_T_FCAT) 구성.
+    "! 필드카탈로그 생성 — set_table_for_first_display의 it_fieldcatalog(LVC_T_FCAT) 구성.
     "! editable=abap_true면 seatsocc(점유 좌석) 컬럼만 편집 가능, 키 컬럼은 잠근다.
     "! @parameter editable | 그리드를 편집 모드로 만들지 여부
     "! @parameter result   | 필드카탈로그 행 목록(키/편집/링크 플래그 포함)
@@ -85,21 +85,21 @@ CLASS zcl_modulo_exec04_gridalv DEFINITION
       IMPORTING editable      TYPE abap_bool
       RETURNING VALUE(result) TYPE field_catalogs.
 
-    "! B. is_layout-edit = 'X'면 그리드 전체가 편집 모드로 시작(셀 단위 제어는 stylefname).
+    "! is_layout-edit = 'X'면 그리드 전체가 편집 모드로 시작(셀 단위 제어는 stylefname).
     "! @parameter result | 편집 가능 컬럼(edit=X) 수
     METHODS count_editable_columns
       IMPORTING fieldcat      TYPE field_catalogs
       RETURNING VALUE(result) TYPE i.
 
-    "! B. i_save 파라미터의 레이아웃 변형 저장 권한 의미를 사람이 읽는 라벨로.
-    "! 'A'=All, 'U'=User only, ' '=불가. 'X'는 문서 근거 미확인(노트 B-6).
+    "! i_save 파라미터의 레이아웃 변형 저장 권한 의미를 사람이 읽는 라벨로.
+    "! 'A'=All, 'U'=User only, ' '=불가. 'X'는 문서 근거 미확인.
     "! @parameter i_save | i_save 파라미터 값('A'/'U'/' '/'X')
     "! @parameter result | 저장 권한 설명
     METHODS i_save_meaning
       IMPORTING i_save        TYPE c
       RETURNING VALUE(result) TYPE string.
 
-    "! B. i_buffer_active와 i_bypassing_buffer를 동시에 ABAP_TRUE로 두면 모순(노트 B-7).
+    "! i_buffer_active와 i_bypassing_buffer를 동시에 ABAP_TRUE로 두면 모순이다.
     "! @parameter buffer_active   | 내부 버퍼 활성(대용량 스크롤 성능)
     "! @parameter bypassing_buffer | 버퍼 우회(최신 데이터 강제 갱신)
     "! @parameter result          | 설정이 모순이면 abap_true
@@ -108,14 +108,14 @@ CLASS zcl_modulo_exec04_gridalv DEFINITION
                 bypassing_buffer TYPE abap_bool
       RETURNING VALUE(result)    TYPE abap_bool.
 
-    "! C. register_edit_event 등록 값 선택 — Enter 발화냐 셀 이탈 발화냐.
+    "! register_edit_event 등록 값 선택 — Enter 발화냐 셀 이탈 발화냐.
     "! @parameter on_enter | abap_true면 Enter 키, abap_false면 셀 이탈 시 발화
     "! @parameter result   | event_enter 또는 event_modified
     METHODS edit_event_constant
       IMPORTING on_enter      TYPE abap_bool
       RETURNING VALUE(result) TYPE i.
 
-    "! C. 셀 단위 편집 제어 — 행마다 stylefname 컬럼(LVC_T_STYL)을 만든다.
+    "! 셀 단위 편집 제어 — 행마다 stylefname 컬럼(LVC_T_STYL)을 만든다.
     "! 키 컬럼은 disabled, 나머지는 enabled로 두는 표준 편집 행 1줄을 구성한다.
     "! @parameter fieldcat | 필드카탈로그(key 플래그로 잠금 여부 판단)
     "! @parameter result   | 셀 스타일 목록(fieldname-style 쌍)
@@ -123,34 +123,34 @@ CLASS zcl_modulo_exec04_gridalv DEFINITION
       IMPORTING fieldcat      TYPE field_catalogs
       RETURNING VALUE(result) TYPE cell_styles.
 
-    "! C. data_changed 핸들러에서 COMMIT WORK 금지 — DB 반영은 PAI user_command에서 일괄(노트 C-11).
+    "! data_changed 핸들러에서 COMMIT WORK 금지 — DB 반영은 PAI user_command에서 일괄 처리.
     "! @parameter in_data_changed | 현재 위치가 data_changed 핸들러 안인가
     "! @parameter result          | 이 위치에서 COMMIT WORK가 허용되면 abap_true
     METHODS commit_allowed_here
       IMPORTING in_data_changed TYPE abap_bool
       RETURNING VALUE(result)   TYPE abap_bool.
 
-    "! D. 이벤트별 핵심 IMPORTING 파라미터명(7.54 라이브 확정 — 노트 D-13 표).
+    "! 이벤트별 핵심 IMPORTING 파라미터명(7.54 기준).
     "! @parameter event_name | data_changed/user_command/toolbar/hotspot_click/after_refresh
     "! @parameter result     | 해당 이벤트의 핵심 IMPORTING 파라미터(없으면 공백)
     METHODS event_param
       IMPORTING event_name    TYPE string
       RETURNING VALUE(result) TYPE string.
 
-    "! D. 커스텀 툴바 — toolbar 이벤트 핸들러에서 e_object-mt_toolbar에 STB_BUTTON 행 추가.
+    "! 커스텀 툴바 — toolbar 이벤트 핸들러에서 e_object-mt_toolbar에 STB_BUTTON 행 추가.
     "! 표준 편집 시나리오용 버튼(저장·행추가·행삭제) 목록을 구성한다.
     "! @parameter result | 추가할 툴바 버튼 목록
     METHODS build_toolbar
       RETURNING VALUE(result) TYPE toolbar_buttons.
 
-    "! D. hotspot_click — 필드카탈로그 hotspot='X'인 컬럼이 클릭 가능 링크가 된다.
+    "! hotspot_click — 필드카탈로그 hotspot='X'인 컬럼이 클릭 가능 링크가 된다.
     "! @parameter fieldcat | 필드카탈로그
     "! @parameter result   | hotspot 컬럼명 목록
     METHODS hotspot_columns
       IMPORTING fieldcat      TYPE field_catalogs
       RETURNING VALUE(result) TYPE string_table.
 
-    "! E. SALV 내부에도 CL_GUI_ALV_GRID가 있으나 편집 API는 공식 미노출(노트 E-16).
+    "! SALV 내부에도 CL_GUI_ALV_GRID가 있으나 편집 API는 공식 미노출.
     "! @parameter result | SALV로 편집이 공식 지원되는가 -> abap_false
     METHODS salv_edit_supported
       RETURNING VALUE(result) TYPE abap_bool.
@@ -162,12 +162,12 @@ CLASS zcl_modulo_exec04_gridalv DEFINITION
       IMPORTING editable      TYPE abap_bool
       RETURNING VALUE(result) TYPE string.
 
-    "! 종합. REUSE_ALV로 커스텀 툴바 버튼을 넣으려면 PF-Status가 필수다(노트 D-14, 대조표).
+    "! 종합. REUSE_ALV로 커스텀 툴바 버튼을 넣으려면 PF-Status가 필수다.
     "! @parameter result | REUSE_ALV에 커스텀 버튼 추가 시 PF-Status가 필요하면 abap_true
     METHODS reuse_needs_pf_status
       RETURNING VALUE(result) TYPE abap_bool.
 
-    "! 종합. 세 ALV 도구 모두 클래식 GUI/Dynpro 의존 -> ABAP Cloud에서 불가(노트 클라우드 깃발).
+    "! 종합. 세 ALV 도구 모두 클래식 GUI/Dynpro 의존 -> ABAP Cloud에서 불가.
     "! @parameter result | 클라우드(BTP Steampunk)에서 사용 가능하면 abap_true
     METHODS cloud_available
       RETURNING VALUE(result) TYPE abap_bool.
@@ -279,7 +279,7 @@ CLASS zcl_modulo_exec04_gridalv IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD salv_edit_supported.
-    " SALV 내부에 CL_GUI_ALV_GRID가 있어도 편집 API는 공식 미노출. 우회는 비표준(노트 E-17).
+    " SALV 내부에 CL_GUI_ALV_GRID가 있어도 편집 API는 공식 미노출. 우회는 비표준.
     result = abap_false.
   ENDMETHOD.
 

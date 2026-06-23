@@ -1,6 +1,6 @@
 "! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
-"! <p>SAP 잠금(ENQUEUE/DEQUEUE)·COMMIT WORK·_SCOPE — 개념(09-2). 노트의 락 메커니즘</p>
-"! <p>(F 섹션 W26~W32, ATF A1~A7)을 자체완결 인메모리 lock table(locals_imp)로 시연한다.</p>
+"! <p>SAP 잠금(ENQUEUE/DEQUEUE)·COMMIT WORK·_SCOPE 개념을 다룬다. 락 메커니즘을</p>
+"! <p>자체완결 인메모리 lock table(locals_imp)로 시연한다.</p>
 "! <p>실 시스템은 lock object(SE11, ENQU, E 접두사) 활성화로 ENQUEUE_<name>/DEQUEUE_<name></p>
 "! <p>함수모듈이 자동 생성된다. 전통형 FM 호출:</p>
 "! <p>CALL FUNCTION 'ENQUEUE_EZMODULO_FLIGHT'</p>
@@ -22,28 +22,28 @@ CLASS zcl_modulo_txn02_lock DEFINITION
   PUBLIC SECTION.
     INTERFACES if_oo_adt_classrun.
 
-    "! W30·A5 충돌 구분: 한 키를 잠근 뒤 다른 소유자가 같은 키를 배타 잠그면 foreign_lock.
+    "! 충돌 구분: 한 키를 잠근 뒤 다른 소유자가 같은 키를 배타 잠그면 foreign_lock.
     "! 예외에 소유자명(user_name)이 담긴다 — sy-msgv1(전통형) / foreign_lock->user_name(OO).
     "! @parameter result | 거부된 두 번째 잠금의 소유자명(`USER_A`)
     METHODS foreign_lock_owner
       RETURNING VALUE(result) TYPE string.
 
-    "! W32 shared(S): 여러 사용자가 같은 키에 S 잠금을 동시에 보유할 수 있다.
+    "! shared(S): 여러 사용자가 같은 키에 S 잠금을 동시에 보유할 수 있다.
     "! @parameter result | 두 번째 S 잠금이 성공하면 abap_true
     METHODS shared_locks_coexist
       RETURNING VALUE(result) TYPE abap_bool.
 
-    "! W32 exclusive(E): 동일 사용자는 같은 키에 E 잠금을 누적(cumulative)할 수 있다.
+    "! exclusive(E): 동일 사용자는 같은 키에 E 잠금을 누적(cumulative)할 수 있다.
     "! @parameter result | 두 번 enqueue 후 누적 깊이(2)
     METHODS exclusive_cumulates
       RETURNING VALUE(result) TYPE i.
 
-    "! W32 exclusive non-cumulative(X): 동일 사용자라도 같은 키를 두 번 잠글 수 없다.
+    "! exclusive non-cumulative(X): 동일 사용자라도 같은 키를 두 번 잠글 수 없다.
     "! @parameter result | 두 번째 X enqueue가 lock_failure로 거부되면 abap_true
     METHODS non_cumulative_rejected
       RETURNING VALUE(result) TYPE abap_bool.
 
-    "! W29·G5 논리적 잠금: DB에 존재하지 않는 키도 잠글 수 있다(신규 생성 중복 방지).
+    "! 논리적 잠금: DB에 존재하지 않는 키도 잠글 수 있다(신규 생성 중복 방지).
     "! @parameter result | 미존재 키 잠금 후 보유 잠금 수(1)
     METHODS logical_lock_nonexistent
       RETURNING VALUE(result) TYPE i.
@@ -58,23 +58,23 @@ CLASS zcl_modulo_txn02_lock DEFINITION
     METHODS dequeue_decrements
       RETURNING VALUE(result) TYPE i.
 
-    "! W31 COMMIT WORK(_scope=2 의미): commit 시 보유 잠금이 모두 해제된다.
+    "! COMMIT WORK(_scope=2 의미): commit 시 보유 잠금이 모두 해제된다.
     "! @parameter result | commit 후 보유 잠금 수(0)
     METHODS released_on_commit
       RETURNING VALUE(result) TYPE i.
 
-    "! W31 ROLLBACK WORK는 _scope=2 잠금만 제거한다. _scope=1 잠금은 남는다.
+    "! ROLLBACK WORK는 _scope=2 잠금만 제거한다. _scope=1 잠금은 남는다.
     "! @parameter result | rollback 후 남은 보유 잠금 수(1 — scope_dialog)
     METHODS rollback_removes_scope2_only
       RETURNING VALUE(result) TYPE i.
 
-    "! W31 _scope=3(both): dialog·update 양쪽 처리. ROLLBACK은 _scope=2만 제거하므로
+    "! _scope=3(both): dialog·update 양쪽 처리. ROLLBACK은 _scope=2만 제거하므로
     "! scope_both 잠금은 rollback 후에도 남는다(scope_dialog와 동일하게 잔존).
     "! @parameter result | rollback 후 남은 scope_both 잠금 수(1)
     METHODS rollback_keeps_scope3
       RETURNING VALUE(result) TYPE i.
 
-    "! A4·A7 시스템 장애: enqueue 서버 오류는 lock_failure(소유자 정보 없음) — SHORTDUMP 대응.
+    "! 시스템 장애: enqueue 서버 오류는 lock_failure(소유자 정보 없음) — SHORTDUMP 대응.
     "! foreign_lock과 달리 user_name이 비어 사용자 통보가 불가하다.
     "! @parameter result | system_failure가 lcx_lock_failure로 구분되면 abap_true
     METHODS system_failure_distinct
