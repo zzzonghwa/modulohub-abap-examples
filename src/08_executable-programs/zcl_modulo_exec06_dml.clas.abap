@@ -1,20 +1,20 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+"!
+"! DB 변경문(INSERT/UPDATE/MODIFY/DELETE)·LUW 문제제기 — DDIC 테이블 ZMODULO_FLIGHT 대상.
+"! - 각 메서드는 sy-subrc(0성공/4없음·중복)·sy-dbcnt(영향 행 수)를 평가한다.
+"! - 변경은 다음 DB 커밋까지 보류 — COMMIT WORK로 확정, ROLLBACK WORK로 취소(LUW).
+"! - INSERT 4종(단일행 FROM @wa·VALUES·내부테이블 FROM TABLE @itab·호스트식 @( )),
+"!   UPDATE(FROM @wa 전체 덮어쓰기·SET ... WHERE 컬럼 지정),
+"!   MODIFY(단일행·내부테이블 업서트), DELETE(FROM @wa·FROM TABLE @itab·WHERE·전체삭제)를 시연.
+"! 표는 import 직후 비어 있다 — main은 먼저 시드한 뒤 출력하고 끝에 ROLLBACK으로 되돌린다.
+"! 결정적 검증은 ABAP Unit이 osql 더블(CL_OSQL_TEST_ENVIRONMENT,
+"! INSERT/UPDATE/MODIFY/DELETE도 가로챔)로 수행한다.
 CLASS zcl_modulo_exec06_dml DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-    "!
-    "! DB 변경문(INSERT/UPDATE/MODIFY/DELETE)·LUW 문제제기 — DDIC 테이블 ZMODULO_FLIGHT 대상.
-    "! - 각 메서드는 sy-subrc(0성공/4없음·중복)·sy-dbcnt(영향 행 수)를 평가한다.
-    "! - 변경은 다음 DB 커밋까지 보류 — COMMIT WORK로 확정, ROLLBACK WORK로 취소(LUW).
-    "! - INSERT 4종(단일행 FROM @wa·VALUES·내부테이블 FROM TABLE @itab·호스트식 @( )),
-    "!   UPDATE(FROM @wa 전체 덮어쓰기·SET ... WHERE 컬럼 지정),
-    "!   MODIFY(단일행·내부테이블 업서트), DELETE(FROM @wa·FROM TABLE @itab·WHERE·전체삭제)를 시연.
-    "! 표는 import 직후 비어 있다 — main은 먼저 시드한 뒤 출력하고 끝에 ROLLBACK으로 되돌린다.
-    "! 결정적 검증은 ABAP Unit이 osql 더블(CL_OSQL_TEST_ENVIRONMENT,
-    "! INSERT/UPDATE/MODIFY/DELETE도 가로챔)로 수행한다.
     INTERFACES if_oo_adt_classrun.
 
     "! 항공편 묶음 — 일괄 INSERT/MODIFY/DELETE 입력용(WITH EMPTY KEY = 순서 보존).

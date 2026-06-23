@@ -1,21 +1,21 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+"!
+"! 성능 — 측정 도구와 알고리즘 복잡도(노트 07-5). 측정 도구는 대화형 tcode이므로
+"! 이 클래스는 그 도구들이 *진단하는* 패턴을 실행 가능한 형태로 자체완결 시연한다.
+"! 모든 짝(나쁨 vs 좋음)은 결과가 같고 비용만 다르다 — "측정 후 최적화" 원칙.
+"! 측정 도구: ST05(SQL Trace, DB 호출)·SAT(Runtime Analysis, ABAP 핫스팟)·SQLM(운영 SQL 모니터).
+"! ATC 성능 룰: LOOP 내 SELECT·중첩 LOOP·표준 테이블 선형 검색·SELECT *를 정적으로 잡는다.
+"! - 알고리즘 복잡도: match_nested(O(n*m)) vs match_hashed/match_sorted(O(n)).
+"! - 보조 키: secondary_key_count(since 7.02). 필드 심볼: assign_count vs into_count.
+"! - 존재 확인: exists_no_fields(TRANSPORTING NO FIELDS) vs exists_select(SELECT @abap_true).
+"! - 블록 처리: block_merge vs row_by_row. 메모리: clear_then_size vs free_then_size.
+"! - code pushdown: sum_pushdown(SELECT SUM) vs sum_in_abap(REDUCE). WHERE: and_count vs or_count.
 CLASS zcl_modulo_tst05_perf DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-    "!
-    "! 성능 — 측정 도구와 알고리즘 복잡도(노트 07-5). 측정 도구는 대화형 tcode이므로
-    "! 이 클래스는 그 도구들이 *진단하는* 패턴을 실행 가능한 형태로 자체완결 시연한다.
-    "! 모든 짝(나쁨 vs 좋음)은 결과가 같고 비용만 다르다 — "측정 후 최적화" 원칙.
-    "! 측정 도구: ST05(SQL Trace, DB 호출)·SAT(Runtime Analysis, ABAP 핫스팟)·SQLM(운영 SQL 모니터).
-    "! ATC 성능 룰: LOOP 내 SELECT·중첩 LOOP·표준 테이블 선형 검색·SELECT *를 정적으로 잡는다.
-    "! - 알고리즘 복잡도: match_nested(O(n*m)) vs match_hashed/match_sorted(O(n)).
-    "! - 보조 키: secondary_key_count(since 7.02). 필드 심볼: assign_count vs into_count.
-    "! - 존재 확인: exists_no_fields(TRANSPORTING NO FIELDS) vs exists_select(SELECT @abap_true).
-    "! - 블록 처리: block_merge vs row_by_row. 메모리: clear_then_size vs free_then_size.
-    "! - code pushdown: sum_pushdown(SELECT SUM) vs sum_in_abap(REDUCE). WHERE: and_count vs or_count.
     INTERFACES if_oo_adt_classrun.
 
     "! 항공사 코드(c3) — 존재 확인 메서드 파라미터의 정확한 타입(c1로 잡히면 'AA'가 절단됨).

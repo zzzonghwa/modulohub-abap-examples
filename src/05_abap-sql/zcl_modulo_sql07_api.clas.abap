@@ -1,26 +1,26 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+"!
+"! released API 소비와 "확장 계약(release contract)" 읽기 — 노트 05-7을 자체완결로 시연한다.
+"! 계약은 두 분류의 결합이다(W2): ① release contract(안정성 약속) + ② restricted ABAP
+"! language version용 visibility. 둘 다 충족돼야 released API다.
+"!
+"! release contract 5종(W4~W10): C0=확장(enhancement 필드 추가) / C1=내부 소비(AS ABAP 내) /
+"! C2=원격 소비(RFC·OData 등 AS ABAP 밖) / C3=설정 영속 / C4=AMDP 간. C1·C2는 공존 가능(W6).
+"! 소비 판단(S2·S4): ABAP 코드에서 ->method() 호출 = C1로 충분. 외부(RFC/OData) = C2 필요.
+"!
+"! 실제 released API 소비: CL_ABAP_CONTEXT_INFO(C1)로 SY/SYST 전역 대신 시스템·사용자 정보를
+"! 읽는다(읽기 전용). 출력(날짜·시간)은 실행 시점·시스템마다 달라 manual-report로 분류한다.
+"!
+"! released 카탈로그 조회(G6·G7·라이브): 실 시스템은 released 객체를 CDS 뷰
+"! I_APIsForCloudDevelopment(WHERE ReleaseState='RELEASED')로, deprecated+후속을
+"! I_APIsWithCloudDevSuccessor로 ABAP SQL 소비한다. 7.54 자체완결을 위해 동일한 SELECT 구문
+"! 형태를 메모리 카탈로그(단일 itab SELECT FROM @catalog AS api)로 시연한다 — 쿼리 모양은 동일.
 CLASS zcl_modulo_sql07_api DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-    "!
-    "! released API 소비와 "확장 계약(release contract)" 읽기 — 노트 05-7을 자체완결로 시연한다.
-    "! 계약은 두 분류의 결합이다(W2): ① release contract(안정성 약속) + ② restricted ABAP
-    "! language version용 visibility. 둘 다 충족돼야 released API다.
-    "!
-    "! release contract 5종(W4~W10): C0=확장(enhancement 필드 추가) / C1=내부 소비(AS ABAP 내) /
-    "! C2=원격 소비(RFC·OData 등 AS ABAP 밖) / C3=설정 영속 / C4=AMDP 간. C1·C2는 공존 가능(W6).
-    "! 소비 판단(S2·S4): ABAP 코드에서 ->method() 호출 = C1로 충분. 외부(RFC/OData) = C2 필요.
-    "!
-    "! 실제 released API 소비: CL_ABAP_CONTEXT_INFO(C1)로 SY/SYST 전역 대신 시스템·사용자 정보를
-    "! 읽는다(읽기 전용). 출력(날짜·시간)은 실행 시점·시스템마다 달라 manual-report로 분류한다.
-    "!
-    "! released 카탈로그 조회(G6·G7·라이브): 실 시스템은 released 객체를 CDS 뷰
-    "! I_APIsForCloudDevelopment(WHERE ReleaseState='RELEASED')로, deprecated+후속을
-    "! I_APIsWithCloudDevSuccessor로 ABAP SQL 소비한다. 7.54 자체완결을 위해 동일한 SELECT 구문
-    "! 형태를 메모리 카탈로그(단일 itab SELECT FROM @catalog AS api)로 시연한다 — 쿼리 모양은 동일.
     INTERFACES if_oo_adt_classrun.
 
     "! release contract 등급(C0~C4). 실 카탈로그의 분류 컬럼을 모사한다.

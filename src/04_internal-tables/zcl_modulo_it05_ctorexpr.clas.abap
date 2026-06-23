@@ -1,10 +1,10 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
 CLASS zcl_modulo_it05_ctorexpr DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
     INTERFACES if_oo_adt_classrun.
 
     "! 사원 한 명. 생성자식 데모의 공통 행 타입.

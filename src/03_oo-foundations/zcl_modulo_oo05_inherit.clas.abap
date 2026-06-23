@@ -1,12 +1,12 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+"! 인터페이스(lif_shape)·추상 클래스·INHERITING FROM·REDEFINITION·super->·FINAL,
+"! 다형성(인터페이스 ref 컬렉션의 동적 디스패치), 업/다운캐스트(CAST·IS INSTANCE OF·CASE TYPE OF).
 CLASS zcl_modulo_oo05_inherit DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-    "! 인터페이스(lif_shape)·추상 클래스·INHERITING FROM·REDEFINITION·super->·FINAL,
-    "! 다형성(인터페이스 ref 컬렉션의 동적 디스패치), 업/다운캐스트(CAST·IS INSTANCE OF·CASE TYPE OF).
     INTERFACES if_oo_adt_classrun.
 ENDCLASS.
 

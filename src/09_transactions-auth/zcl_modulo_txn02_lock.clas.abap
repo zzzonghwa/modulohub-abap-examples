@@ -1,26 +1,26 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+"!
+"! SAP 잠금(ENQUEUE/DEQUEUE)·COMMIT WORK·_SCOPE — 개념(09-2). 노트의 락 메커니즘
+"! (F 섹션 W26~W32, ATF A1~A7)을 자체완결 인메모리 lock table(locals_imp)로 시연한다.
+"! 실 시스템은 lock object(SE11, ENQU, E 접두사) 활성화로 ENQUEUE_<name>/DEQUEUE_<name>
+"! 함수모듈이 자동 생성된다. 전통형 FM 호출:
+"!   CALL FUNCTION 'ENQUEUE_EZMODULO_FLIGHT'
+"!     EXPORTING  mode_zmodulo_flight = 'E'   " 잠금 모드(E=배타)
+"!                carrid = 'LH' connid = '0400'
+"!                _scope = '2'                " 2=update task에 위임(기본)
+"!     EXCEPTIONS foreign_lock = 1 system_failure = 2 OTHERS = 3.
+"!   IF sy-subrc <> 0. " 충돌(sy-msgv1=소유자) 처리. ENDIF.
+"!   COMMIT WORK.                            " _scope=2면 update 완료 시 자동 해제
+"!   CALL FUNCTION 'DEQUEUE_EZMODULO_FLIGHT' EXPORTING carrid = 'LH' connid = '0400'.
+"! 모던 OO API(7.54+): cl_abap_lock_object_factory=>get_instance( )->enqueue( ) — 예외
+"! cx_abap_foreign_lock vs cx_abap_lock_failure로 구분(여기선 lcx_*로 대응 시연).
+"! 잠금은 중앙 enqueue 서버 메모리에 보관(DB 아님). 실 FM은 lock object 활성화에 의존한다.
 CLASS zcl_modulo_txn02_lock DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-    "!
-    "! SAP 잠금(ENQUEUE/DEQUEUE)·COMMIT WORK·_SCOPE — 개념(09-2). 노트의 락 메커니즘
-    "! (F 섹션 W26~W32, ATF A1~A7)을 자체완결 인메모리 lock table(locals_imp)로 시연한다.
-    "! 실 시스템은 lock object(SE11, ENQU, E 접두사) 활성화로 ENQUEUE_<name>/DEQUEUE_<name>
-    "! 함수모듈이 자동 생성된다. 전통형 FM 호출:
-    "!   CALL FUNCTION 'ENQUEUE_EZMODULO_FLIGHT'
-    "!     EXPORTING  mode_zmodulo_flight = 'E'   " 잠금 모드(E=배타)
-    "!                carrid = 'LH' connid = '0400'
-    "!                _scope = '2'                " 2=update task에 위임(기본)
-    "!     EXCEPTIONS foreign_lock = 1 system_failure = 2 OTHERS = 3.
-    "!   IF sy-subrc <> 0. " 충돌(sy-msgv1=소유자) 처리. ENDIF.
-    "!   COMMIT WORK.                            " _scope=2면 update 완료 시 자동 해제
-    "!   CALL FUNCTION 'DEQUEUE_EZMODULO_FLIGHT' EXPORTING carrid = 'LH' connid = '0400'.
-    "! 모던 OO API(7.54+): cl_abap_lock_object_factory=>get_instance( )->enqueue( ) — 예외
-    "! cx_abap_foreign_lock vs cx_abap_lock_failure로 구분(여기선 lcx_*로 대응 시연).
-    "! 잠금은 중앙 enqueue 서버 메모리에 보관(DB 아님). 실 FM은 lock object 활성화에 의존한다.
     INTERFACES if_oo_adt_classrun.
 
     "! W30·A5 충돌 구분: 한 키를 잠근 뒤 다른 소유자가 같은 키를 배타 잠그면 foreign_lock.

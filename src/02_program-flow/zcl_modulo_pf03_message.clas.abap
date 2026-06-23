@@ -1,10 +1,10 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
 CLASS zcl_modulo_pf03_message DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
     INTERFACES if_oo_adt_classrun.
 
     "! 캡처된 메시지. MESSAGE ... INTO는 화면에 띄우지 않고 텍스트와

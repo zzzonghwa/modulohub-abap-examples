@@ -1,23 +1,23 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+"!
+"! Released API·XCO(eXtension Components) 소비 — 고전 FM의 released 대체(노트 10-01).
+"! XCO_CP* 군은 release contract C1 계약 하의 released 유틸이라 업그레이드·Cloud 이전에
+"! breaking change가 없다(Clean Core). 고전 FM은 sy-subrc를 조용히 무시할 수 있으나
+"! released class의 class-based 예외는 처리 누락을 컴파일/런타임에 강제한다.
+"!
+"! 소절 대응(노트 본문):
+"! - 문자열 체이닝(claim 18): xco_cp=>string( )->to_upper/lower/from/to/append/
+"!   prepend/split, xco_cp=>strings( )->join, ->starts_with/ends_with/matches.
+"! - UUID(claim 17): xco_cp=>uuid( )->value / ->as( c36 ), cl_system_uuid 대안.
+"! - 현재 순간(claim 16): xco_cp=>sy->date/user — sy-datum 직접 접근의 Cloud 호환 경로.
+"! - 랜덤(claim 19): cl_abap_random_int — 비released 고전 랜덤 FM 대체(C1).
+"! - 고전 대조: TRANSLATE ... TO UPPER CASE 등 전통 구문과 결과 동일함을 보인다.
 CLASS zcl_modulo_ext01_xco DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-    "!
-    "! Released API·XCO(eXtension Components) 소비 — 고전 FM의 released 대체(노트 10-01).
-    "! XCO_CP* 군은 release contract C1 계약 하의 released 유틸이라 업그레이드·Cloud 이전에
-    "! breaking change가 없다(Clean Core). 고전 FM은 sy-subrc를 조용히 무시할 수 있으나
-    "! released class의 class-based 예외는 처리 누락을 컴파일/런타임에 강제한다.
-    "!
-    "! 소절 대응(노트 본문):
-    "! - 문자열 체이닝(claim 18): xco_cp=>string( )->to_upper/lower/from/to/append/
-    "!   prepend/split, xco_cp=>strings( )->join, ->starts_with/ends_with/matches.
-    "! - UUID(claim 17): xco_cp=>uuid( )->value / ->as( c36 ), cl_system_uuid 대안.
-    "! - 현재 순간(claim 16): xco_cp=>sy->date/user — sy-datum 직접 접근의 Cloud 호환 경로.
-    "! - 랜덤(claim 19): cl_abap_random_int — 비released 고전 랜덤 FM 대체(C1).
-    "! - 고전 대조: TRANSLATE ... TO UPPER CASE 등 전통 구문과 결과 동일함을 보인다.
     INTERFACES if_oo_adt_classrun.
 
     "! XCO 문자열 API로 대문자화(고전 TO_UPPER FM·TRANSLATE 대체).

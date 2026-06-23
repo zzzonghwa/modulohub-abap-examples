@@ -1,10 +1,10 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
 CLASS zcl_modulo_df05_struct DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
     INTERFACES if_oo_adt_classrun.
 
     "! 구조 타입(structured type). 연관된 필드를 한 단위로 묶는 값 객체.

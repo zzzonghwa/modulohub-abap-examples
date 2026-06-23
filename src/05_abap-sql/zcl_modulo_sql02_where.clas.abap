@@ -1,16 +1,16 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+"!
+"! SELECT·WHERE — 결과 집합 읽기의 폭. 노트(05-2)의 구문 형태를 자체완결 내부 테이블로 시연한다.
+"! - 배치: 전통형 SELECT col FROM 과 모던형 SELECT FROM ... FIELDS col(7.40+ strict) 둘 다.
+"! - 필터: 비교·BETWEEN·IN @range·LIKE·호스트식 @( ).
+"! - 단일 행/존재: SELECT SINGLE, 존재확인 SELECT SINGLE @abap_true.
+"! - 결과 메타: sy-dbcnt. 정렬·페이징: ORDER BY·UP TO·OFFSET. SELECT 리스트의 CASE.
 CLASS zcl_modulo_sql02_where DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-    "!
-    "! SELECT·WHERE — 결과 집합 읽기의 폭. 노트(05-2)의 구문 형태를 자체완결 내부 테이블로 시연한다.
-    "! - 배치: 전통형 SELECT col FROM 과 모던형 SELECT FROM ... FIELDS col(7.40+ strict) 둘 다.
-    "! - 필터: 비교·BETWEEN·IN @range·LIKE·호스트식 @( ).
-    "! - 단일 행/존재: SELECT SINGLE, 존재확인 SELECT SINGLE @abap_true.
-    "! - 결과 메타: sy-dbcnt. 정렬·페이징: ORDER BY·UP TO·OFFSET. SELECT 리스트의 CASE.
     INTERFACES if_oo_adt_classrun.
 
     TYPES carrier_code TYPE c LENGTH 3.

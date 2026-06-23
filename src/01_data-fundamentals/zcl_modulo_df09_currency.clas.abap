@@ -1,10 +1,10 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
 CLASS zcl_modulo_df09_currency DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
     INTERFACES if_oo_adt_classrun.
 
     "! 달러 금액(소수 2자리). DDIC CURR 타입을 프로그램 레벨에서 p로 모사한다.

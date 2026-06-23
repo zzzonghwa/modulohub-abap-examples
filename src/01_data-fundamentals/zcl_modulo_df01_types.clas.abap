@@ -1,10 +1,10 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
 CLASS zcl_modulo_df01_types DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
     INTERFACES if_oo_adt_classrun.
 
     "! 독립(standalone) 타입. TYPES로 한 번 정의하면 여러 데이터 객체가

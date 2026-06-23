@@ -1,16 +1,16 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+"!
+"! 생성 연산자 4종 — 변환·캐스팅·참조·무손실. 노트(06-4)의 구문 형태를 자체완결로 시연한다.
+"! - CONV(C): 명시 변환. 완전 타입 필수(제네릭 거부), # 추론, 테이블 종류 변환, 계산 타입 함정.
+"! - CAST(K): 참조 캐스팅. 다운캐스트+체이닝, IS INSTANCE OF 가드, ->* 역참조, CAST+NEW.
+"! - REF(R):  데이터/객체 참조 생성. REF #( ), 테이블 행 참조 DEFAULT, 객체 참조 복사.
+"! - EXACT(E): 무손실 변환·계산. 손실(잘림·반올림)이면 예외 — CONV는 조용히 자르고 반올림한다.
 CLASS zcl_modulo_expr04_conv DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-    "!
-    "! 생성 연산자 4종 — 변환·캐스팅·참조·무손실. 노트(06-4)의 구문 형태를 자체완결로 시연한다.
-    "! - CONV(C): 명시 변환. 완전 타입 필수(제네릭 거부), # 추론, 테이블 종류 변환, 계산 타입 함정.
-    "! - CAST(K): 참조 캐스팅. 다운캐스트+체이닝, IS INSTANCE OF 가드, ->* 역참조, CAST+NEW.
-    "! - REF(R):  데이터/객체 참조 생성. REF #( ), 테이블 행 참조 DEFAULT, 객체 참조 복사.
-    "! - EXACT(E): 무손실 변환·계산. 손실(잘림·반올림)이면 예외 — CONV는 조용히 자르고 반올림한다.
     INTERFACES if_oo_adt_classrun.
 
     "! 완전(complete) packed 타입 — 제네릭 p는 생성 연산자가 거부하므로 길이·소수점을 고정한다.

@@ -1,17 +1,17 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+"!
+"! Clean ABAP 규칙 모음(코드로 시연). 노트 07-4의 소절을 자체완결로 실행 가능한 형태로 보인다.
+"! - 불리언(주장 6~8): abap_bool 타입·abap_true/false 비교·xsdbool로 조건 결과 대입.
+"! - 조건문(주장 9~12, A4-3): 긍정 조건·IS NOT·predicative call·CASE/SWITCH·복합 조건 분해.
+"! - 상수(주장 A2-1·A2-4·A2-3): 매직 넘버 대신 명명 상수·BEGIN OF 그룹·ENUM 열거.
+"! - 메서드(주장 18~24): 가드 절(fail fast)·불리언 입력 회피(메서드 분리)·RETURNING·RESULT 명명.
+"! - 생성 표현식(주장 39): VALUE/FOR/COND/SWITCH/REDUCE/CORRESPONDING로 절차형 루프 제거.
 CLASS zcl_modulo_tst04_clean DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-    "!
-    "! Clean ABAP 규칙 모음(코드로 시연). 노트 07-4의 소절을 자체완결로 실행 가능한 형태로 보인다.
-    "! - 불리언(주장 6~8): abap_bool 타입·abap_true/false 비교·xsdbool로 조건 결과 대입.
-    "! - 조건문(주장 9~12, A4-3): 긍정 조건·IS NOT·predicative call·CASE/SWITCH·복합 조건 분해.
-    "! - 상수(주장 A2-1·A2-4·A2-3): 매직 넘버 대신 명명 상수·BEGIN OF 그룹·ENUM 열거.
-    "! - 메서드(주장 18~24): 가드 절(fail fast)·불리언 입력 회피(메서드 분리)·RETURNING·RESULT 명명.
-    "! - 생성 표현식(주장 39): VALUE/FOR/COND/SWITCH/REDUCE/CORRESPONDING로 절차형 루프 제거.
     INTERFACES if_oo_adt_classrun.
 
     "! 요일 한 건. 생성 표현식 데모의 공통 행 타입(서술적 이름, 헝가리안 접두사 없음).

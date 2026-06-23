@@ -1,21 +1,21 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+"!
+"! DDIC 객체·SQL 토대 — 노트(05-1)의 구문 형태를 자체완결로 시연한다.
+"! - FROM 데이터 소스: 내부 테이블(@itab AS alias, since 7.40)과 DDIC 데이터베이스 테이블 둘 다(W-01).
+"! - SELECT 타깃 5종: INTO TABLE / 스칼라 INTO @ / SELECT SINGLE 구조 / SELECT * 구조 /
+"!   INTO CORRESPONDING FIELDS / APPENDING TABLE.
+"! - 결과 메타: sy-subrc(0=hit·4=empty, W-12) / sy-dbcnt.
+"! - 인라인 선언 결과 타입: SELECT INTO TABLE @DATA(itab)는 standard table·empty key(W-18).
+"! - SELECT loop: SELECT ... ENDSELECT(암묵 cursor, W-13).
+"! 다중 테이블 JOIN은 내부 테이블로 불가("문당 itab 1개")하므로 DDIC 소스 데모는
+"! 레포 동봉 Z 테이블(ZMODULO_CARRIER)을 쓰고, 결정적 검증은 ABAP Unit이
+"! osql 테스트 더블(CL_OSQL_TEST_ENVIRONMENT)로 데이터를 주입해 수행한다.
 CLASS zcl_modulo_sql01_basics DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-    "!
-    "! DDIC 객체·SQL 토대 — 노트(05-1)의 구문 형태를 자체완결로 시연한다.
-    "! - FROM 데이터 소스: 내부 테이블(@itab AS alias, since 7.40)과 DDIC 데이터베이스 테이블 둘 다(W-01).
-    "! - SELECT 타깃 5종: INTO TABLE / 스칼라 INTO @ / SELECT SINGLE 구조 / SELECT * 구조 /
-    "!   INTO CORRESPONDING FIELDS / APPENDING TABLE.
-    "! - 결과 메타: sy-subrc(0=hit·4=empty, W-12) / sy-dbcnt.
-    "! - 인라인 선언 결과 타입: SELECT INTO TABLE @DATA(itab)는 standard table·empty key(W-18).
-    "! - SELECT loop: SELECT ... ENDSELECT(암묵 cursor, W-13).
-    "! 다중 테이블 JOIN은 내부 테이블로 불가("문당 itab 1개")하므로 DDIC 소스 데모는
-    "! 레포 동봉 Z 테이블(ZMODULO_CARRIER)을 쓰고, 결정적 검증은 ABAP Unit이
-    "! osql 테스트 더블(CL_OSQL_TEST_ENVIRONMENT)로 데이터를 주입해 수행한다.
     INTERFACES if_oo_adt_classrun.
 
     "! 항공편 한 건. ABAP SQL 데모의 공통 행 타입.

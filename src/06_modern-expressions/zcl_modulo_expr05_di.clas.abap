@@ -1,19 +1,19 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+"!
+"! 표현식 중심 OO 패턴·인터페이스 분리·DI 기초(노트 06-5). 모던 표현식이 패턴에서 어떻게
+"! 쓰이는지를 자체완결 로컬 타입으로 시연한다.
+"! - Strategy + DI: 할인 정책을 인터페이스(lif_discount)로 분리하고 생성자 주입으로 교체(노트 G-07·G-10).
+"! - Factory: CREATE PRIVATE + SWITCH+NEW로 구체 타입을 감추고 인터페이스 레퍼런스 반환(노트 G-01).
+"! - Singleton: CREATE PRIVATE + IS NOT BOUND lazy 초기화, 내부 세션 1인스턴스(노트 G-04·G-05).
+"! - Adapter: 합성 기반으로 레거시 시그니처를 계약으로 변환(노트 G-09).
+"! - 추상 클래스 + 인터페이스 합성 + ALIASES: 공통 골격 강제와 짧은 선택자(노트 W-01·W-07·W-08).
+"! 로컬 타입은 locals_imp(lif_discount·lcl_pricing·lcl_discount_factory·lcl_tax 등)에 있다.
 CLASS zcl_modulo_expr05_di DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-    "!
-    "! 표현식 중심 OO 패턴·인터페이스 분리·DI 기초(노트 06-5). 모던 표현식이 패턴에서 어떻게
-    "! 쓰이는지를 자체완결 로컬 타입으로 시연한다.
-    "! - Strategy + DI: 할인 정책을 인터페이스(lif_discount)로 분리하고 생성자 주입으로 교체(노트 G-07·G-10).
-    "! - Factory: CREATE PRIVATE + SWITCH+NEW로 구체 타입을 감추고 인터페이스 레퍼런스 반환(노트 G-01).
-    "! - Singleton: CREATE PRIVATE + IS NOT BOUND lazy 초기화, 내부 세션 1인스턴스(노트 G-04·G-05).
-    "! - Adapter: 합성 기반으로 레거시 시그니처를 계약으로 변환(노트 G-09).
-    "! - 추상 클래스 + 인터페이스 합성 + ALIASES: 공통 골격 강제와 짧은 선택자(노트 W-01·W-07·W-08).
-    "! 로컬 타입은 locals_imp(lif_discount·lcl_pricing·lcl_discount_factory·lcl_tax 등)에 있다.
     INTERFACES if_oo_adt_classrun.
 
     "! 금액 리스트 — 로컬 가격 계산기가 공유하는 입력 타입.

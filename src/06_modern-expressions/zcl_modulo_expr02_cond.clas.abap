@@ -1,17 +1,17 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+"!
+"! COND·SWITCH — 조건부 표현식의 폭. 노트(06-2)의 구문 형태를 자체완결로 시연한다.
+"! - COND: 논리식 분기. WHEN을 순서대로 평가, 첫 참의 THEN 결과를 반환(short-circuit).
+"! - SWITCH: 한 피연산자의 값 일치 분기(CASE의 표현식판). WHEN 뒤는 리터럴/상수만.
+"! - ELSE 생략 시 결과 타입의 초기값 반환. ELSE/THEN 자리에 THROW로 인라인 예외도 가능.
+"! - LET ... IN: 표현식 안에서만 사는 임시 변수(값 1회 계산 후 여러 WHEN에서 재사용).
+"! - type 결정: 좌변 타입이 완전 결정되면 #, 결과 타입을 고정하려면 명시 타입(text30 등).
 CLASS zcl_modulo_expr02_cond DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-    "!
-    "! COND·SWITCH — 조건부 표현식의 폭. 노트(06-2)의 구문 형태를 자체완결로 시연한다.
-    "! - COND: 논리식 분기. WHEN을 순서대로 평가, 첫 참의 THEN 결과를 반환(short-circuit).
-    "! - SWITCH: 한 피연산자의 값 일치 분기(CASE의 표현식판). WHEN 뒤는 리터럴/상수만.
-    "! - ELSE 생략 시 결과 타입의 초기값 반환. ELSE/THEN 자리에 THROW로 인라인 예외도 가능.
-    "! - LET ... IN: 표현식 안에서만 사는 임시 변수(값 1회 계산 후 여러 WHEN에서 재사용).
-    "! - type 결정: 좌변 타입이 완전 결정되면 #, 결과 타입을 고정하려면 명시 타입(text30 등).
     INTERFACES if_oo_adt_classrun.
 
     TYPES label30 TYPE c LENGTH 30.

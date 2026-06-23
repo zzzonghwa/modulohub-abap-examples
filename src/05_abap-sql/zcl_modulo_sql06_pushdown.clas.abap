@@ -1,20 +1,20 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+"!
+"! 버퍼링·Code Pushdown — 노트(05-6)의 구문 형태를 자체완결로 시연한다.
+"! - Code Pushdown(E): 집계·필터·CASE 변환을 SQL로 표현 -> DB에서 계산, 결과만 ABAP으로.
+"!   같은 결과를 ABAP LOOP로도 구해 "어디서 계산하느냐"의 대조를 보인다.
+"! - 기법 선택(G1): CASE는 SELECT 절에서 pushdown 가능, 복잡한 IF 분기는 CDS/AMDP로 위임.
+"! - 존재 확인(F4): SELECT SINGLE @abap_true — 행 데이터를 안 읽고 실존만 확인(7.40 SP05).
+"! - FOR ALL ENTRIES(F3): 7.40+ 버퍼 테이블에서 버퍼 내 SINGLE 루프로 처리될 수 있다.
+"! - BYPASSING BUFFER(B): OPTIONS BYPASSING BUFFER로 테이블 버퍼를 우회해 DB 직접 조회.
+"! - DB Hints(C): %_HINTS HDB 'INDEX(...)' — DB 옵티마이저에 힌트(성능만, 결과 불변).
+"! 단일 itab SELECT는 자체완결(FROM @itab), 버퍼/JOIN/힌트는 실 Z 테이블 대상이다.
 CLASS zcl_modulo_sql06_pushdown DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-    "!
-    "! 버퍼링·Code Pushdown — 노트(05-6)의 구문 형태를 자체완결로 시연한다.
-    "! - Code Pushdown(E): 집계·필터·CASE 변환을 SQL로 표현 -> DB에서 계산, 결과만 ABAP으로.
-    "!   같은 결과를 ABAP LOOP로도 구해 "어디서 계산하느냐"의 대조를 보인다.
-    "! - 기법 선택(G1): CASE는 SELECT 절에서 pushdown 가능, 복잡한 IF 분기는 CDS/AMDP로 위임.
-    "! - 존재 확인(F4): SELECT SINGLE @abap_true — 행 데이터를 안 읽고 실존만 확인(7.40 SP05).
-    "! - FOR ALL ENTRIES(F3): 7.40+ 버퍼 테이블에서 버퍼 내 SINGLE 루프로 처리될 수 있다.
-    "! - BYPASSING BUFFER(B): OPTIONS BYPASSING BUFFER로 테이블 버퍼를 우회해 DB 직접 조회.
-    "! - DB Hints(C): %_HINTS HDB 'INDEX(...)' — DB 옵티마이저에 힌트(성능만, 결과 불변).
-    "! 단일 itab SELECT는 자체완결(FROM @itab), 버퍼/JOIN/힌트는 실 Z 테이블 대상이다.
     INTERFACES if_oo_adt_classrun.
 
     TYPES carrier_code TYPE c LENGTH 3.

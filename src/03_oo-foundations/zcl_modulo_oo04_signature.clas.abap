@@ -1,12 +1,12 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+"! 메서드 시그니처: IMPORTING/EXPORTING/CHANGING/RETURNING/RAISING,
+"! VALUE vs 참조 전달, OPTIONAL/DEFAULT/IS SUPPLIED, PREFERRED PARAMETER.
 CLASS zcl_modulo_oo04_signature DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-    "! 메서드 시그니처: IMPORTING/EXPORTING/CHANGING/RETURNING/RAISING,
-    "! VALUE vs 참조 전달, OPTIONAL/DEFAULT/IS SUPPLIED, PREFERRED PARAMETER.
     INTERFACES if_oo_adt_classrun.
 ENDCLASS.
 

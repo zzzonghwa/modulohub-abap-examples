@@ -1,23 +1,23 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+"!
+"! CTE(WITH)·서브쿼리·집합 연산 — 실제 DDIC 테이블(ZMODULO_FLIGHT·ZMODULO_CARRIER) 대상.
+"! DB 테이블이 소스라 인라인 서브쿼리(스칼라 비교·IN·EXISTS)가 자유롭다("문당 itab 1개"
+"! 제약은 내부 테이블 전용 — 노트 A13). 표는 import 직후 비어 있으나 main이 멱등 시드를
+"! 먼저 실행하므로 F9에서도 실제 값이 보인다. 결정적 검증은 ABAP Unit(osql 더블)로 한다.
+"!
+"! 노트 소절 매핑:
+"! - A2·A20: +cte 접두사, CTE를 또 다른 CTE의 JOIN 소스로 사용(다단계 집계).
+"! - A7: CTE 컬럼 이름 리스트(name list)로 SELECT list alias를 덮어쓴다.
+"! - A21: CTE 서브쿼리 안에서 UNION DISTINCT로 합집합 도시 목록 구성.
+"! - A18·A19: WHERE EXISTS 상관 서브쿼리(외부 alias tilde 참조).
+"! - A15~A17: UNION ALL / INTERSECT / EXCEPT 집합 연산(기본 DISTINCT).
+"! - B2·B4: FAE 대안 — 내부 테이블을 @itab AS alias로 JOIN 데이터 소스화(since 7.52).
 CLASS zcl_modulo_sql05_cte DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-    "!
-    "! CTE(WITH)·서브쿼리·집합 연산 — 실제 DDIC 테이블(ZMODULO_FLIGHT·ZMODULO_CARRIER) 대상.
-    "! DB 테이블이 소스라 인라인 서브쿼리(스칼라 비교·IN·EXISTS)가 자유롭다("문당 itab 1개"
-    "! 제약은 내부 테이블 전용 — 노트 A13). 표는 import 직후 비어 있으나 main이 멱등 시드를
-    "! 먼저 실행하므로 F9에서도 실제 값이 보인다. 결정적 검증은 ABAP Unit(osql 더블)로 한다.
-    "!
-    "! 노트 소절 매핑:
-    "! - A2·A20: +cte 접두사, CTE를 또 다른 CTE의 JOIN 소스로 사용(다단계 집계).
-    "! - A7: CTE 컬럼 이름 리스트(name list)로 SELECT list alias를 덮어쓴다.
-    "! - A21: CTE 서브쿼리 안에서 UNION DISTINCT로 합집합 도시 목록 구성.
-    "! - A18·A19: WHERE EXISTS 상관 서브쿼리(외부 alias tilde 참조).
-    "! - A15~A17: UNION ALL / INTERSECT / EXCEPT 집합 연산(기본 DISTINCT).
-    "! - B2·B4: FAE 대안 — 내부 테이블을 @itab AS alias로 JOIN 데이터 소스화(since 7.52).
     INTERFACES if_oo_adt_classrun.
 
     "! 단순 WITH CTE: 항공사별 좌석 합계를 임시 식 +totals에 묶어 본 쿼리에서 임계치 필터.

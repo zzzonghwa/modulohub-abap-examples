@@ -1,13 +1,13 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 데모를, Ctrl+Shift+F10으로 테스트를 실행한다.
+"! ABAP Unit 최소 골격: FOR TESTING/RISK LEVEL HARMLESS/DURATION SHORT,
+"! setup, GIVEN/WHEN/THEN, cl_abap_unit_assert 단언, 예외는 FAIL 패턴으로 검증.
+"! 테스트 본체는 zcl_modulo_oo06_aunit.clas.testclasses.abap 참고.
 CLASS zcl_modulo_oo06_aunit DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 데모를, Ctrl+Shift+F10으로 테스트를 실행한다.
-    "! ABAP Unit 최소 골격: FOR TESTING/RISK LEVEL HARMLESS/DURATION SHORT,
-    "! setup, GIVEN/WHEN/THEN, cl_abap_unit_assert 단언, 예외는 FAIL 패턴으로 검증.
-    "! 테스트 본체는 zcl_modulo_oo06_aunit.clas.testclasses.abap 참고.
     INTERFACES if_oo_adt_classrun.
 ENDCLASS.
 

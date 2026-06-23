@@ -1,25 +1,25 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+"!
+"! XML·JSON·직렬화·RFC/BAPI 소비 — 외부 의존 없이 표준 도구로 직렬화의 폭을 시연한다(노트 10-02).
+"! 검증은 라운드트립(직렬화->역직렬화 후 원본과 동일)으로 한다 — 포맷 차이에 둔감하다.
+"!
+"! 소절 대응(노트 본문 주장):
+"! - A. CALL TRANSFORMATION 방향(claim 1~3): id 항등 변환으로 ABAP<->asXML, sXML JSON writer로
+"!   ABAP->asJSON, SOURCE/RESULT의 XML 키워드 유무가 직렬화/역직렬화를 가른다.
+"! - B. 역직렬화 규칙(claim 4~5): 비존재 컴포넌트는 이전 값 유지, OPTIONS clear='ALL'은 초기화로 통일.
+"! - C. OPTIONS 심화(claim 6): xml_header='NO' 등으로 변환 동작 제어.
+"! - D. 예외 계층(claim 8): CX_TRANSFORMATION_ERROR 단일 핸들러로 XSLT·ST 포괄.
+"! - E. sXML 라이브러리(claim 11~12): CL_SXML_STRING_WRITER/READER 스트리밍, JSON·XML 포맷 전환.
+"! - F. iXML 라이브러리(claim 10·33): CL_IXML_CORE DOM 빌더로 XML 생성.
+"! - G. JSON 3선택지(claim 14~15): XCO_CP_JSON(Clean Core 1순위) vs sXML writer vs /ui2/cl_json(레거시).
+"! - H. RFC/BAPI 소비(claim 17·23~26): CALL FUNCTION DESTINATION·BAPIRET2 type CA 'EA' 판정은
+"!   시스템·연결 의존이라 여기선 BAPIRET2 에러 판정 로직만 자체완결로 시연한다.
 CLASS zcl_modulo_ext02_serial DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-    "!
-    "! XML·JSON·직렬화·RFC/BAPI 소비 — 외부 의존 없이 표준 도구로 직렬화의 폭을 시연한다(노트 10-02).
-    "! 검증은 라운드트립(직렬화->역직렬화 후 원본과 동일)으로 한다 — 포맷 차이에 둔감하다.
-    "!
-    "! 소절 대응(노트 본문 주장):
-    "! - A. CALL TRANSFORMATION 방향(claim 1~3): id 항등 변환으로 ABAP<->asXML, sXML JSON writer로
-    "!   ABAP->asJSON, SOURCE/RESULT의 XML 키워드 유무가 직렬화/역직렬화를 가른다.
-    "! - B. 역직렬화 규칙(claim 4~5): 비존재 컴포넌트는 이전 값 유지, OPTIONS clear='ALL'은 초기화로 통일.
-    "! - C. OPTIONS 심화(claim 6): xml_header='NO' 등으로 변환 동작 제어.
-    "! - D. 예외 계층(claim 8): CX_TRANSFORMATION_ERROR 단일 핸들러로 XSLT·ST 포괄.
-    "! - E. sXML 라이브러리(claim 11~12): CL_SXML_STRING_WRITER/READER 스트리밍, JSON·XML 포맷 전환.
-    "! - F. iXML 라이브러리(claim 10·33): CL_IXML_CORE DOM 빌더로 XML 생성.
-    "! - G. JSON 3선택지(claim 14~15): XCO_CP_JSON(Clean Core 1순위) vs sXML writer vs /ui2/cl_json(레거시).
-    "! - H. RFC/BAPI 소비(claim 17·23~26): CALL FUNCTION DESTINATION·BAPIRET2 type CA 'EA' 판정은
-    "!   시스템·연결 의존이라 여기선 BAPIRET2 에러 판정 로직만 자체완결로 시연한다.
     INTERFACES if_oo_adt_classrun.
 
     TYPES tags TYPE STANDARD TABLE OF string WITH EMPTY KEY.

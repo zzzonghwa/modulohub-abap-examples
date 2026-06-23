@@ -1,16 +1,16 @@
+"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
+"!
+"! 생성자 표현식 — VALUE·FOR·CORRESPONDING·NEW·FILTER. 노트(06-1)의 구문 형태를 자체완결로 시연한다.
+"! - VALUE(B): 구조체·테이블·BASE 부분갱신·LET·중첩 deep·LINES OF STEP·OPTIONAL/DEFAULT·레인지.
+"! - FOR(C): IN WHERE 컴프리헨션·UNTIL/WHILE 수치반복·INDEX INTO·다중 FOR·STEP 역방향·USING KEY.
+"! - CORRESPONDING(D): 기본 vs MOVE-CORRESPONDING 초기화 차이·BASE·MAPPING·EXCEPT.
+"! - E: VALUE+FOR+CORRESPONDING 구조 변환. F: NEW 데이터 객체+체이닝. G: FILTER sorted 키.
 CLASS zcl_modulo_expr01_value DEFINITION
   PUBLIC
   FINAL
   CREATE PUBLIC.
 
   PUBLIC SECTION.
-    "! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-    "!
-    "! 생성자 표현식 — VALUE·FOR·CORRESPONDING·NEW·FILTER. 노트(06-1)의 구문 형태를 자체완결로 시연한다.
-    "! - VALUE(B): 구조체·테이블·BASE 부분갱신·LET·중첩 deep·LINES OF STEP·OPTIONAL/DEFAULT·레인지.
-    "! - FOR(C): IN WHERE 컴프리헨션·UNTIL/WHILE 수치반복·INDEX INTO·다중 FOR·STEP 역방향·USING KEY.
-    "! - CORRESPONDING(D): 기본 vs MOVE-CORRESPONDING 초기화 차이·BASE·MAPPING·EXCEPT.
-    "! - E: VALUE+FOR+CORRESPONDING 구조 변환. F: NEW 데이터 객체+체이닝. G: FILTER sorted 키.
     INTERFACES if_oo_adt_classrun.
 
     TYPES texts TYPE STANDARD TABLE OF string WITH EMPTY KEY.
