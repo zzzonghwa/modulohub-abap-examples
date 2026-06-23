@@ -1,19 +1,19 @@
-"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-"!
-"! 편집형/이벤트형 ALV — CL_GUI_ALV_GRID 대조(노트 08-4의 구문 형태를 자체완결로 시연).
-"! CL_GUI_ALV_GRID는 SAP GUI 컨트롤 프레임워크(CFW) 위에서만 동작해 콘솔(IF_OO_ADT_CLASSRUN)에서
-"! 실제 그리드를 띄울 수 없다. 그래서 이 예제는 *그리드 표시 자체*가 아니라, 표시를 구동하는
-"! 데이터 구조와 결정 로직(필드카탈로그·셀 스타일 테이블·이벤트 등록·툴바 버튼·도구 선택)을
-"! 계산해 보여 준다 — 실 API(LVC_S_FCAT / LVC_S_STYL / STB_BUTTON 등)와 같은 필드 모양의
-"! 로컬 타입으로 모델링한다(ABAP Doc에 대응 표준 타입 명시).
-"!
-"! 노트 소절 매핑:
-"! - A 컨테이너 선택: choose_container (CUSTOM vs DOCKING).
-"! - B set_table_for_first_display: build_fieldcat / i_save_meaning / buffer_conflict / layout_edit_all.
-"! - C 편집 이벤트: edit_event_constant / build_style_table / commit_in_pai (LUW 경계).
-"! - D 이벤트 핸들러: event_param / build_toolbar / hotspot_columns.
-"! - E SALV 내부 그리드: salv_edit_supported (비표준 우회 — 코드 미제공, 사실만).
-"! - 종합 대조: recommend_alv / reuse_needs_pf_status / cloud_available.
+"! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
+"! <p>편집형/이벤트형 ALV — CL_GUI_ALV_GRID 대조(노트 08-4의 구문 형태를 자체완결로 시연).</p>
+"! <p>CL_GUI_ALV_GRID는 SAP GUI 컨트롤 프레임워크(CFW) 위에서만 동작해 콘솔(IF_OO_ADT_CLASSRUN)에서</p>
+"! <p>실제 그리드를 띄울 수 없다. 그래서 이 예제는 *그리드 표시 자체*가 아니라, 표시를 구동하는</p>
+"! <p>데이터 구조와 결정 로직(필드카탈로그·셀 스타일 테이블·이벤트 등록·툴바 버튼·도구 선택)을</p>
+"! <p>계산해 보여 준다 — 실 API(LVC_S_FCAT / LVC_S_STYL / STB_BUTTON 등)와 같은 필드 모양의</p>
+"! <p>로컬 타입으로 모델링한다(ABAP Doc에 대응 표준 타입 명시).</p>
+"! <p>노트 소절 매핑:</p>
+"! <ul>
+"! <li>A 컨테이너 선택: choose_container (CUSTOM vs DOCKING).</li>
+"! <li>B set_table_for_first_display: build_fieldcat / i_save_meaning / buffer_conflict / layout_edit_all.</li>
+"! <li>C 편집 이벤트: edit_event_constant / build_style_table / commit_in_pai (LUW 경계).</li>
+"! <li>D 이벤트 핸들러: event_param / build_toolbar / hotspot_columns.</li>
+"! <li>E SALV 내부 그리드: salv_edit_supported (비표준 우회 — 코드 미제공, 사실만).</li>
+"! <li>종합 대조: recommend_alv / reuse_needs_pf_status / cloud_available.</li>
+"! </ul>
 CLASS zcl_modulo_exec04_gridalv DEFINITION
   PUBLIC
   FINAL

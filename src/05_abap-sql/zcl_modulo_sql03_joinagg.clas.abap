@@ -1,9 +1,8 @@
-"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-"!
-"! JOIN·집계 — 실제 DDIC 테이블(ZMODULO_FLIGHT·ZMODULO_CARRIER) 대상.
-"! 다중 테이블 JOIN은 내부 테이블로는 불가("문당 itab 1개")하므로 레포에 소형 Z 테이블을 동봉한다.
-"! 표는 import 직후 비어 있다 — F9 출력은 0일 수 있고, 결정적 검증은 ABAP Unit이
-"! osql SQL 테스트 더블(CL_OSQL_TEST_ENVIRONMENT)로 데이터를 주입해 수행한다. 적재는 08.6/수동.
+"! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
+"! <p>JOIN·집계 — 실제 DDIC 테이블(ZMODULO_FLIGHT·ZMODULO_CARRIER) 대상.</p>
+"! <p>다중 테이블 JOIN은 내부 테이블로는 불가("문당 itab 1개")하므로 레포에 소형 Z 테이블을 동봉한다.</p>
+"! <p>표는 import 직후 비어 있다 — F9 출력은 0일 수 있고, 결정적 검증은 ABAP Unit이</p>
+"! <p>osql SQL 테스트 더블(CL_OSQL_TEST_ENVIRONMENT)로 데이터를 주입해 수행한다. 적재는 08.6/수동.</p>
 CLASS zcl_modulo_sql03_joinagg DEFINITION
   PUBLIC
   FINAL

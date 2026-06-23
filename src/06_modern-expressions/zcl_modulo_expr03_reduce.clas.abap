@@ -1,11 +1,12 @@
-"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-"!
-"! REDUCE — 축약(fold). 노트(06-3)의 구문 형태를 자체완결로 시연한다.
-"! - 구조: REDUCE type( [LET] INIT 누적기 FOR 반복 NEXT 갱신 ). FOR는 필수(생성자 중 유일).
-"! - 반복 유형: 조건 반복(FOR x = .. THEN .. UNTIL|WHILE)·테이블 반복(FOR wa IN itab).
-"! - NEXT 복합 할당: = / += / -= / *= / /= / &&=.
-"! - 누적기: 단일·다중(결과는 항상 첫 누적기)·구조·INIT x TYPE dtype.
-"! - 빌드: VALUE #( BASE acc ( ... ) )로 테이블 누적. WHERE·STEP·FROM TO·FOR GROUPS.
+"! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
+"! <p>REDUCE — 축약(fold). 노트(06-3)의 구문 형태를 자체완결로 시연한다.</p>
+"! <ul>
+"! <li>구조: REDUCE type( [LET] INIT 누적기 FOR 반복 NEXT 갱신 ). FOR는 필수(생성자 중 유일).</li>
+"! <li>반복 유형: 조건 반복(FOR x = .. THEN .. UNTIL|WHILE)·테이블 반복(FOR wa IN itab).</li>
+"! <li>NEXT 복합 할당: = / += / -= / *= / /= / &&=.</li>
+"! <li>누적기: 단일·다중(결과는 항상 첫 누적기)·구조·INIT x TYPE dtype.</li>
+"! <li>빌드: VALUE #( BASE acc ( ... ) )로 테이블 누적. WHERE·STEP·FROM TO·FOR GROUPS.</li>
+"! </ul>
 CLASS zcl_modulo_expr03_reduce DEFINITION
   PUBLIC
   FINAL

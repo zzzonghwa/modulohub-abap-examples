@@ -1,7 +1,7 @@
-"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-"! 클래스=객체의 템플릿, 객체=클래스의 인스턴스. 같은 클래스의 두 인스턴스는
-"! 독립된 상태를 가진다. 상태(잔액)는 PRIVATE에 두고 public 메서드로만 바꾼다(캡슐화).
-"! 네이밍은 접두사 없이 — 클래스=명사, 메서드=동사, 불리언=is_/has_ (Clean ABAP).
+"! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
+"! <p>클래스=객체의 템플릿, 객체=클래스의 인스턴스. 같은 클래스의 두 인스턴스는</p>
+"! <p>독립된 상태를 가진다. 상태(잔액)는 PRIVATE에 두고 public 메서드로만 바꾼다(캡슐화).</p>
+"! <p>네이밍은 접두사 없이 — 클래스=명사, 메서드=동사, 불리언=is_/has_ (Clean ABAP).</p>
 CLASS zcl_modulo_oo02_class DEFINITION
   PUBLIC
   FINAL

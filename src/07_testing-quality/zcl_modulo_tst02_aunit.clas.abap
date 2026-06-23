@@ -1,15 +1,16 @@
-"! ADT에서 F9(Run As -> ABAP Application)로 데모 출력을, Ctrl+Shift+F10으로 테스트를 본다.
-"!
-"! ABAP Unit 심화(단원 07-2) — 의존을 인터페이스로 분리(lif_clock·lif_notifier)하고
-"! 생성자 주입하면, 테스트가 시간·발송 같은 비결정/부수효과 의존을 더블로 대체해
-"! 결정적으로 검증할 수 있다. 이 글로벌 클래스는 더블을 주입한 도메인 객체의 얇은
-"! 파사드이고, 노트가 가르치는 *테스트 패턴*의 실물은 테스트 인클루드에 모여 있다:
-"! - 픽스처(setup·class_setup): 매 테스트 전 cut 재생성·1회성 공유 준비(B절).
-"! - 단언 다양체: assert_equals·true·false·differs·bound·initial·char_cp(E절·주장11).
-"! - 예외 기대 패턴: TRY-CALL-FAIL-CATCH(F·주장37), RAISING 전달(주장38).
-"! - 수동 더블: 스텁(lcl_fixed_clock)·스파이(lcl_clock_spy)·PARTIALLY IMPLEMENTED(H절·주장14).
-"! - 커스텀 단언 헬퍼 클래스(G·주장39), Only Mock What's Needed 실 구현 활용(주장40).
-"! - given-when-then 서브메서드 추출(M·주장26·27), 픽스처 4종(B·주장6·7).
+"! <p>ADT에서 F9(Run As -> ABAP Application)로 데모 출력을, Ctrl+Shift+F10으로 테스트를 본다.</p>
+"! <p>ABAP Unit 심화(단원 07-2) — 의존을 인터페이스로 분리(lif_clock·lif_notifier)하고</p>
+"! <p>생성자 주입하면, 테스트가 시간·발송 같은 비결정/부수효과 의존을 더블로 대체해</p>
+"! <p>결정적으로 검증할 수 있다. 이 글로벌 클래스는 더블을 주입한 도메인 객체의 얇은</p>
+"! <p>파사드이고, 노트가 가르치는 *테스트 패턴*의 실물은 테스트 인클루드에 모여 있다:</p>
+"! <ul>
+"! <li>픽스처(setup·class_setup): 매 테스트 전 cut 재생성·1회성 공유 준비(B절).</li>
+"! <li>단언 다양체: assert_equals·true·false·differs·bound·initial·char_cp(E절·주장11).</li>
+"! <li>예외 기대 패턴: TRY-CALL-FAIL-CATCH(F·주장37), RAISING 전달(주장38).</li>
+"! <li>수동 더블: 스텁(lcl_fixed_clock)·스파이(lcl_clock_spy)·PARTIALLY IMPLEMENTED(H절·주장14).</li>
+"! <li>커스텀 단언 헬퍼 클래스(G·주장39), Only Mock What's Needed 실 구현 활용(주장40).</li>
+"! <li>given-when-then 서브메서드 추출(M·주장26·27), 픽스처 4종(B·주장6·7).</li>
+"! </ul>
 CLASS zcl_modulo_tst02_aunit DEFINITION
   PUBLIC
   FINAL

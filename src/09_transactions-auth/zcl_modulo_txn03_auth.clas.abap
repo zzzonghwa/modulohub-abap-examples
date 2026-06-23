@@ -1,17 +1,18 @@
-"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-"!
-"! 인증 체크(AUTHORITY-CHECK)·권한 객체 소비 — 노트(09-3)의 구문·패턴을 자체완결로 시연한다.
-"! - AUTHORITY-CHECK는 커널이 로그온 시 user master record에서 메모리로 로드한
-"!   authorization buffer(W-11)를 검사한다 — DB를 직접 읽지 않는다(G-01).
-"! - 통과 논리(W-01b): 같은 object의 authorization 인스턴스 중 적어도 하나가, ID로 지정한
-"!   모든 field 각각의 value set에 검사값을 포함해야 한다(OR across authorizations · AND across fields).
-"! - sy-subrc(W-03): 0 통과 · 4 값불일치/필드오류 · 12 권한없음 · 40 FOR USER 무효.
-"! - DUMMY(W-05)·ACTVT 활동코드(W-10)·FOR USER 보안경고(W-07)도 시연한다.
-"! - 테스트 가능성(L-01~L-04): AUTHORITY-CHECK는 현재 사용자 의존성이므로 lif_authority로
-"!   래핑해 단위 테스트에서 test double(인메모리 buffer)로 교체한다.
-"! 실 구문 형태(can_start_tcode 참조):
-"!   AUTHORITY-CHECK OBJECT 'S_CARRID' ID 'CARRID' FIELD carr ID 'ACTVT' FIELD '03'.
-"!   IF sy-subrc = 0. " 허가 ELSEIF sy-subrc = 4. " 값불일치 ELSEIF sy-subrc = 12. " 권한없음 ENDIF.
+"! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
+"! <p>인증 체크(AUTHORITY-CHECK)·권한 객체 소비 — 노트(09-3)의 구문·패턴을 자체완결로 시연한다.</p>
+"! <ul>
+"! <li>AUTHORITY-CHECK는 커널이 로그온 시 user master record에서 메모리로 로드한
+"! authorization buffer(W-11)를 검사한다 — DB를 직접 읽지 않는다(G-01).</li>
+"! <li>통과 논리(W-01b): 같은 object의 authorization 인스턴스 중 적어도 하나가, ID로 지정한
+"! 모든 field 각각의 value set에 검사값을 포함해야 한다(OR across authorizations · AND across fields).</li>
+"! <li>sy-subrc(W-03): 0 통과 · 4 값불일치/필드오류 · 12 권한없음 · 40 FOR USER 무효.</li>
+"! <li>DUMMY(W-05)·ACTVT 활동코드(W-10)·FOR USER 보안경고(W-07)도 시연한다.</li>
+"! <li>테스트 가능성(L-01~L-04): AUTHORITY-CHECK는 현재 사용자 의존성이므로 lif_authority로
+"! 래핑해 단위 테스트에서 test double(인메모리 buffer)로 교체한다.</li>
+"! </ul>
+"! <p>실 구문 형태(can_start_tcode 참조):</p>
+"! <p>AUTHORITY-CHECK OBJECT 'S_CARRID' ID 'CARRID' FIELD carr ID 'ACTVT' FIELD '03'.</p>
+"! <p>IF sy-subrc = 0. " 허가 ELSEIF sy-subrc = 4. " 값불일치 ELSEIF sy-subrc = 12. " 권한없음 ENDIF.</p>
 CLASS zcl_modulo_txn03_auth DEFINITION
   PUBLIC
   FINAL

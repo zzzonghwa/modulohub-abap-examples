@@ -1,12 +1,13 @@
-"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-"!
-"! 예외 처리 전략·CX 분류·Design by Contract. 노트(07-1)의 구문 형태를 자체완결로 시연한다.
-"! - CX 3분류: cx_static_check(미처리/미선언 시 구문 경고) · cx_dynamic_check(선언 없이 전파,
-"!   런타임 전파 시에만 검사) · cx_no_check(선언 강제 없음, 프레임워크 오류·DBC 위반).
-"! - 전략 3택: (1)전파(RAISING) (2)도메인 예외로 변환 (3)기본값으로 흡수.
-"! - 진단: get_text·get_longtext·get_source_position·previous 체인·RTTI(표준 cx_sy_* 대상).
-"! - 흐름: 다중 CATCH(구체 우선)·RETRY·CLEANUP·COND THROW·RAISE EXCEPTION NEW.
-"! - DbC: 사전조건 require/계산기 사전조건은 locals_imp(lcl_dbc·lcl_calculator)에 있다.
+"! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
+"! <p>예외 처리 전략·CX 분류·Design by Contract. 노트(07-1)의 구문 형태를 자체완결로 시연한다.</p>
+"! <ul>
+"! <li>CX 3분류: cx_static_check(미처리/미선언 시 구문 경고) · cx_dynamic_check(선언 없이 전파,
+"! 런타임 전파 시에만 검사) · cx_no_check(선언 강제 없음, 프레임워크 오류·DBC 위반).</li>
+"! <li>전략 3택: (1)전파(RAISING) (2)도메인 예외로 변환 (3)기본값으로 흡수.</li>
+"! <li>진단: get_text·get_longtext·get_source_position·previous 체인·RTTI(표준 cx_sy_* 대상).</li>
+"! <li>흐름: 다중 CATCH(구체 우선)·RETRY·CLEANUP·COND THROW·RAISE EXCEPTION NEW.</li>
+"! <li>DbC: 사전조건 require/계산기 사전조건은 locals_imp(lcl_dbc·lcl_calculator)에 있다.</li>
+"! </ul>
 CLASS zcl_modulo_tst01_except DEFINITION
   PUBLIC
   FINAL

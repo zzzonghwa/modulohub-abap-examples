@@ -1,12 +1,13 @@
-"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-"!
-"! SAP LUW(논리적 작업 단위)·번들링 — 개념(09-1).
-"! - 원칙: DB 변경은 COMMIT WORK까지 보류되며 한 LUW로 묶여 전부-또는-전무로 확정된다.
-"!   ROLLBACK WORK는 보류 변경을 취소한다.
-"! - 번들링: 변경을 update FM(CALL FUNCTION ... IN UPDATE TASK)·PERFORM ON COMMIT subroutine으로
-"!   모았다가 COMMIT WORK 한 번에 실행한다(왕복·정합성). 실행 순서·우선순위·동기/비동기를
-"!   인메모리 Unit of Work(locals_imp)로 자체완결 시연한다.
-"! - 실 DB 변경문·update FM 활성화·ENQUEUE/DEQUEUE는 09-2(DB 필요), 권한은 09-3에서 다룬다.
+"! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
+"! <p>SAP LUW(논리적 작업 단위)·번들링 — 개념(09-1).</p>
+"! <ul>
+"! <li>원칙: DB 변경은 COMMIT WORK까지 보류되며 한 LUW로 묶여 전부-또는-전무로 확정된다.
+"! ROLLBACK WORK는 보류 변경을 취소한다.</li>
+"! <li>번들링: 변경을 update FM(CALL FUNCTION ... IN UPDATE TASK)·PERFORM ON COMMIT subroutine으로
+"! 모았다가 COMMIT WORK 한 번에 실행한다(왕복·정합성). 실행 순서·우선순위·동기/비동기를
+"! 인메모리 Unit of Work(locals_imp)로 자체완결 시연한다.</li>
+"! <li>실 DB 변경문·update FM 활성화·ENQUEUE/DEQUEUE는 09-2(DB 필요), 권한은 09-3에서 다룬다.</li>
+"! </ul>
 CLASS zcl_modulo_txn01_luw DEFINITION
   PUBLIC
   FINAL

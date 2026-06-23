@@ -1,18 +1,18 @@
-"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-"!
-"! BAdI·Enhancement — released 확장점 소비(개념, 노트 10-03).
-"! 실 BAdI 정의·구현·활성화는 시스템 의존(SE18/SE19·Enhancement Spot, 10-4 안내)이라
-"! abapGit 예제로 만들 수 없다. 따라서 소비자 관점의 *런타임 시맨틱*만 인메모리
-"! BAdI 프레임워크(locals_imp)로 자체완결 시연한다 — GET BADI/CALL BADI 동작을 정확히 흉내.
-"!
-"! 시연 범위(노트 소절 대응):
-"! - §15 CALL BADI 멀티캐스트: multiple-use BAdI는 active 구현을 전부 실행.
-"! - §9  active/inactive override: inactive 구현은 실행에서 제외.
-"! - §11 §19 single-use 예외: 구현 0개 -> NOT_IMPLEMENTED, 복수 -> MULTIPLY.
-"! - §11 fallback class: single-use 구현 0개일 때 fallback으로 폴백해 예외 회피.
-"! - §10 인스턴스 모드: instance reuse면 동일 plug-in이 상태를 누적.
-"! - §16 backward compatibility: 미구현 메서드는 빈 구현으로 처리(no-op).
-"! - §20 §14 filter 라우팅: filter 값으로 구현 선택, filter name은 대문자 정규화.
+"! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
+"! <p>BAdI·Enhancement — released 확장점 소비(개념, 노트 10-03).</p>
+"! <p>실 BAdI 정의·구현·활성화는 시스템 의존(SE18/SE19·Enhancement Spot, 10-4 안내)이라</p>
+"! <p>abapGit 예제로 만들 수 없다. 따라서 소비자 관점의 *런타임 시맨틱*만 인메모리</p>
+"! <p>BAdI 프레임워크(locals_imp)로 자체완결 시연한다 — GET BADI/CALL BADI 동작을 정확히 흉내.</p>
+"! <p>시연 범위(노트 소절 대응):</p>
+"! <ul>
+"! <li>§15 CALL BADI 멀티캐스트: multiple-use BAdI는 active 구현을 전부 실행.</li>
+"! <li>§9  active/inactive override: inactive 구현은 실행에서 제외.</li>
+"! <li>§11 §19 single-use 예외: 구현 0개 -> NOT_IMPLEMENTED, 복수 -> MULTIPLY.</li>
+"! <li>§11 fallback class: single-use 구현 0개일 때 fallback으로 폴백해 예외 회피.</li>
+"! <li>§10 인스턴스 모드: instance reuse면 동일 plug-in이 상태를 누적.</li>
+"! <li>§16 backward compatibility: 미구현 메서드는 빈 구현으로 처리(no-op).</li>
+"! <li>§20 §14 filter 라우팅: filter 값으로 구현 선택, filter name은 대문자 정규화.</li>
+"! </ul>
 CLASS zcl_modulo_ext03_badi DEFINITION
   PUBLIC
   FINAL

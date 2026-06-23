@@ -1,20 +1,19 @@
-"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-"!
-"! released CDS 뷰 소비(읽기 전용) — 노트 05-4의 구문 형태를 자체완결로 시연한다.
-"! released CDS entity는 ABAP SQL FROM에서 일반 DB 테이블과 동일하게 취급된다(L5·G1).
-"! 실 시스템 데이터 소스는 released CDS entity(예: I_CompanyCode·I_Timezone, API State C1)이며,
-"! base 테이블(T001·SCARR) 직접 접근 대신 released entity만 소비한다(Clean Core·S10).
-"!
-"! 두 가지 소비 표면을 함께 보인다.
-"! - CamelCase 시맨틱 요소 소비: released CDS는 base 컬럼(MANDT·CARRID) 대신 시맨틱
-"!   요소명(Carrier·MaximumSeats)을 노출한다. 단일 itab SELECT(FROM @view AS)로 시연한다(L5·S9).
-"! - association 경로식 소비: 실 CDS는 경로식 \_Carrier-CarrierName 으로 텍스트를 끌어온다(L5b).
-"!   경로식은 논리적 조인이라 요청한 테이블만 SQL에 포함된다(L9·L11). 7.54 자체완결을 위해
-"!   동등한 결과를 두 Z 테이블 JOIN(ZMODULO_FLIGHT·ZMODULO_CARRIER)으로 보인다(L2).
-"!
-"! Z 테이블 대상 메서드는 import 직후 표가 비어 F9 출력이 0일 수 있다. 결정적 검증은 ABAP Unit이
-"! osql SQL 테스트 더블(CL_OSQL_TEST_ENVIRONMENT)로 데이터를 주입해 수행한다. CDS entity 전용
-"! 테스트는 CL_CDS_TEST_ENVIRONMENT(since 7.51·L12)를 쓰지만 본 예제엔 실 CDS DDL이 없어 osql만 쓴다.
+"! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
+"! <p>released CDS 뷰 소비(읽기 전용) — 노트 05-4의 구문 형태를 자체완결로 시연한다.</p>
+"! <p>released CDS entity는 ABAP SQL FROM에서 일반 DB 테이블과 동일하게 취급된다(L5·G1).</p>
+"! <p>실 시스템 데이터 소스는 released CDS entity(예: I_CompanyCode·I_Timezone, API State C1)이며,</p>
+"! <p>base 테이블(T001·SCARR) 직접 접근 대신 released entity만 소비한다(Clean Core·S10).</p>
+"! <p>두 가지 소비 표면을 함께 보인다.</p>
+"! <ul>
+"! <li>CamelCase 시맨틱 요소 소비: released CDS는 base 컬럼(MANDT·CARRID) 대신 시맨틱
+"! 요소명(Carrier·MaximumSeats)을 노출한다. 단일 itab SELECT(FROM @view AS)로 시연한다(L5·S9).</li>
+"! <li>association 경로식 소비: 실 CDS는 경로식 \_Carrier-CarrierName 으로 텍스트를 끌어온다(L5b).
+"! 경로식은 논리적 조인이라 요청한 테이블만 SQL에 포함된다(L9·L11). 7.54 자체완결을 위해
+"! 동등한 결과를 두 Z 테이블 JOIN(ZMODULO_FLIGHT·ZMODULO_CARRIER)으로 보인다(L2).</li>
+"! </ul>
+"! <p>Z 테이블 대상 메서드는 import 직후 표가 비어 F9 출력이 0일 수 있다. 결정적 검증은 ABAP Unit이</p>
+"! <p>osql SQL 테스트 더블(CL_OSQL_TEST_ENVIRONMENT)로 데이터를 주입해 수행한다. CDS entity 전용</p>
+"! <p>테스트는 CL_CDS_TEST_ENVIRONMENT(since 7.51·L12)를 쓰지만 본 예제엔 실 CDS DDL이 없어 osql만 쓴다.</p>
 CLASS zcl_modulo_sql04_cds DEFINITION
   PUBLIC
   FINAL

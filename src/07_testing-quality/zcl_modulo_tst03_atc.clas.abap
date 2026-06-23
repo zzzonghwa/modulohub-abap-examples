@@ -1,15 +1,16 @@
-"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-"!
-"! ATC(ABAP Test Cockpit)·정적 품질 — 노트(07-3)의 구문·패턴을 자체완결로 시연한다.
-"! ATC는 활성화 코드를 체크 변형(check variant)으로 정적 검사하며 Code Inspector와 동일 엔진이다.
-"! 정적 도구 자체는 SAP 시스템에서만 동작하므로, 여기서는 ATC가 *코드에 요구하는* 실행 가능한
-"! 형태(억제 프라그마·의사주석·ATC 친화 패턴·finding 분류 로직)를 메서드로 시연한다.
-"! - A. priority 1/2/3 분류(W-02): finding 우선순위 -> 운반 게이트 동작.
-"! - B. missing-WHERE(L-A1): WHERE 있는 SELECT가 prio2를 피한다.
-"! - C. ORDER BY 없는 INDEX 읽기(L-A2): 정렬 후 첫 행 접근이 prio3을 피한다.
-"! - D. ##NEEDED(L-06/G-03)·E. ##NO_HANDLER(G-04)·F. ##NO_TEXT/"#EC(L-18) 억제.
-"! - G. baseline exempt vs suppress(L-BL1)·H. exemption 반패턴(L-EX3)·I. 억제엔 이유주석(L-EX2).
-"! - J. 커스텀 체크 토큰 스캔(L-14)·K. INFORM kind note/error(L-14a)·카테고리 position(L-11).
+"! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
+"! <p>ATC(ABAP Test Cockpit)·정적 품질 — 노트(07-3)의 구문·패턴을 자체완결로 시연한다.</p>
+"! <p>ATC는 활성화 코드를 체크 변형(check variant)으로 정적 검사하며 Code Inspector와 동일 엔진이다.</p>
+"! <p>정적 도구 자체는 SAP 시스템에서만 동작하므로, 여기서는 ATC가 *코드에 요구하는* 실행 가능한</p>
+"! <p>형태(억제 프라그마·의사주석·ATC 친화 패턴·finding 분류 로직)를 메서드로 시연한다.</p>
+"! <ul>
+"! <li>A. priority 1/2/3 분류(W-02): finding 우선순위 -> 운반 게이트 동작.</li>
+"! <li>B. missing-WHERE(L-A1): WHERE 있는 SELECT가 prio2를 피한다.</li>
+"! <li>C. ORDER BY 없는 INDEX 읽기(L-A2): 정렬 후 첫 행 접근이 prio3을 피한다.</li>
+"! <li>D. ##NEEDED(L-06/G-03)·E. ##NO_HANDLER(G-04)·F. ##NO_TEXT/"#EC(L-18) 억제.</li>
+"! <li>G. baseline exempt vs suppress(L-BL1)·H. exemption 반패턴(L-EX3)·I. 억제엔 이유주석(L-EX2).</li>
+"! <li>J. 커스텀 체크 토큰 스캔(L-14)·K. INFORM kind note/error(L-14a)·카테고리 position(L-11).</li>
+"! </ul>
 CLASS zcl_modulo_tst03_atc DEFINITION
   PUBLIC
   FINAL

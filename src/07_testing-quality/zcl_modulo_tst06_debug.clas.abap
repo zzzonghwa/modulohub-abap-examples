@@ -1,14 +1,15 @@
-"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-"!
-"! 디버깅·watchpoint(노트 07-6)의 *실행 가능한* 측면을 자체완결로 시연한다.
-"! 디버거 UI(breakpoint·watchpoint·step·call stack)는 대화형이라 코드로 못 박지만,
-"! 코드에 남는 진단 구문(ASSERT·LOG-POINT)과 디버깅 친화 패턴은 실행으로 보인다.
-"! - watchpoint 연습용: collatz_steps(value가 오르내려 변경 추적에 적합).
-"! - ASSERT(A5): 단독 ASSERT <논리식>. CONDITION 키워드 없음. 위반 시 dump.
-"! - DbC(G1): 사전조건(precondition)·사후조건(postcondition)·클래스 불변(invariant).
-"! - 내부 테이블 오염 추적(C3-2,C3-5): watchpoint가 어느 단계에서 값이 바뀌는지 잡는 시나리오.
-"! - 조건부 watchpoint(C3-3): "Free Condition Entry"식 조건(예: total>임계)을 코드로 흉내.
-"! - F2/CA1/CA3 assert type 선택·quit 비종료 모드는 테스트 클래스에서 시연한다.
+"! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
+"! <p>디버깅·watchpoint(노트 07-6)의 *실행 가능한* 측면을 자체완결로 시연한다.</p>
+"! <p>디버거 UI(breakpoint·watchpoint·step·call stack)는 대화형이라 코드로 못 박지만,</p>
+"! <p>코드에 남는 진단 구문(ASSERT·LOG-POINT)과 디버깅 친화 패턴은 실행으로 보인다.</p>
+"! <ul>
+"! <li>watchpoint 연습용: collatz_steps(value가 오르내려 변경 추적에 적합).</li>
+"! <li>ASSERT(A5): 단독 ASSERT <논리식>. CONDITION 키워드 없음. 위반 시 dump.</li>
+"! <li>DbC(G1): 사전조건(precondition)·사후조건(postcondition)·클래스 불변(invariant).</li>
+"! <li>내부 테이블 오염 추적(C3-2,C3-5): watchpoint가 어느 단계에서 값이 바뀌는지 잡는 시나리오.</li>
+"! <li>조건부 watchpoint(C3-3): "Free Condition Entry"식 조건(예: total>임계)을 코드로 흉내.</li>
+"! <li>F2/CA1/CA3 assert type 선택·quit 비종료 모드는 테스트 클래스에서 시연한다.</li>
+"! </ul>
 CLASS zcl_modulo_tst06_debug DEFINITION
   PUBLIC
   FINAL

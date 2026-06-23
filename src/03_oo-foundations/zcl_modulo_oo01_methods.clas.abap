@@ -1,6 +1,6 @@
-"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-"! 모던 ABAP에서 모듈화의 단위는 FORM/PERFORM이 아니라 메서드다.
-"! 인스턴스 메서드(->), 정적 메서드(=>), 함수형 메서드(RETURNING)를 대조한다.
+"! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
+"! <p>모던 ABAP에서 모듈화의 단위는 FORM/PERFORM이 아니라 메서드다.</p>
+"! <p>인스턴스 메서드(->), 정적 메서드(=>), 함수형 메서드(RETURNING)를 대조한다.</p>
 CLASS zcl_modulo_oo01_methods DEFINITION
   PUBLIC
   FINAL

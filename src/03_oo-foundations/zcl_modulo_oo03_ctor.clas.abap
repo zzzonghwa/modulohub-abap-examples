@@ -1,6 +1,6 @@
-"! ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.
-"! 인스턴스 constructor(NEW마다 1회)·정적 class_constructor(최초 사용 전 1회)·
-"! CLASS-DATA(전 인스턴스 공유)·CREATE PRIVATE+factory 싱글톤·NEW 연산자 패턴.
+"! <p>ADT에서 F9(Run As -> ABAP Application)로 바로 실행해 데모 출력을 본다.</p>
+"! <p>인스턴스 constructor(NEW마다 1회)·정적 class_constructor(최초 사용 전 1회)·</p>
+"! <p>CLASS-DATA(전 인스턴스 공유)·CREATE PRIVATE+factory 싱글톤·NEW 연산자 패턴.</p>
 CLASS zcl_modulo_oo03_ctor DEFINITION
   PUBLIC
   FINAL
