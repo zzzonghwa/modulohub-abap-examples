@@ -83,10 +83,6 @@ CLASS zcl_modulo_ext03_badi DEFINITION
     METHODS unknown_filter_raises
       RETURNING VALUE(result) TYPE abap_bool.
 
-  PRIVATE SECTION.
-    "! 두 검증 구현이 모두 active인 multiple-use BAdI를 구성한다(데모 공용).
-    METHODS multi_use_both
-      RETURNING VALUE(result) TYPE REF TO lcl_multi_use_badi.
 ENDCLASS.
 
 
@@ -115,8 +111,11 @@ CLASS zcl_modulo_ext03_badi IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD validate.
-    " GET BADI 비유: active 구현을 BAdI object에 모은다 -> CALL BADI로 전부 실행.
-    result = multi_use_both( )->call_badi( value ).
+    " GET BADI 비유: active 구현(음수금지·짝수만)을 BAdI object에 모은다 -> CALL BADI로 전부 실행.
+    DATA(badi) = NEW lcl_multi_use_badi( ).
+    badi->add_implementation( NEW lcl_non_negative( ) ).
+    badi->add_implementation( NEW lcl_even_only( ) ).
+    result = badi->call_badi( value ).
   ENDMETHOD.
 
   METHOD validate_with_inactive.
@@ -208,9 +207,4 @@ CLASS zcl_modulo_ext03_badi IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-  METHOD multi_use_both.
-    result = NEW lcl_multi_use_badi( ).
-    result->add_implementation( NEW lcl_non_negative( ) ).
-    result->add_implementation( NEW lcl_even_only( ) ).
-  ENDMETHOD.
 ENDCLASS.
