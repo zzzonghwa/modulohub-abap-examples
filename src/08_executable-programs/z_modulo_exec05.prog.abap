@@ -131,8 +131,9 @@ START-OF-SELECTION.
   " === 본문 행 — 출력 옵션 + 숫자/통화 + 날짜 편집 ============================
   LOOP AT flights INTO DATA(flight).
     " INVERSE: carrier가 'AA'인 행만 반전 강조 — 행별 시각 속성을 코드에서 직접 제어(SALV는 컬러 컬럼/규칙).
-    " FORMAT 옵션 값은 변수로 넘긴다(ON/OFF 토글). 한 행을 그리기 전에 강조 여부를 정한다.
-    DATA(highlight) = xsdbool( flight-carrier = 'AA' ).
+    " FORMAT 옵션 값은 변수로 넘긴다(동적 토글) — 피연산자는 숫자 0/1이어야 한다.
+    " abap_bool('X'/' ')를 넘기면 'X'를 숫자로 못 바꿔 CONVT_NO_NUMBER 덤프가 난다.
+    DATA(highlight) = COND i( WHEN flight-carrier = 'AA' THEN 1 ELSE 0 ).
     FORMAT INVERSE = highlight.
 
     WRITE: / flight-carrier.
