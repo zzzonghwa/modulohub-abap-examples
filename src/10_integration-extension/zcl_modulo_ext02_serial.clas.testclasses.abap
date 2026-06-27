@@ -13,8 +13,6 @@ CLASS ltcl_serial DEFINITION FINAL FOR TESTING
     METHODS xco_json_upper_key   FOR TESTING.
     METHODS xml_is_asxml         FOR TESTING.
     METHODS xml_header_suppressed FOR TESTING.
-    METHODS missing_field_kept   FOR TESTING.
-    METHODS clear_all_resets     FOR TESTING.
     METHODS invalid_xml_caught   FOR TESTING.
     METHODS ixml_root            FOR TESTING.
     METHODS sxml_xml_nonempty    FOR TESTING.
@@ -61,16 +59,6 @@ CLASS ltcl_serial IMPLEMENTATION.
 
   METHOD xml_header_suppressed.
     cl_abap_unit_assert=>assert_true( act = cut->xml_without_header_ok( ) ).
-  ENDMETHOD.
-
-  METHOD missing_field_kept.
-    " clear=NONE 기본: JSON에 없는 name은 이전 값 'kept'를 유지한다.
-    cl_abap_unit_assert=>assert_true( act = cut->missing_field_keeps_value( ) ).
-  ENDMETHOD.
-
-  METHOD clear_all_resets.
-    " OPTIONS clear='ALL': 미전송 name이 초기화(공백)된다.
-    cl_abap_unit_assert=>assert_true( act = cut->clear_all_resets_value( ) ).
   ENDMETHOD.
 
   METHOD invalid_xml_caught.

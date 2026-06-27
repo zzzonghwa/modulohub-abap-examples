@@ -77,17 +77,6 @@ CLASS zcl_modulo_ext02_serial DEFINITION
     METHODS xml_without_header_ok
       RETURNING VALUE(result) TYPE abap_bool.
 
-    "! 역직렬화 규칙: JSON에 없는 컴포넌트는 이전 값 유지. clear='ALL'이면 초기화.
-    "! 빈 JSON {}을 채워진 구조에 역직렬화한 뒤, default 동작 시 name 보존 여부를 본다.
-    "! @parameter result | 미전송 필드가 보존되면 abap_true
-    METHODS missing_field_keeps_value
-      RETURNING VALUE(result) TYPE abap_bool.
-
-    "! 역직렬화 규칙: OPTIONS clear='ALL'은 미전송 필드를 초기화한다.
-    "! @parameter result | clear='ALL'로 name이 초기화되면 abap_true
-    METHODS clear_all_resets_value
-      RETURNING VALUE(result) TYPE abap_bool.
-
     "! 예외 계층: 잘못된 XML을 id로 역직렬화하면 CX_TRANSFORMATION_ERROR가 잡힌다.
     "! CX_TRANSFORMATION_ERROR 단일 핸들러로 XSLT·ST 양쪽을 포괄함을 보인다.
     "! @parameter result | 변환 예외가 잡히면 abap_true
@@ -137,8 +126,6 @@ CLASS zcl_modulo_ext02_serial IMPLEMENTATION.
     out->write( |to_json                   = { to_json( ) }| ).
     out->write( |to_xco_json               = { to_xco_json( ) }| ).
     out->write( |xml_without_header_ok     = { xml_without_header_ok( ) } (OPTIONS xml_header)| ).
-    out->write( |missing_field_keeps_value = { missing_field_keeps_value( ) } (clear=NONE)| ).
-    out->write( |clear_all_resets_value    = { clear_all_resets_value( ) } (OPTIONS clear=ALL)| ).
     out->write( |invalid_xml_raises        = { invalid_xml_raises( ) } (CX_TRANSFORMATION_ERROR)| ).
     out->write( |ixml_root_name            = { ixml_root_name( ) } (iXML DOM)| ).
     out->write( |sxml_xml_writer_ok        = { sxml_xml_writer_ok( ) } (sXML 포맷 전환)| ).
@@ -216,27 +203,6 @@ CLASS zcl_modulo_ext02_serial IMPLEMENTATION.
                            OPTIONS xml_header = 'no'.
     DATA(text) = cl_abap_conv_codepage=>create_in( )->convert( serialized ).
     result = xsdbool( text NS `<?xml` ).
-  ENDMETHOD.
-
-  METHOD missing_field_keeps_value.
-    " 미전송 필드 보존: JSON에 id만 있으면 name은 이전 값을 유지한다(clear=NONE 기본).
-    DATA(restored) = VALUE item( name = `kept` ).
-    DATA(reader) = cl_sxml_string_reader=>create(
-      cl_abap_conv_codepage=>create_out( )->convert( `{"ID":9}` ) ).
-    CALL TRANSFORMATION id SOURCE XML reader RESULT data = restored.
-    " id는 새로 9, name은 비전송이라 'kept' 유지.
-    result = xsdbool( restored-id = 9 AND restored-name = `kept` ).
-  ENDMETHOD.
-
-  METHOD clear_all_resets_value.
-    " OPTIONS clear='ALL': 비전송 필드를 초기화로 통일 -> name이 공백이 된다.
-    DATA(restored) = VALUE item( name = `kept` ).
-    DATA(reader) = cl_sxml_string_reader=>create(
-      cl_abap_conv_codepage=>create_out( )->convert( `{"ID":9}` ) ).
-    CALL TRANSFORMATION id SOURCE XML reader
-                           RESULT data = restored
-                           OPTIONS clear = 'all'.
-    result = xsdbool( restored-id = 9 AND restored-name IS INITIAL ).
   ENDMETHOD.
 
   METHOD invalid_xml_raises.
