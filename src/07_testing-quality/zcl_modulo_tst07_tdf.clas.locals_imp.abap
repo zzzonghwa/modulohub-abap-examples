@@ -1,6 +1,6 @@
 "! 인메모리 재고 — zif_modulo_tst07_stock의 실제 구현(테이블 기반).
-"! main 데모 전용. "경계만 더블한다": 빠르고 결정적인 의존은 더블이 아니라 실물을 쓴다(TST02의
-"! lcl_memory_sink와 같은 취지). 테스트는 이 실물 대신 CL_ABAP_TESTDOUBLE 더블을 주입한다.
+"! main 데모 전용. "경계만 더블한다": 빠르고 결정적인 의존은 더블이 아니라 실물을 쓴다.
+"! 테스트는 이 실물 대신 CL_ABAP_TESTDOUBLE 더블을 주입한다.
 CLASS lcl_in_memory_stock DEFINITION CREATE PUBLIC.
   PUBLIC SECTION.
     INTERFACES zif_modulo_tst07_stock.

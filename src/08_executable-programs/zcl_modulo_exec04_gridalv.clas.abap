@@ -194,7 +194,7 @@ CLASS zcl_modulo_exec04_gridalv IMPLEMENTATION.
     out->write( |D build_toolbar 버튼수             = { lines( build_toolbar( ) ) }| ).
     out->write( |D hotspot_columns 수               = { lines( hotspot_columns( fieldcat ) ) }| ).
     out->write( |E salv_edit_supported              = { salv_edit_supported( ) }| ).
-    out->write( |* recommend_alv(읽기전용)          = { recommend_alv( abap_false ) } (EXEC03)| ).
+    out->write( |* recommend_alv(읽기전용)          = { recommend_alv( abap_false ) }| ).
     out->write( |* recommend_alv(편집/이벤트)       = { recommend_alv( abap_true ) }| ).
     out->write( |* reuse_needs_pf_status            = { reuse_needs_pf_status( ) }| ).
     out->write( |* cloud_available                  = { cloud_available( ) } (셋 다 온프렘 전용)| ).

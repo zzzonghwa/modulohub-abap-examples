@@ -1,7 +1,7 @@
 REPORT z_modulo_exec05.
 
 " 클래식 리스트 출력(WRITE) — 역사적 대조.
-" 모던 ABAP은 목록을 ALV(CL_SALV_TABLE, EXEC03)로 그린다. WRITE 리스트는 SAP GUI 렌더러에
+" 모던 ABAP은 목록을 ALV(CL_SALV_TABLE)로 그린다. WRITE 리스트는 SAP GUI 렌더러에
 " 종속적이라 정렬·필터·엑셀 내보내기를 직접 구현해야 하고, 화면·커서 위치에
 " 묶여 단위 테스트가 구조적으로 어렵다 — "왜 ALV/SALV로 옮겨갔는가"를 보이는 단원.
 "
@@ -18,7 +18,7 @@ REPORT z_modulo_exec05.
 "  레이아웃 제어       ULINE·SKIP·NEW-LINE·WRITE UNDER — 줄·구분선·세로 정렬.
 "  text 기호           TEXT-001.. — 번역 가능한 리스트 헤더(하드코딩 회피).
 "  집계 라인           소계·합계를 LOOP에서 직접 누적(SALV get_aggregations가 자동화하는 것).
-"  대조 요약           각 WHY를 한 줄로 — 같은 표를 EXEC03 SALV가 어떻게 무료로 주는가.
+"  대조 요약           각 WHY를 한 줄로 — 같은 표를 ALV(SALV)가 어떻게 무료로 주는가.
 " 비실행(SE51 화면 필요) 구문은 코드로 시연 불가 — 주석 대조로만 남긴다:
 "  MODULE OUTPUT/INPUT(PBO/PAI)·CALL SCREEN·SY-UCOMM은 SE51 일반 Dynpro 전제라
 "  abapGit serialize 포맷 단일 REPORT로는 재현 불가. WHY: 화면 정의와 플로우 로직이 리포지터리
@@ -41,13 +41,13 @@ CONSTANTS report_currency TYPE c LENGTH 5 VALUE 'USD'.
 
 " WRITE 컬럼 위치는 리터럴(12·22·44·54)로 직접 준다 — 클래식 WRITE에서 위치가 변수면 AT가
 " 필요하고 길이 `col(len)`은 변수에 붙일 수 없어, 정석은 리터럴이다. 이 흩뿌려진 "매직 넘버"가
-" 바로 컬럼 위치 방식의 취약점(컬럼 폭이 바뀌면 전부 수동 수정) — EXEC03 SALV는 이걸 자동화한다.
+" 바로 컬럼 위치 방식의 취약점(컬럼 폭이 바뀌면 전부 수동 수정) — ALV(SALV)는 이걸 자동화한다.
 
 " --- 보고서 로직 — 이벤트 블록은 얇게, 데이터·집계는 OO 클래스로 위임한다(Clean ABAP). ---
 " WRITE 출력 자체는 화면 의존이라 클래스 밖(START-OF-SELECTION)에 둔다 — 테스트는 순수 계산부만 건다.
 CLASS lcl_report DEFINITION CREATE PRIVATE.
   PUBLIC SECTION.
-    "! 데모용 항공편 6건 샘플 데이터(EXEC02/EXEC03/SQL02와 동일 시드 + 날짜 컬럼).
+    "! 데모용 항공편 6건 샘플 데이터(날짜 컬럼 포함).
     CLASS-METHODS sample
       RETURNING VALUE(result) TYPE flight_rows.
 
@@ -181,7 +181,7 @@ START-OF-SELECTION.
   DATA(first_connid) = VALUE #( flights[ 1 ]-connid OPTIONAL ).
   WRITE: / TEXT-009, first_connid USING EDIT MASK '__-__'.
 
-  " === 대조 요약 — 위 표를 SALV(EXEC03)가 어떻게 무료로 주는가. =================
+  " === 대조 요약 — 위 표를 ALV(SALV)가 어떻게 무료로 주는가. =================
   SKIP.
   ULINE.
   WRITE: / TEXT-010.

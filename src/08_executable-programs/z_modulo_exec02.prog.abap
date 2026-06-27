@@ -11,7 +11,7 @@ REPORT z_modulo_exec02.
 "  SELECTION-SCREEN — BLOCK WITH FRAME TITLE, COMMENT, SKIP, ULINE, BEGIN OF LINE.
 "  AT SELECTION-SCREEN — ON para(단일), ON BLOCK(블록 일괄), OUTPUT(송신 직전).
 "  이벤트 흐름 — INITIALIZATION -> 선택화면 -> START-OF-SELECTION(메서드 위임).
-"  클래식 WRITE 리스트(레거시) — 프로덕션은 CL_SALV_TABLE 권장(EXEC03 참조).
+"  클래식 WRITE 리스트(레거시) — 프로덕션은 CL_SALV_TABLE(ALV) 권장.
 
 " 행 타입 — 항공편 한 건. 선택화면 입력으로 필터링할 모델 데이터.
 TYPES:
@@ -83,7 +83,7 @@ CLASS lcl_report DEFINITION CREATE PRIVATE.
                 source        TYPE flight_rows
       RETURNING VALUE(result) TYPE flight_rows.
 
-    "! 데모용 항공편 6건 샘플 데이터(EXEC03/SQL02와 동일 시드).
+    "! 데모용 항공편 6건 샘플 데이터.
     CLASS-METHODS sample
       RETURNING VALUE(result) TYPE flight_rows.
 
@@ -201,7 +201,7 @@ START-OF-SELECTION.
     conditions = conditions
     source     = lcl_report=>sample( ) ).
 
-  " 클래식 WRITE 리스트는 레거시 분류다 — 프로덕션은 CL_SALV_TABLE(EXEC03).
+  " 클래식 WRITE 리스트는 레거시 분류다 — 프로덕션은 CL_SALV_TABLE(ALV).
   " 여기서는 선택화면 입력이 결과에 어떻게 반영되는지 보이기 위한 데모 출력이다.
   WRITE: / 'Carrier  :', p_carr.
   WRITE: / 'Connid   :', s_conn-low, '~', s_conn-high.

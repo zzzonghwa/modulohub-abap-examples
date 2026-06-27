@@ -1,5 +1,5 @@
 "! 표준 테스트 더블 프레임워크 실증 — CL_ABAP_TESTDOUBLE이 전역 인터페이스
-"! ZIF_MODULO_TST07_STOCK로부터 더블을 자동 생성한다. 손으로 짠 스텁/스파이(TST02) 없이
+"! ZIF_MODULO_TST07_STOCK로부터 더블을 자동 생성한다. 더블 클래스를 손으로 짜지 않고
 "! returning(스텁)·입력별 구성·and_expect/verify_expectations(목)을 '구성'으로 표현한다.
 "! 패턴: configure_call로 동작을 심고 더블 메서드를 1회 호출해 그 구성을 '기록'한 뒤, CUT를
 "! 실행하고, 목은 verify_expectations로 호출 횟수·인자를 자동 검증한다.

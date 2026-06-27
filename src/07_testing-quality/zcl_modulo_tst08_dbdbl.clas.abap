@@ -9,8 +9,7 @@
 "! 베이스(ZMODULO_FLIGHT)를 더블링한다 — osql 환경은 뷰 내부까지 제어하지 못한다.</li>
 "! </ul>
 "! <p>표는 import 직후 비어 있다 — F9는 ensure_demo_data로 시드해 결과를 보이고, 결정적 검증은
-"! ABAP Unit이 두 더블 환경으로 데이터를 주입해 수행한다(실 DB 미접촉). 관련: TST07은 인터페이스
-"! 더블(CL_ABAP_TESTDOUBLE), 본 단원은 DB/CDS 더블 환경.</p>
+"! ABAP Unit이 두 더블 환경으로 데이터를 주입해 수행한다(실 DB 미접촉).</p>
 CLASS zcl_modulo_tst08_dbdbl DEFINITION
   PUBLIC
   FINAL

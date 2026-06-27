@@ -1,7 +1,7 @@
 "! <p>ADT에서 F9(Run As -> ABAP Application)로 데모 출력을, Ctrl+Shift+F10으로 테스트를 본다.</p>
-"! <p>표준 테스트 더블 프레임워크 — CL_ABAP_TESTDOUBLE. TST02는 의존을 로컬 인터페이스로 분리해
-"! 더블(스텁·스파이)을 손으로 짰지만, 프레임워크는 전역 인터페이스(ZIF_MODULO_TST07_STOCK)로부터
-"! 더블을 자동 생성한다. 테스트 인클루드가 실물 패턴을 모은다:</p>
+"! <p>표준 테스트 더블 프레임워크 — CL_ABAP_TESTDOUBLE. 더블을 손으로 작성하는 대신, 전역
+"! 인터페이스(ZIF_MODULO_TST07_STOCK)로부터 더블을 자동 생성한다.
+"! 테스트 인클루드가 실물 패턴을 모은다:</p>
 "! <ul>
 "! <li>create: 전역 인터페이스명으로 더블 인스턴스를 만든다(클래스 손코딩 없음).</li>
 "! <li>스텁(returning·ignore_all_parameters): 호출에 고정/무차별 반환값을 심는다.</li>
