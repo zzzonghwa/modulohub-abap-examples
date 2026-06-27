@@ -274,8 +274,8 @@ CLASS zcl_modulo_ext02_serial IMPLEMENTATION.
 
   METHOD bapi_has_error.
     " BAPIRET2 판정: type이 'E'(Error)·'A'(Abort) 중 하나면 실패. CA = contains any.
-    result = xsdbool( line_exists( messages[ table_line-type = 'E' ] )
-                   OR line_exists( messages[ table_line-type = 'A' ] ) ).
+    result = xsdbool( line_exists( messages[ type = 'E' ] )
+                   OR line_exists( messages[ type = 'A' ] ) ).
   ENDMETHOD.
 
   METHOD sample.
