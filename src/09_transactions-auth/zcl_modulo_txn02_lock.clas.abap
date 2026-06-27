@@ -79,11 +79,6 @@ CLASS zcl_modulo_txn02_lock DEFINITION
     "! @parameter result | system_failure가 lcx_lock_failure로 구분되면 abap_true
     METHODS system_failure_distinct
       RETURNING VALUE(result) TYPE abap_bool.
-
-  PRIVATE SECTION.
-    "! 데모용 enqueue 서버 lock table 인스턴스를 새로 만든다.
-    METHODS new_lock_table
-      RETURNING VALUE(result) TYPE REF TO lcl_lock_table.
 ENDCLASS.
 
 
@@ -105,7 +100,7 @@ CLASS zcl_modulo_txn02_lock IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD foreign_lock_owner.
-    DATA(lock_table) = new_lock_table( ).
+    DATA(lock_table) = NEW lcl_lock_table( ).
     TRY.
         lock_table->enqueue( argument = `LH|0400` holder = `USER_A` ).
         " 다른 소유자가 같은 키를 배타 잠금 시도 -> foreign_lock(소유자명 동봉).
@@ -117,7 +112,7 @@ CLASS zcl_modulo_txn02_lock IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD shared_locks_coexist.
-    DATA(lock_table) = new_lock_table( ).
+    DATA(lock_table) = NEW lcl_lock_table( ).
     TRY.
         lock_table->enqueue( argument = `LH|0400` holder = `USER_A` mode = lif_lock=>shared ).
         " 다른 사용자도 S 잠금 가능 -> 예외 없이 성공.
@@ -129,7 +124,7 @@ CLASS zcl_modulo_txn02_lock IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD exclusive_cumulates.
-    DATA(lock_table) = new_lock_table( ).
+    DATA(lock_table) = NEW lcl_lock_table( ).
     TRY.
         " 동일 사용자가 E 잠금을 두 번 -> 누적되어 깊이 2.
         lock_table->enqueue( argument = `LH|0400` holder = `USER_A` ).
@@ -140,7 +135,7 @@ CLASS zcl_modulo_txn02_lock IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD non_cumulative_rejected.
-    DATA(lock_table) = new_lock_table( ).
+    DATA(lock_table) = NEW lcl_lock_table( ).
     TRY.
         lock_table->enqueue( argument = `LH|0400` holder = `USER_A` mode = lif_lock=>exclusive_non_cumul ).
         " X 모드는 동일 사용자도 재획득 불가 -> lock_failure.
@@ -154,7 +149,7 @@ CLASS zcl_modulo_txn02_lock IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD logical_lock_nonexistent.
-    DATA(lock_table) = new_lock_table( ).
+    DATA(lock_table) = NEW lcl_lock_table( ).
     TRY.
         " 아직 DB에 없는 키도 잠근다 — SAP 락은 논리적이다(중복 생성 방지 패턴).
         lock_table->enqueue( argument = `NEW|9999` holder = `USER_A` ).
@@ -164,7 +159,7 @@ CLASS zcl_modulo_txn02_lock IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD reacquire_after_dequeue.
-    DATA(lock_table) = new_lock_table( ).
+    DATA(lock_table) = NEW lcl_lock_table( ).
     TRY.
         lock_table->enqueue( argument = `LH|0400` holder = `USER_A` ).
         lock_table->dequeue( argument = `LH|0400` holder = `USER_A` ).
@@ -177,7 +172,7 @@ CLASS zcl_modulo_txn02_lock IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD dequeue_decrements.
-    DATA(lock_table) = new_lock_table( ).
+    DATA(lock_table) = NEW lcl_lock_table( ).
     TRY.
         lock_table->enqueue( argument = `LH|0400` holder = `USER_A` ).
         lock_table->enqueue( argument = `LH|0400` holder = `USER_A` ).
@@ -189,7 +184,7 @@ CLASS zcl_modulo_txn02_lock IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD released_on_commit.
-    DATA(lock_table) = new_lock_table( ).
+    DATA(lock_table) = NEW lcl_lock_table( ).
     TRY.
         lock_table->enqueue( argument = `LH|0400` holder = `USER_A` ).
         lock_table->enqueue( argument = `AA|0017` holder = `USER_A` ).
@@ -201,7 +196,7 @@ CLASS zcl_modulo_txn02_lock IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD rollback_removes_scope2_only.
-    DATA(lock_table) = new_lock_table( ).
+    DATA(lock_table) = NEW lcl_lock_table( ).
     TRY.
         " scope_dialog(1)는 ROLLBACK이 건드리지 않고, scope_update(2)만 제거된다.
         lock_table->enqueue( argument = `LH|0400` holder = `USER_A` scope = lif_lock=>scope_dialog ).
@@ -213,7 +208,7 @@ CLASS zcl_modulo_txn02_lock IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD rollback_keeps_scope3.
-    DATA(lock_table) = new_lock_table( ).
+    DATA(lock_table) = NEW lcl_lock_table( ).
     TRY.
         " scope_both(3)·scope_update(2) 등록 후 rollback -> scope_update만 제거.
         lock_table->enqueue( argument = `LH|0400` holder = `USER_A` scope = lif_lock=>scope_both ).
@@ -225,7 +220,7 @@ CLASS zcl_modulo_txn02_lock IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD system_failure_distinct.
-    DATA(lock_table) = new_lock_table( ).
+    DATA(lock_table) = NEW lcl_lock_table( ).
     " 동일 사용자의 X(non-cumulative) 재획득은 system_failure 계열(lock_failure)로 구분된다 —
     " foreign_lock(소유자 있음)과 달리 lock_failure는 소유자 정보가 없다.
     TRY.
@@ -239,7 +234,4 @@ CLASS zcl_modulo_txn02_lock IMPLEMENTATION.
     ENDTRY.
   ENDMETHOD.
 
-  METHOD new_lock_table.
-    result = NEW lcl_lock_table( ).
-  ENDMETHOD.
 ENDCLASS.

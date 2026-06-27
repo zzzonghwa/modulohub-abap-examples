@@ -1,5 +1,5 @@
 "! 권한 체크 단위 테스트. 실 AUTHORITY-CHECK는 현재 로그온 사용자에 의존하므로
-"! 정확값을 단정할 수 없다 -> lif_authority를 인메모리 buffer(test double)로 교체해
+"! 정확값을 단정할 수 없다 -> zif_modulo_txn03_authority를 인메모리 buffer(test double)로 교체해
 "! 통과 논리·sy-subrc 체계·DUMMY·FOR USER를 결정적으로 검증한다.
 CLASS ltcl_auth DEFINITION FINAL FOR TESTING
   DURATION SHORT

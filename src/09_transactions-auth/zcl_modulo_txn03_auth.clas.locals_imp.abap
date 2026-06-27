@@ -4,30 +4,6 @@
 "! DUMMY, sy-subrc 체계(0/4/12), FOR USER를 로컬 모델로 자체완결 시연한다.
 "! 실 코드는 lcl_real_authority가 진짜 AUTHORITY-CHECK 구문을 감싼다(의존성 래핑).
 
-"! 권한 체크 dependency 추상화. 단위 테스트에서 test double로 교체 가능.
-INTERFACE lif_authority.
-  TYPES:
-    "! 체크할 field-value 쌍. value가 비어 있으면 DUMMY로 간주.
-    BEGIN OF check_field,
-      name  TYPE string,
-      value TYPE string,
-      dummy TYPE abap_bool,
-    END OF check_field.
-  TYPES check_fields TYPE STANDARD TABLE OF check_field WITH EMPTY KEY.
-
-  "! AUTHORITY-CHECK 한 번에 대응. sy-subrc 호환 코드를 돌려준다.
-  "! @parameter object | authorization object 이름(대문자)
-  "! @parameter fields | 체크할 field-value 쌍 목록(최대 10개)
-  "! @parameter user   | FOR USER 대상(비우면 현재 사용자)
-  "! @parameter result | sy-subrc 호환: 0 통과 · 4 값불일치/필드오류 · 12 권한없음 · 40 유저무효
-  METHODS check
-    IMPORTING object        TYPE string
-              fields        TYPE check_fields
-              user          TYPE string OPTIONAL
-    RETURNING VALUE(result) TYPE i.
-ENDINTERFACE.
-
-
 "! sy-subrc 호환 상수. 의미를 코드에 명시한다.
 INTERFACE lif_subrc.
   CONSTANTS:
@@ -60,11 +36,11 @@ ENDINTERFACE.
 "! 단위 테스트에서는 lcl_authority_buffer(test double)로 교체한다.
 CLASS lcl_real_authority DEFINITION CREATE PUBLIC.
   PUBLIC SECTION.
-    INTERFACES lif_authority.
+    INTERFACES zif_modulo_txn03_authority.
 ENDCLASS.
 
 CLASS lcl_real_authority IMPLEMENTATION.
-  METHOD lif_authority~check.
+  METHOD zif_modulo_txn03_authority~check.
     " 데모를 위해 두 표준 권한객체(S_TCODE·S_CARRID)만 실제 구문으로 분기한다.
     " 실무에서는 object·field를 동적으로 다룰 수 없으므로(리터럴 권장), 케이스별로 쓴다.
     " AUTHORITY-CHECK는 클래식 문이라 FIELD에 생성자식을 못 쓴다 — 값을 데이터 오브젝트로 분리한다.
@@ -98,7 +74,7 @@ ENDCLASS.
 "! field 각각의 value set에 검사값을 포함해야 한다(OR across authorizations · AND across fields).
 CLASS lcl_authority_buffer DEFINITION CREATE PUBLIC.
   PUBLIC SECTION.
-    INTERFACES lif_authority.
+    INTERFACES zif_modulo_txn03_authority.
 
     "! 한 authorization 인스턴스의 한 field에 대한 value set 한 항목.
     TYPES:
@@ -137,7 +113,7 @@ CLASS lcl_authority_buffer DEFINITION CREATE PUBLIC.
       IMPORTING user          TYPE string
                 object        TYPE string
                 instance      TYPE i
-                fields        TYPE lif_authority=>check_fields
+                fields        TYPE zif_modulo_txn03_authority=>check_fields
       RETURNING VALUE(result) TYPE abap_bool.
 
     "! object에 대해 사용자에게 부여된 서로 다른 인스턴스 번호 목록.
@@ -160,7 +136,7 @@ CLASS lcl_authority_buffer IMPLEMENTATION.
     INSERT user INTO TABLE known_users.
   ENDMETHOD.
 
-  METHOD lif_authority~check.
+  METHOD zif_modulo_txn03_authority~check.
     DATA(effective_user) = COND string( WHEN user IS INITIAL THEN CONV string( sy-uname ) ELSE user ).
 
     " FOR USER 지정 사용자가 유효하지 않으면 subrc=40. 현재 사용자(user 비움)는 항상 유효.

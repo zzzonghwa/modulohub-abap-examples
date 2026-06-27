@@ -7,7 +7,7 @@
 "! 모든 field 각각의 value set에 검사값을 포함해야 한다(OR across authorizations · AND across fields).</li>
 "! <li>sy-subrc: 0 통과 · 4 값불일치/필드오류 · 12 권한없음 · 40 FOR USER 무효.</li>
 "! <li>DUMMY·ACTVT 활동코드·FOR USER 보안경고도 시연한다.</li>
-"! <li>테스트 가능성: AUTHORITY-CHECK는 현재 사용자 의존성이므로 lif_authority로
+"! <li>테스트 가능성: AUTHORITY-CHECK는 현재 사용자 의존성이므로 zif_modulo_txn03_authority로
 "! 래핑해 단위 테스트에서 test double(인메모리 buffer)로 교체한다.</li>
 "! </ul>
 "! <p>실 구문 형태(can_start_tcode 참조):</p>
@@ -24,7 +24,7 @@ CLASS zcl_modulo_txn03_auth DEFINITION
     "! 권한 체커 의존성을 주입한다. 비우면 실 AUTHORITY-CHECK를 감싼 production 구현 사용.
     "! @parameter authority | 권한 체크 dependency(테스트는 인메모리 buffer 주입)
     METHODS constructor
-      IMPORTING authority TYPE REF TO lif_authority OPTIONAL.
+      IMPORTING authority TYPE REF TO zif_modulo_txn03_authority OPTIONAL.
 
     "! S_TCODE: 현재 사용자가 해당 트랜잭션을 실행할 권한이 있는지(가장 단순한 단일 필드 체크).
     "! @parameter tcode  | 트랜잭션 코드(예: 'SE80')
@@ -68,7 +68,7 @@ CLASS zcl_modulo_txn03_auth DEFINITION
       RETURNING VALUE(result) TYPE string.
 
   PRIVATE SECTION.
-    DATA authority TYPE REF TO lif_authority.
+    DATA authority TYPE REF TO zif_modulo_txn03_authority.
 
     "! sy-subrc 코드를 사람이 읽는 라벨로 변환(의미 구분).
     METHODS subrc_label
