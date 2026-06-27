@@ -41,9 +41,10 @@ CLASS zcl_modulo_ext01_xco DEFINITION
       RETURNING VALUE(result) TYPE string.
 
     "! 문자열 역순(고전 문자열 처리 FM 대체). 내장 함수 reverse( ).
+    "! 메서드명을 reverse로 두면 내장 함수를 가려 자기 재귀(무한)가 되므로 reverse_text로 명명한다.
     "! @parameter text   | 입력 문자열
     "! @parameter result | 역순 문자열
-    METHODS reverse
+    METHODS reverse_text
       IMPORTING text          TYPE string
       RETURNING VALUE(result) TYPE string.
 
@@ -130,7 +131,7 @@ CLASS zcl_modulo_ext01_xco IMPLEMENTATION.
     out->write( |to_upper('abap')             = { to_upper( `abap` ) }| ).
     out->write( |to_upper_classic('abap')     = { to_upper_classic( `abap` ) } (전통 TRANSLATE)| ).
     out->write( |to_lower('ABAP')             = { to_lower( `ABAP` ) }| ).
-    out->write( |reverse('abc')               = { reverse( `abc` ) }| ).
+    out->write( |reverse_text('abc')          = { reverse_text( `abc` ) }| ).
     DATA(codes) = sample_codes( ).
     out->write( |resplit('{ codes }' . -> /)  = { resplit( text = codes separator = `.` joiner = `/` ) }| ).
     out->write( |split_count('{ codes }' .)   = { split_count( text = codes separator = `.` ) }| ).
@@ -157,8 +158,8 @@ CLASS zcl_modulo_ext01_xco IMPLEMENTATION.
     TRANSLATE result TO UPPER CASE.
   ENDMETHOD.
 
-  METHOD reverse.
-    " XCO 단일 문자열 핸들러엔 역순 메서드가 없다 — 내장 함수 reverse를 쓴다.
+  METHOD reverse_text.
+    " XCO 단일 문자열 핸들러엔 역순 메서드가 없어 내장 함수 reverse( )를 쓴다.
     result = reverse( text ).
   ENDMETHOD.
 

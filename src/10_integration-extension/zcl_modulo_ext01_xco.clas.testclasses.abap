@@ -43,7 +43,7 @@ CLASS ltcl_xco IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD reverse_string.
-    cl_abap_unit_assert=>assert_equals( act = cut->reverse( `abc` ) exp = `cba` ).
+    cl_abap_unit_assert=>assert_equals( act = cut->reverse_text( `abc` ) exp = `cba` ).
   ENDMETHOD.
 
   METHOD resplit_codes.
